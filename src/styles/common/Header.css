@@ -1,0 +1,38 @@
+.header-seg {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    background: rgb(0, 158, 0);
+}
+
+.header-seg nav{
+    width: 60%;
+    margin: 1px auto;
+    padding: 1px;
+}
+
+.header-seg nav ul{
+    list-style-type: none;
+    margin: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+.header-seg nav ul li{
+    margin: 5px;
+    padding: 5px;
+    
+}
+
+.header-seg nav ul li a{
+    color: white;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.header-seg .not-in-user{
+    height: 10vmin;
+}

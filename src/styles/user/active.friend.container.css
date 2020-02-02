@@ -1,0 +1,18 @@
+.active-friend-container{
+    width: calc(100% - 10px);
+    margin: 2px;
+    padding: 2px;
+    border: 1px solid rgb(211, 211, 211);
+    display: flex;
+    flex-direction: row;
+}
+
+.active-friend-container img{
+    width: 25%;
+}
+
+.active-friend-container span{
+    width: 75%;
+    font-size: calc(7px + 1vmin);
+    font-weight: 500;
+}

@@ -1,0 +1,20 @@
+.profile-info-container {
+    width: calc(20% - 12px);
+    border-radius: 5px;
+    margin: 5px;
+    background: rgb(247, 247, 247);
+    border: 1px solid rgb(233, 233, 233);
+}
+
+.profile-info-container img {
+    width: calc(100% - 4px);
+    margin: 2px;
+}
+
+.profile-info-container span{
+    width: calc(100% - 8px);
+    margin: 2px;
+    padding: 2px;
+    text-align: center;
+    font-weight: 500;
+}

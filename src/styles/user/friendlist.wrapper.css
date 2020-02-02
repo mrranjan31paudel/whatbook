@@ -1,0 +1,11 @@
+.active-friendlist-container {
+    width: calc(20% - 12px);
+    border-radius: 5px;
+    margin: 5px;
+    background: rgb(247, 247, 247);
+    border: 1px solid rgb(233, 233, 233);
+}
+
+.active-friendlist-container h4{
+    margin: 2px;
+}
