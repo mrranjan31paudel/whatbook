@@ -1,5 +1,6 @@
 import React from 'react';
-import { http } from './../configs/lib.imports';
+// import { http } from './../configs/lib.imports';
+import {loginRequest} from './../controllers/controller.http';
 import TextField from './sub-components/TextField';
 import Label from './sub-components/Label';
 import Button from './sub-components/Button';
@@ -30,10 +31,11 @@ class Login extends React.Component {
     e.preventDefault();
     const validFlag = validateLogin(this.state);
     if(validFlag){
-      http.post('/login', this.state.data)
+      // http.post('/login', this.state.data)
+      loginRequest(this.state.data)
       .then((response) => {
-        localStorage.setItem('myAccessToken', response.data['access-token']);
-        localStorage.setItem('myRefreshToken', response.data['refresh-token']);
+        localStorage.setItem('myAccessToken', response.data.accessToken);
+        localStorage.setItem('myRefreshToken', response.data.refreshToken);
         this.props.history.push('/user');
       })
       .catch((err) => {

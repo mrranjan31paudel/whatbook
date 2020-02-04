@@ -1,5 +1,6 @@
 import React from 'react';
-import {http} from './../configs/lib.imports';
+// import {http} from './../configs/lib.imports';
+import {signupRequest} from './../controllers/controller.http';
 import Label from './sub-components/Label';
 import TextField from './sub-components/TextField';
 import Button from './sub-components/Button';
@@ -50,7 +51,8 @@ class Register extends React.Component {
     const validFlag = validateSignup(this.state);
 
     if(validFlag && !this.isMailInvalid()){
-      http.post('/signup', toSendData)
+      // http.post('/signup', toSendData)
+      signupRequest(toSendData)
       .then((response) => {
         console.log('RESPONSE: ', response);
         this.setState({
