@@ -24,7 +24,6 @@ class App extends React.Component {
               <Route exact path="/" component={Login} />
               <Route exact path="/signup" component={SignUp}/>
               <ProtectedRoute path="/user" comp={User} />
-              {/* <Route exact path="/user" /> */}
             </Switch>
           </Router>
         </div>

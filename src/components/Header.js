@@ -1,10 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import {http} from './../configs/lib.imports';
+
 import './../styles/common/Header.css';
 
 class Header extends React.Component {
   logOutFunction = () => {
+    http.post('/logout', {
+        refreshToken: localStorage.getItem('myRefreshToken')
+    })
+    .then(response => {
+      console.log('logout response: ', response);
+    })
+    .catch(err => {
+      console.log('logout err: ', err);
+    });
     localStorage.removeItem('myAccessToken');
+    localStorage.removeItem('myRefreshToken');
   }
 
   render() {

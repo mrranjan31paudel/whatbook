@@ -29,8 +29,7 @@ class User extends React.Component {
         authorization:ACC_TOKEN
       }
     })
-    .then((response) => {
-      console.log('RESPONSE: ' ,response);
+    .then(response => {
       this.setState({
         userData:{
           name: response.data.name,
@@ -42,19 +41,36 @@ class User extends React.Component {
     .catch((err) => {
       if(err.response.data.msg === 'TokenExpiredError'){
         const REF_TOKEN = localStorage.getItem('myRefreshToken');
-        http.post('/tokenrenew', {
+        http.post('/tokenrenew', { 
           accessToken : ACC_TOKEN,
           refreshToken : REF_TOKEN
         })
         .then(response => {
           localStorage.setItem('myAccessToken', response.data.accessToken);
           localStorage.setItem('myRefreshToken', response.data.refreshToken);
+          http.get('/user', {
+            headers:{
+              authorization: localStorage.getItem('myAccessToken')
+            }
+          })
+          .then(response => {
+            this.setState({
+              userData:{
+                name: response.data.name,
+                dob: response.data.dob,
+                email: response.data.email
+              }
+            });
+          })
+          .catch(err => {
+            console.log('error fdf: ', err);
+          })
         })
         .catch(err => {
-          console.log(err);
-        });
-        // localStorage.removeItem('myAccessToken');
-        // this.props.history.push('/');
+          localStorage.removeItem('myAccessToken');
+          localStorage.removeItem('myRefreshToken');
+          this.props.history.push('/');
+        });        
       }
     });
   }
@@ -62,7 +78,7 @@ class User extends React.Component {
   render() {
     return (
       <Fragment>
-        <Header profileName={this.state.userData.name} isInsideUser={true} />
+        <Header profileName={this.state.userData.name} isInsideUser={true} {...this.props} />
         <div className="user-wrapper">
         <div className="profile-info-container">
           <img src="userpic.png" alt="user"></img>
