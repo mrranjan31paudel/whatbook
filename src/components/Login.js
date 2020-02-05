@@ -1,28 +1,28 @@
 import React from 'react';
 // import { http } from './../configs/lib.imports';
-import {loginRequest} from './../controllers/controller.http';
+import { loginRequest } from './../controllers/controller.http';
 import TextField from './sub-components/TextField';
 import Label from './sub-components/Label';
 import Button from './sub-components/Button';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import validateLogin from './../validators/validate-login';
 import './../styles/loginsignup/formWrapper.css';
 
 class Login extends React.Component {
-  constructor(){
+  constructor() {
     super();
     this.state = {
-      data : {
-        email : null,
-        password : null
+      data: {
+        email: null,
+        password: null
       },
       isWaitingServer: false,
-      isLoggedIn : false
+      isLoggedIn: false
     };
   }
 
-  componentDidMount(){
-    if(localStorage.getItem('myAccessToken')){
+  componentDidMount() {
+    if (localStorage.getItem('myAccessToken')) {
       this.props.history.push('/user');
     }
   }
@@ -30,41 +30,41 @@ class Login extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const validFlag = validateLogin(this.state);
-    if(validFlag){
+    if (validFlag) {
       // http.post('/login', this.state.data)
       loginRequest(this.state.data)
-      .then((response) => {
-        localStorage.setItem('myAccessToken', response.data.accessToken);
-        localStorage.setItem('myRefreshToken', response.data.refreshToken);
-        this.props.history.push('/user');
-      })
-      .catch((err) => {
-        console.log('ERROR:', err.response);
-        this.setState({
-          isWaitingServer:false
+        .then((response) => {
+          localStorage.setItem('myAccessToken', response.data.accessToken);
+          localStorage.setItem('myRefreshToken', response.data.refreshToken);
+          this.props.history.push('/user');
+        })
+        .catch((err) => {
+          console.log('ERROR:', err.response);
+          this.setState({
+            isWaitingServer: false
+          });
         });
-      });
       this.setState({
-        isWaitingServer:true
+        isWaitingServer: true
       });
     }
-    else{
+    else {
       console.log('submit blocked');
       this.setState({
-        data:{
+        data: {
           ...this.state.data,
-          email : this.state.data.email===null?'':this.state.data.email,
-          password : this.state.data.password===null?'':this.state.data.password
+          email: this.state.data.email === null ? '' : this.state.data.email,
+          password: this.state.data.password === null ? '' : this.state.data.password
         }
       });
     }
-    
+
   }
 
   handleChange = (targetField, value) => {
     this.setState({
-      data : {
-        ...this.state.data, [targetField] : value
+      data: {
+        ...this.state.data, [targetField]: value
       }
     });
   }
@@ -75,15 +75,15 @@ class Login extends React.Component {
         <h2>Log In</h2>
         <form className="login-form" onSubmit={this.handleSubmit} autoComplete="on">
           <div className="field-segment">
-            <TextField className={this.state.data.email===''?' empty':''} name="email" type="text" placeHolder="E-mail" onChange={this.handleChange} autoComplete="on" />
-            <Label className="error-label" htmlFor="" value={this.state.data.email===''?'E-mail cannot be Empty!':''} />
+            <TextField className={this.state.data.email === '' ? ' empty' : ''} name="email" type="text" placeHolder="E-mail" onChange={this.handleChange} autoComplete="on" />
+            <Label className="error-label" htmlFor="" value={this.state.data.email === '' ? 'E-mail cannot be Empty!' : ''} />
           </div>
           <div className="field-segment">
-            <TextField className={this.state.data.password===''?' empty':''} name="password" type="password" placeHolder="Password" onChange={this.handleChange} autoComplete="off" />
-            <Label className="error-label" htmlFor="" value={this.state.data.password===''?'Password cannot be Empty!':''} />
+            <TextField className={this.state.data.password === '' ? ' empty' : ''} name="password" type="password" placeHolder="Password" onChange={this.handleChange} autoComplete="off" />
+            <Label className="error-label" htmlFor="" value={this.state.data.password === '' ? 'Password cannot be Empty!' : ''} />
           </div>
-          <Button className={this.state.isWaitingServer?' busy':''} type="submit" value={this.state.isWaitingServer?'Logging In...':'Log In'} isDisabled={this.state.isWaitingServer?true:false}/> 
-          
+          <Button className={this.state.isWaitingServer ? ' busy' : ''} type="submit" value={this.state.isWaitingServer ? 'Logging In...' : 'Log In'} isDisabled={this.state.isWaitingServer ? true : false} />
+
         </form>
         <p>
           Don't have an account? Sign Up <Link to="/signup">here.</Link>
