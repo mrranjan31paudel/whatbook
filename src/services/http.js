@@ -47,7 +47,7 @@ function getRequestHeader() {
     authorization: accessToken
   };
 }
-
+//Interceptors
 axios.interceptors.response.use(
   response => {
     console.log('in interceptor response');
