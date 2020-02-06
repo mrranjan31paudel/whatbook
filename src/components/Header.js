@@ -1,26 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {http} from './../configs/lib.imports';
+
+import tokenService from './../services/token';
+import { userLogoutRequest } from './../services/user';
 
 import './../styles/common/Header.css';
 
 class Header extends React.Component {
   logOutFunction = () => {
-    http.post('/logout', {
-        refreshToken: localStorage.getItem('myRefreshToken')
+    userLogoutRequest('/logout', {
+      refreshToken: tokenService.getRefreshToken()
     })
-    .then(response => {
-      console.log('logout response: ', response);
-    })
-    .catch(err => {
-      console.log('logout err: ', err);
-    });
-    localStorage.removeItem('myAccessToken');
-    localStorage.removeItem('myRefreshToken');
+      .then(() => {
+        tokenService.removeTokens();
+        this.props.history.push('/');
+      })
+      .catch(err => {
+        console.log('logout err: ', err);
+      });
+
   }
 
   render() {
-    if(this.props.isInsideUser){
+    if (this.props.isInsideUser) {
       return (
         <header className="header-seg">
           <nav>
@@ -34,7 +36,7 @@ class Header extends React.Component {
         </header>
       );
     }
-    else{
+    else {
       return (
         <header className="header-seg">
           <div className="not-in-user"></div>

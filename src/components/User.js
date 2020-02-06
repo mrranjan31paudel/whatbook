@@ -1,9 +1,11 @@
 import React, { Fragment } from 'react';
-import { http } from './../configs/lib.imports';
-// const TOKEN = localStorage.getItem('myAccessToken');
+
+import { userHomeRequest } from './../services/user';
+import tokenService from './../services/token';
 import Userstorycontainer from './sub-components/Userstorycontainer';
 import Activefriend from './sub-components/Activefriend';
 import Header from './Header';
+
 import './../styles/user/user.wrapper.css';
 import './../styles/user/profile.info.wrapper.css';
 import './../styles/user/news.feed.wrapper.css';
@@ -23,12 +25,7 @@ class User extends React.Component {
   }
 
   componentDidMount() {
-    const ACC_TOKEN = localStorage.getItem('myAccessToken');
-    http.get('/user', {
-      headers: {
-        authorization: ACC_TOKEN
-      }
-    })
+    userHomeRequest('/user')
       .then(response => {
         this.setState({
           userData: {
@@ -39,41 +36,15 @@ class User extends React.Component {
         });
       })
       .catch((err) => {
-        console.log(err);
-        if (err.response.status === 403) {
-          const REF_TOKEN = localStorage.getItem('myRefreshToken');
-          http.post('/tokenrenew', {
-            accessToken: ACC_TOKEN,
-            refreshToken: REF_TOKEN
-          })
-            .then(response => {
-              localStorage.setItem('myAccessToken', response.data.accessToken);
-              localStorage.setItem('myRefreshToken', response.data.refreshToken);
-              http.get('/user', {
-                headers: {
-                  authorization: localStorage.getItem('myAccessToken')
-                }
-              })
-                .then(response => {
-                  this.setState({
-                    userData: {
-                      name: response.data.name,
-                      dob: response.data.dob,
-                      email: response.data.email
-                    }
-                  });
-                })
-                .catch(err => {
-                  console.log('error fdf: ', err);
-                })
-            })
-            .catch(err => {
-              localStorage.removeItem('myAccessToken');
-              localStorage.removeItem('myRefreshToken');
-              this.props.history.push('/');
-            });
+        if (err.response && err.response.status === 401) {
+          tokenService.removeTokens();
+          return this.props.history.push('/');
         }
       });
+  }
+
+  handlepost = () => {
+
   }
 
   render() {
@@ -90,7 +61,7 @@ class User extends React.Component {
           <div className="news-feed-container">
             <div className="post-field-wrapper">
               <textarea rows="4" cols="50" name="post-field" placeholder="What are you thinking today?" ></textarea>
-              <button>Post</button>
+              <button onClick={this.handlepost}>Post</button>
             </div>
             <div className="news-feed-wrapper">
               <h3>Feed</h3>
