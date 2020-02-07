@@ -65,7 +65,9 @@ class User extends React.Component {
             </div>
             <div className="news-feed-wrapper">
               <h3>Feed</h3>
-              <Userstorycontainer />
+              {/* place a list of user story container here */}
+              {/* <Userstorycontainer userName={} dateTime={} userStory={} /> */}
+
               <Userstorycontainer />
               <Userstorycontainer />
               <Userstorycontainer />
@@ -74,6 +76,7 @@ class User extends React.Component {
           </div>
           <div className="active-friendlist-container">
             <h4>Active Friends</h4>
+            {/* place a list of friends here */}
             <Activefriend />
             <Activefriend />
             <Activefriend />

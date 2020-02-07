@@ -7,10 +7,10 @@ class Userstorycontainer extends React.Component {
       <div className="user-story-container">
         <div className="poster-title">
           <img src="userpic.png" alt="userpic"></img>
-          <span className="poster-name">Poster's name</span>
+          <span className="poster-name">{this.props.userName}</span>
         </div>
-        <span className="post-date-time">Date time here.</span>
-        <div className="user-story">Poster's story</div>
+        <span className="post-date-time">{this.props.dateTime}</span>
+        <div className="user-story">{this.props.userStory}</div>
       </div>
     )
   }
