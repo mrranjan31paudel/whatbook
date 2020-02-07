@@ -137,24 +137,6 @@ class Register extends React.Component {
         <Fragment>
           <Header isInsideUser={false} />
           <div className="form-wrapper">
-            <h2>Log In</h2>
-            <form className="login-form" onSubmit={this.handleSubmit} autoComplete="on">
-              <div className="field-segment">
-                <TextField className={this.state.data.email === '' ? ' empty' : ''} name="email" type="text" placeHolder="E-mail" onChange={this.handleChange} autoComplete="on" />
-                <Label className="error-label" htmlFor="" value={this.state.data.email === '' ? 'E-mail cannot be Empty!' : ''} />
-              </div>
-              <div className="field-segment">
-                <TextField className={this.state.data.password === '' ? ' empty' : ''} name="password" type="password" placeHolder="Password" onChange={this.handleChange} autoComplete="off" />
-                <Label className="error-label" htmlFor="" value={this.state.data.password === '' ? 'Password cannot be Empty!' : ''} />
-              </div>
-              <Button className={this.state.isWaitingServer ? ' busy' : ''} type="submit" value={this.state.isWaitingServer ? 'Logging In...' : 'Log In'} isDisabled={this.state.isWaitingServer ? true : false} />
-
-            </form>
-            <p>
-              Don't have an account? Sign Up <Link to="/signup">here.</Link>
-            </p>
-          </div>
-          <div className="form-wrapper">
             <h2>Sign Up</h2>
             <form className="signup-form" onSubmit={this.handleSubmit} autoComplete="off">
               <div className="field-segment">

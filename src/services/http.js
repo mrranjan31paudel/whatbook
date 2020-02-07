@@ -3,7 +3,7 @@ import token from './token';
 
 const baseUrl = 'http://localhost:9090/api';
 
-function getRequest(url, params = {}) {
+function get(url, params = {}) {
   return axios({
     method: 'GET',
     url: baseUrl + url,
@@ -12,7 +12,7 @@ function getRequest(url, params = {}) {
   });
 }
 
-function postRequest(url, data) {
+function post(url, data) {
   return axios({
     method: 'POST',
     url: baseUrl + url,
@@ -21,7 +21,7 @@ function postRequest(url, data) {
   });
 }
 
-function putRequest(url, data) {
+function put(url, data) {
   return axios({
     method: 'PUT',
     url: baseUrl + url,
@@ -30,7 +30,7 @@ function putRequest(url, data) {
   });
 }
 
-function deleteRequest(url) {
+function remove(url) {
   return axios({
     method: 'DELETE',
     url: baseUrl + url,
@@ -88,4 +88,4 @@ axios.interceptors.response.use(
   }
 );
 
-export { getRequest, postRequest, putRequest, deleteRequest };
+export { get, post, put, remove };

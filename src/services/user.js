@@ -1,15 +1,19 @@
-import { getRequest, postRequest } from './http';
+import { get, post } from './http';
 
-function userHomeRequest(url, params = {}) {
-  return getRequest(url, params);
+function getUserDetails(url, params = {}) {
+  return get(url, params);
 }
 
-function userPostRequest(url, requestBody) {
-  return postRequest(url, requestBody);
+function createNewPost(url, requestBody) {
+  return post(url, requestBody);
 }
 
-function userLogoutRequest(url, requestBody) {
-  return postRequest(url, requestBody);
+function logoutUser(url, requestBody) {
+  return post(url, requestBody);
 }
 
-export { userHomeRequest, userPostRequest, userLogoutRequest };
+function getUserStories(url, params = {}) {
+  return get(url, params);
+}
+
+export { getUserDetails, getUserStories, createNewPost, logoutUser };

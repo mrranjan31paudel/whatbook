@@ -18,14 +18,16 @@
     margin: 5px;
     font-size: calc(8px + 1vmin);
     font-weight: 500;
+    color: rgb(7, 88, 2);
 }
 
 .user-story-container .post-date-time {
     font-size: calc(5px + 1vmin);
-    color: grey;
+    color: rgb(168, 168, 168);
 }
 
 .user-story-container .user-story {
     width: calc(100% - 10px);
     margin: 5px;
+    font-size: calc(7px + 1vmin);
 }
