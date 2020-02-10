@@ -1,9 +1,10 @@
 import React, { Fragment } from 'react';
 
-import { getUserDetails, getUserStories, createNewPost } from './../services/user';
+import { getUserDetails, getUserStories, createNewPost, postComment, getComments } from './../services/user';
 import tokenService from './../services/token';
-import Userstorycontainer from './sub-components/Userstorycontainer';
-import Activefriend from './sub-components/Activefriend';
+import parseDateTime from './../utils/dateParser';
+import UserStoryContainer from './sub-components/UserStoryContainer';
+import ActiveFriend from './sub-components/ActiveFriend';
 import Header from './Header';
 
 import './../styles/user/user.wrapper.css';
@@ -61,6 +62,20 @@ class User extends React.Component {
       });
   }
 
+  getCommentList = (postId) => {
+    return new Promise((resolve, reject) => {
+      getComments('/user/comment', {
+        postId: postId
+      })
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(err => {
+          console.log('comments get error: ', err);
+        });
+    });
+  }
+
   handlePostFieldChange = (e) => {
     this.setState({
       postFieldData: e.target.value
@@ -76,15 +91,28 @@ class User extends React.Component {
         this.setState({
           postFieldData: ''
         });
+        this.getNewsFeed();
       })
       .catch(err => {
         console.log('not posted: ', err);
       });
   }
 
-  parseDateTime = (dateTime) => {
-    let parsedValue = dateTime.replace('T', ' at ').replace(':00.000Z', '');
-    return parsedValue;
+  handleCommentSubmit = (e, commentText, postId) => {
+    e.preventDefault();
+
+    return new Promise((resolve, reject) => {
+      postComment('/user/comment', {
+        postId: postId,
+        commentText: commentText
+      })
+        .then(response => {
+          resolve(this.getCommentList(postId));
+        })
+        .catch(err => {
+          console.log('error comment post: ', err);
+        });
+    })
   }
 
   render() {
@@ -108,8 +136,8 @@ class User extends React.Component {
             <div className="news-feed-wrapper">
               <h3>Feed</h3>
               <ul className="user-stroy-list">
-                {this.state.userStories.map((data, index) => <li key={index}>
-                  <Userstorycontainer userName={data.name} dateTime={this.parseDateTime(data.date_time)} userStory={data.content} />
+                {this.state.userStories.map((data, index) => <li key={data.id}>
+                  <UserStoryContainer postId={data.id} userName={data.name} dateTime={parseDateTime(data.date_time)} userStory={data.content} onSubmit={this.handleCommentSubmit} getCommentList={this.getCommentList} />
                 </li>)}
               </ul>
             </div>
@@ -117,13 +145,13 @@ class User extends React.Component {
           <div className="active-friendlist-container">
             <h4>Active Friends</h4>
             {/* place a list of friends here */}
-            <Activefriend />
-            <Activefriend />
-            <Activefriend />
-            <Activefriend />
-            <Activefriend />
-            <Activefriend />
-            <Activefriend />
+            <ActiveFriend />
+            <ActiveFriend />
+            <ActiveFriend />
+            <ActiveFriend />
+            <ActiveFriend />
+            <ActiveFriend />
+            <ActiveFriend />
           </div>
         </div>
       </Fragment>

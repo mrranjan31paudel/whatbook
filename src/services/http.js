@@ -1,21 +1,23 @@
 import axios from 'axios';
 import token from './token';
-
-const baseUrl = 'http://localhost:9090/api';
+// import { BASE_URL } from '../constants/config';
+import { BASE_URL } from './../constants/config';
+// const BASE_URL = 'http://localhost:9090/api';
 
 function get(url, params = {}) {
   return axios({
     method: 'GET',
-    url: baseUrl + url,
+    url: BASE_URL + url,
     params: params,
     headers: getRequestHeader()
   });
 }
 
 function post(url, data) {
+  console.log('base:url:', BASE_URL);
   return axios({
     method: 'POST',
-    url: baseUrl + url,
+    url: BASE_URL + url,
     data: data,
     headers: getRequestHeader()
   });
@@ -24,7 +26,7 @@ function post(url, data) {
 function put(url, data) {
   return axios({
     method: 'PUT',
-    url: baseUrl + url,
+    url: BASE_URL + url,
     data: data,
     headers: getRequestHeader()
   });
@@ -33,7 +35,7 @@ function put(url, data) {
 function remove(url) {
   return axios({
     method: 'DELETE',
-    url: baseUrl + url,
+    url: BASE_URL + url,
     headers: getRequestHeader()
   });
 }
@@ -64,7 +66,7 @@ axios.interceptors.response.use(
 
       return axios({
         method: 'POST',
-        url: baseUrl + '/tokenrenew',
+        url: BASE_URL + '/tokenrenew',
         data: {
           accessToken: token.getAccessToken(),
           refreshToken: token.getRefreshToken()

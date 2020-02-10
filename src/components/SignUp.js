@@ -76,15 +76,15 @@ class Register extends React.Component {
       this.setState({
         data: {
           ...this.state.data,
-          name: !this.state.data.name ? '' : this.state.data.name,
+          name: this.state.data.name ? this.state.data.name : '',
           dob: {
-            year: !this.state.data.dob.year ? '0' : this.state.data.dob.year,
-            month: !this.state.data.dob.month ? '0' : this.state.data.dob.month,
-            day: !this.state.data.dob.day ? '0' : this.state.data.dob.day
+            year: this.state.data.dob.year ? this.state.data.dob.year : '0',
+            month: this.state.data.dob.month ? this.state.data.dob.month : '0',
+            day: this.state.data.dob.day ? this.state.data.dob.day : '0'
           },
-          email: !this.state.data.email ? '' : this.state.data.email,
-          password: !this.state.data.password ? '' : this.state.data.password,
-          confPassword: !this.state.data.confPassword ? '' : this.state.data.confPassword
+          email: this.state.data.email ? this.state.data.email : '',
+          password: this.state.data.password ? this.state.data.password : '',
+          confPassword: this.state.data.confPassword ? this.state.data.confPassword : ''
         }
       });
     }

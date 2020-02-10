@@ -16,4 +16,12 @@ function getUserStories(url, params = {}) {
   return get(url, params);
 }
 
-export { getUserDetails, getUserStories, createNewPost, logoutUser };
+function postComment(url, requestBody) {
+  return post(url, requestBody);
+}
+
+function getComments(url, params = {}) {
+  return get(url, params);
+}
+
+export { getUserDetails, getUserStories, createNewPost, logoutUser, postComment, getComments };
