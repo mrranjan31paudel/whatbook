@@ -1,7 +1,7 @@
-import { postRequest } from './http';
+import { post } from './http';
 
 function loginRequest(requestBody) {
-  return postRequest('/login', requestBody);
+  return post('/login', requestBody);
 }
 
 export default loginRequest;

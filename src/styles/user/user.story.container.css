@@ -18,14 +18,38 @@
     margin: 5px;
     font-size: calc(8px + 1vmin);
     font-weight: 500;
+    color: rgb(7, 88, 2);
 }
 
 .user-story-container .post-date-time {
     font-size: calc(5px + 1vmin);
-    color: grey;
+    color: rgb(168, 168, 168);
 }
 
 .user-story-container .user-story {
     width: calc(100% - 10px);
     margin: 5px;
+    font-size: calc(7px + 1vmin);
+}
+
+.user-story-container .comment-form {
+    display: flex;
+    flex-direction: row;
+}
+
+.user-story-container .comment-field{
+    width: calc(100% - 20px);
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid rgb(168, 168, 168);
+    border-radius: 2px;
+    background: rgb(236, 236, 236);
+}
+
+.user-story-container .comment-list{
+    width: calc(100% - 10px);
+    max-height: 400px;
+    list-style-type: none;
+    padding-left: 10px;
+    overflow-y: scroll;
 }

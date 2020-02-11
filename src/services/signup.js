@@ -1,7 +1,7 @@
-import { postRequest } from './http';
+import { post } from './http';
 
 function signupRequest(requestBody) {
-  return postRequest('/signup', requestBody);
+  return post('/signup', requestBody);
 }
 
 

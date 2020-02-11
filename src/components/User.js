@@ -1,9 +1,10 @@
 import React, { Fragment } from 'react';
 
-import { userHomeRequest } from './../services/user';
+import { getUserDetails, getUserStories, createNewPost, postComment, getComments } from './../services/user';
 import tokenService from './../services/token';
-import Userstorycontainer from './sub-components/Userstorycontainer';
-import Activefriend from './sub-components/Activefriend';
+import parseDateTime from './../utils/dateParser';
+import UserStoryContainer from './sub-components/UserStoryContainer';
+import ActiveFriend from './sub-components/ActiveFriend';
 import Header from './Header';
 
 import './../styles/user/user.wrapper.css';
@@ -20,12 +21,14 @@ class User extends React.Component {
         name: '',
         dob: '',
         email: ''
-      }
+      },
+      postFieldData: '',
+      userStories: []
     }
   }
 
   componentDidMount() {
-    userHomeRequest('/user')
+    getUserDetails('/user')
       .then(response => {
         this.setState({
           userData: {
@@ -34,6 +37,7 @@ class User extends React.Component {
             email: response.data.email
           }
         });
+        this.getNewsFeed();
       })
       .catch((err) => {
         if (err.response && err.response.status === 401) {
@@ -43,8 +47,72 @@ class User extends React.Component {
       });
   }
 
-  handlepost = () => {
+  getNewsFeed = () => {
+    getUserStories('/user/feeds')
+      .then(response => {
 
+        this.setState({
+          ...this.state,
+          userStories: response.data
+        });
+        console.log('user stories: ', this.state.userStories);
+      })
+      .catch(err => {
+        console.log('Unable to load feeds: ', err);
+      });
+  }
+
+  getCommentList = (postId) => {
+    return new Promise((resolve, reject) => {
+      getComments('/user/comment', {
+        postId: postId
+      })
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(err => {
+          console.log('comments get error: ', err);
+        });
+    });
+  }
+
+  handlePostFieldChange = (e) => {
+    this.setState({
+      postFieldData: e.target.value
+    });
+  }
+
+  handlepost = () => {
+    createNewPost('/user', {
+      postData: this.state.postFieldData
+    })
+      .then(response => {
+        console.log('posted: ', response);
+        this.setState({
+          postFieldData: ''
+        });
+        this.getNewsFeed();
+      })
+      .catch(err => {
+        console.log('not posted: ', err);
+      });
+  }
+
+  handleCommentSubmit = (e, commentText, postId) => {
+    e.preventDefault();
+
+    return new Promise((resolve, reject) => {
+      postComment('/user/comment', {
+        postId: postId,
+        commentText: commentText
+      })
+        .then(response => {
+          resolve(this.getCommentList(postId));
+        })
+        .catch(err => {
+          console.log('error comment post: ', err);
+        });
+    })
   }
 
   render() {
@@ -60,27 +128,30 @@ class User extends React.Component {
           </div>
           <div className="news-feed-container">
             <div className="post-field-wrapper">
-              <textarea rows="4" cols="50" name="post-field" placeholder="What are you thinking today?" ></textarea>
+              <textarea rows="4" cols="50" name="post-field" placeholder="What are you thinking today?" onChange={this.handlePostFieldChange} value={this.state.postFieldData} ></textarea>
               <button onClick={this.handlepost}>Post</button>
             </div>
+            <hr />
+
             <div className="news-feed-wrapper">
               <h3>Feed</h3>
-              <Userstorycontainer />
-              <Userstorycontainer />
-              <Userstorycontainer />
-              <Userstorycontainer />
-              <Userstorycontainer />
+              <ul className="user-stroy-list">
+                {this.state.userStories.map((data, index) => <li key={data.id}>
+                  <UserStoryContainer postId={data.id} userName={data.name} dateTime={parseDateTime(data.date_time)} userStory={data.content} onSubmit={this.handleCommentSubmit} getCommentList={this.getCommentList} />
+                </li>)}
+              </ul>
             </div>
           </div>
           <div className="active-friendlist-container">
             <h4>Active Friends</h4>
-            <Activefriend />
-            <Activefriend />
-            <Activefriend />
-            <Activefriend />
-            <Activefriend />
-            <Activefriend />
-            <Activefriend />
+            {/* place a list of friends here */}
+            <ActiveFriend />
+            <ActiveFriend />
+            <ActiveFriend />
+            <ActiveFriend />
+            <ActiveFriend />
+            <ActiveFriend />
+            <ActiveFriend />
           </div>
         </div>
       </Fragment>

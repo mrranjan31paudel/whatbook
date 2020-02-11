@@ -1,0 +1,25 @@
+.comment-container {
+  width: calc(100% - 20px);
+  margin: 5px;
+  padding: 5px;
+  background: rgb(236, 236, 236);
+}
+
+.comment-container .commenter-name{
+  margin: 5px;
+  font-size: calc(6px + 1vmin);
+  font-weight: 500;
+  color: rgb(7, 88, 2);
+}
+
+.comment-container .comment-time {
+  margin: 5px;
+  font-size: calc(4px + 1vmin);
+  color: rgb(168, 168, 168);
+}
+
+.comment-container .comment-content {
+  width: calc(100% - 10px);
+  margin: 5px;
+  font-size: calc(5px + 1vmin);
+}

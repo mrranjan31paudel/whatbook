@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
+import { EMAIL_REGEXP } from './../constants/config';
 import signupRequest from '../services/signup';
 import Header from './Header';
 import Label from './sub-components/Label';
@@ -46,7 +47,7 @@ class Register extends React.Component {
     e.preventDefault();
     const toSendData = {
       name: this.state.data.name,
-      dob: this.state.data.dob.year + '-' + this.state.data.dob.month + '-' + this.state.data.dob.day,
+      dob: `${this.state.data.dob.year}-${this.state.data.dob.month}-${this.state.data.dob.day}`,
       email: this.state.data.email,
       password: this.state.data.password
     }
@@ -75,15 +76,15 @@ class Register extends React.Component {
       this.setState({
         data: {
           ...this.state.data,
-          name: this.state.data.name === null ? '' : this.state.data.name,
+          name: this.state.data.name ? this.state.data.name : '',
           dob: {
-            year: this.state.data.dob.year === null ? '0' : this.state.data.dob.year,
-            month: this.state.data.dob.month === null ? '0' : this.state.data.dob.month,
-            day: this.state.data.dob.day === null ? '0' : this.state.data.dob.day
+            year: this.state.data.dob.year ? this.state.data.dob.year : '0',
+            month: this.state.data.dob.month ? this.state.data.dob.month : '0',
+            day: this.state.data.dob.day ? this.state.data.dob.day : '0'
           },
-          email: this.state.data.email === null ? '' : this.state.data.email,
-          password: this.state.data.password === null ? '' : this.state.data.password,
-          confPassword: this.state.data.confPassword === null ? '' : this.state.data.confPassword
+          email: this.state.data.email ? this.state.data.email : '',
+          password: this.state.data.password ? this.state.data.password : '',
+          confPassword: this.state.data.confPassword ? this.state.data.confPassword : ''
         }
       });
     }
@@ -109,19 +110,14 @@ class Register extends React.Component {
   }
 
   isMailInvalid = () => {
-    const emailLength = this.state.data.email === null ? 0 : this.state.data.email.length;
-    const regex = /(^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z]+[a-zA-Z0-9]+@[a-zA-Z]+\.com$)/i;
-
-    if (emailLength > 0 && !regex.test(this.state.data.email)) {
+    if (this.state.data.email && this.state.data.email.length > 0 && !EMAIL_REGEXP.test(this.state.data.email)) {
       return true;
     }
     return false;
   }
 
   isPasswordInvalid = () => {
-
-    const passwordLength = this.state.data.password === null ? 0 : this.state.data.password.length;
-    if (passwordLength > 0 && passwordLength < 6) {
+    if (this.state.data.password && this.state.data.password.length > 0 && this.state.data.password.length < 6) {
       return true;
     }
     return false;
@@ -140,24 +136,6 @@ class Register extends React.Component {
       return (
         <Fragment>
           <Header isInsideUser={false} />
-          <div className="form-wrapper">
-            <h2>Log In</h2>
-            <form className="login-form" onSubmit={this.handleSubmit} autoComplete="on">
-              <div className="field-segment">
-                <TextField className={this.state.data.email === '' ? ' empty' : ''} name="email" type="text" placeHolder="E-mail" onChange={this.handleChange} autoComplete="on" />
-                <Label className="error-label" htmlFor="" value={this.state.data.email === '' ? 'E-mail cannot be Empty!' : ''} />
-              </div>
-              <div className="field-segment">
-                <TextField className={this.state.data.password === '' ? ' empty' : ''} name="password" type="password" placeHolder="Password" onChange={this.handleChange} autoComplete="off" />
-                <Label className="error-label" htmlFor="" value={this.state.data.password === '' ? 'Password cannot be Empty!' : ''} />
-              </div>
-              <Button className={this.state.isWaitingServer ? ' busy' : ''} type="submit" value={this.state.isWaitingServer ? 'Logging In...' : 'Log In'} isDisabled={this.state.isWaitingServer ? true : false} />
-
-            </form>
-            <p>
-              Don't have an account? Sign Up <Link to="/signup">here.</Link>
-            </p>
-          </div>
           <div className="form-wrapper">
             <h2>Sign Up</h2>
             <form className="signup-form" onSubmit={this.handleSubmit} autoComplete="off">

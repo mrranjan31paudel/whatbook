@@ -1,12 +1,9 @@
-function validateLogin(state){
-    const email = state.data.email===null?'':state.data.email;
-    const password = state.data.password===null?'':state.data.password;
+function validateLogin(state) {
+  if (state.data.email && state.data.password && state.data.email.length > 0 && state.data.password.length > 0) {
+    return true;
+  }
 
-    if(email.length>0 && password.length>0){
-        return true;
-    }
-
-    return false;
+  return false;
 }
 
 export default validateLogin;

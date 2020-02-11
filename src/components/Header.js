@@ -2,13 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import tokenService from './../services/token';
-import { userLogoutRequest } from './../services/user';
+import { logoutUser } from './../services/user';
 
 import './../styles/common/Header.css';
 
 class Header extends React.Component {
   logOutFunction = () => {
-    userLogoutRequest('/logout', {
+    logoutUser('/logout', {
       refreshToken: tokenService.getRefreshToken()
     })
       .then(() => {

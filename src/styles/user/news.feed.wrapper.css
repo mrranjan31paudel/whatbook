@@ -37,3 +37,8 @@
 .news-feed-container .news-feed-wrapper h3 {
     margin: 5px;
 }
+
+.news-feed-container .user-stroy-list{
+    list-style-type: none;
+    padding: 0px;
+}
