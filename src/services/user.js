@@ -1,4 +1,4 @@
-import { get, post } from './http';
+import { get, post, put, remove } from './http';
 
 function getUserDetails(url, params = {}) {
   return get(url, params);
@@ -24,4 +24,12 @@ function getComments(url, params = {}) {
   return get(url, params);
 }
 
-export { getUserDetails, getUserStories, createNewPost, logoutUser, postComment, getComments };
+function updateContent(url, requestBody) {
+  return put(url, requestBody)
+}
+
+function deleteContent(url, params = {}) {
+  return remove(url, params);
+}
+
+export { getUserDetails, getUserStories, createNewPost, logoutUser, postComment, getComments, updateContent, deleteContent };

@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 
-import { getUserDetails, getUserStories, createNewPost, postComment, getComments } from './../services/user';
+import { getUserDetails, getUserStories, createNewPost, postComment, getComments, updateContent, deleteContent } from './../services/user';
 import tokenService from './../services/token';
-import parseDateTime from './../utils/dateParser';
 import UserStoryContainer from './sub-components/UserStoryContainer';
 import ActiveFriend from './sub-components/ActiveFriend';
 import Header from './Header';
+import PopUpMenu from './PopUpMenu';
 
 import './../styles/user/user.wrapper.css';
 import './../styles/user/profile.info.wrapper.css';
@@ -23,7 +23,15 @@ class User extends React.Component {
         email: ''
       },
       postFieldData: '',
-      userStories: []
+      userStories: [],
+      isOptionSelected: false,
+      selectedOptionConfig: {},
+      selectionId: {
+        type: '',
+        postId: '',
+        commentId: ''
+      },
+      toUpdatePostId: {}
     }
   }
 
@@ -32,6 +40,7 @@ class User extends React.Component {
       .then(response => {
         this.setState({
           userData: {
+            id: response.data.id,
             name: response.data.name,
             dob: response.data.dob,
             email: response.data.email
@@ -53,7 +62,8 @@ class User extends React.Component {
 
         this.setState({
           ...this.state,
-          userStories: response.data
+          userStories: response.data,
+          selectionId: {}
         });
         console.log('user stories: ', this.state.userStories);
       })
@@ -63,11 +73,15 @@ class User extends React.Component {
   }
 
   getCommentList = (postId) => {
+    console.log('get comment list called');
     return new Promise((resolve, reject) => {
       getComments('/user/comment', {
         postId: postId
       })
         .then(response => {
+          this.setState({
+            toUpdatePostId: ''
+          });
           resolve(response.data);
         })
         .catch(err => {
@@ -83,19 +97,21 @@ class User extends React.Component {
   }
 
   handlepost = () => {
-    createNewPost('/user', {
-      postData: this.state.postFieldData
-    })
-      .then(response => {
-        console.log('posted: ', response);
-        this.setState({
-          postFieldData: ''
-        });
-        this.getNewsFeed();
+    if (this.state.postFieldData) {
+      createNewPost('/user', {
+        postData: this.state.postFieldData
       })
-      .catch(err => {
-        console.log('not posted: ', err);
-      });
+        .then(response => {
+          console.log('posted: ', response);
+          this.setState({
+            postFieldData: ''
+          });
+          this.getNewsFeed();
+        })
+        .catch(err => {
+          console.log('not posted: ', err);
+        });
+    }
   }
 
   handleCommentSubmit = (e, commentText, postId) => {
@@ -113,6 +129,98 @@ class User extends React.Component {
           console.log('error comment post: ', err);
         });
     })
+  }
+
+  handleOptionClick = (data) => {
+    this.setState({
+      isOptionSelected: !this.state.isOptionSelected,
+      selectedOptionConfig: data
+    });
+  }
+
+  handleOptionItemClick = (value) => {
+    if (value === "Delete") {
+      if (this.state.selectedOptionConfig.type === 'post') {
+        const postData = {
+          postId: this.state.selectedOptionConfig.postId,
+          userId: this.state.selectedOptionConfig.posterId
+        }
+        deleteContent('/user', postData)
+          .then(response => {
+            this.getNewsFeed();
+          })
+          .catch(err => {
+            console.log('delete error: ', err);
+          });
+      }
+      else if (this.state.selectedOptionConfig.type === 'comment') {
+        const commentData = {
+          commentId: this.state.selectedOptionConfig.commentId,
+          userId: this.state.selectedOptionConfig.commenterId,
+          postId: this.state.selectedOptionConfig.postId,
+          postOwnerId: this.state.selectedOptionConfig.posterId
+        }
+        deleteContent('/user/comment', commentData)
+          .then(response => {
+            this.setState({
+              toUpdatePostId: {
+                postId: this.state.selectedOptionConfig.postId,
+                commentId: this.state.selectedOptionConfig.commentId
+              }
+            });
+          })
+          .catch(err => {
+            console.log('delete error: ', err);
+          });
+      }
+      this.setState({
+        isOptionSelected: !this.state.isOptionSelected,
+        selectedOptionConfig: {}
+      });
+    }
+    else if (value === "Edit") {
+      this.setState({
+        isOptionSelected: !this.state.isOptionSelected,
+        selectedOptionConfig: {},
+        selectionId: {
+          type: this.state.selectedOptionConfig.type,
+          postId: this.state.selectedOptionConfig.postId,
+          commentId: this.state.selectedOptionConfig.commentId ? this.state.selectedOptionConfig.commentId : ''
+        }
+      });
+    }
+  }
+
+  handleCancelEdit = () => {
+    this.setState({
+      selectionId: {}
+    })
+  }
+
+  handleEditSubmit = (submitInfo) => {
+    if (submitInfo.type === 'post') {
+      updateContent('/user', submitInfo.data)
+        .then(response => {
+          this.getNewsFeed();
+        })
+        .catch(err => {
+          console.log('err', err);
+        });
+    }
+    else if (submitInfo.type === 'comment') {
+      return new Promise((resolve, reject) => {
+        updateContent('/user/comment', submitInfo.data)
+          .then(response => {
+            this.setState({
+              selectionId: {}
+            });
+            resolve(this.getCommentList(submitInfo.data.postId));
+          })
+          .catch(err => {
+            console.log('err', err);
+          });
+      })
+    }
   }
 
   render() {
@@ -137,7 +245,7 @@ class User extends React.Component {
               <h3>Feed</h3>
               <ul className="user-stroy-list">
                 {this.state.userStories.map((data, index) => <li key={data.id}>
-                  <UserStoryContainer postId={data.id} userName={data.name} dateTime={parseDateTime(data.date_time)} userStory={data.content} onSubmit={this.handleCommentSubmit} getCommentList={this.getCommentList} />
+                  <UserStoryContainer userId={this.state.userData.id} postData={data} onSubmit={this.handleCommentSubmit} getCommentList={this.getCommentList} postOnSelection={data.id === this.state.selectionId.postId ? this.state.selectionId : ''} onOptionClick={this.handleOptionClick} onCommentOptionClick={this.handleOptionClick} onCancelEditClick={this.handleCancelEdit} onEditSubmit={this.handleEditSubmit} deletedContent={this.state.selectedOptionConfig ? this.state.selectedOptionConfig.type : ''} toUpdatePostId={this.state.toUpdatePostId && this.state.toUpdatePostId.postId === data.id ? this.state.toUpdatePostId : ''} />
                 </li>)}
               </ul>
             </div>
@@ -146,13 +254,8 @@ class User extends React.Component {
             <h4>Active Friends</h4>
             {/* place a list of friends here */}
             <ActiveFriend />
-            <ActiveFriend />
-            <ActiveFriend />
-            <ActiveFriend />
-            <ActiveFriend />
-            <ActiveFriend />
-            <ActiveFriend />
           </div>
+          {this.state.isOptionSelected ? <PopUpMenu config={this.state.selectedOptionConfig} onItemClick={this.handleOptionItemClick} /> : ''}
         </div>
       </Fragment>
     );

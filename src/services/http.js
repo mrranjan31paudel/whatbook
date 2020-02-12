@@ -32,10 +32,11 @@ function put(url, data) {
   });
 }
 
-function remove(url) {
+function remove(url, params = {}) {
   return axios({
     method: 'DELETE',
     url: BASE_URL + url,
+    params: params,
     headers: getRequestHeader()
   });
 }
