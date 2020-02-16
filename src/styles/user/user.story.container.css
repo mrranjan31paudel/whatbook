@@ -1,4 +1,5 @@
 .user-story-container {
+    position: relative;
     width: calc(100% - 22px);
     margin: 5px;
     padding: 5px;
@@ -73,10 +74,26 @@
     flex-direction: column;
 }
 .post-edit-field {
+    width: 85%;
+    resize: none;
     padding: 5px;
     border: 1px solid rgb(211, 211, 211);
     border-radius: 2px;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: calc(7px + 1vmin);
+}
+.post-edit-submit-button {
+    border: none;
+    border-radius: 4px;
+    color: white;
+    background: rgb(0, 158, 0);
+    margin: 2px;
+    padding: 8px;
+}
+.post-edit-submit-button:hover {
+    cursor: pointer;
+    font-weight: 500;
+    background: rgb(0, 180, 0);
 }
 .post-edit-cancel {
     width: 30%;
@@ -91,13 +108,45 @@
     font-weight: 500;
 }
 
+.post-delete-prompt {
+    padding: 2px;
+    font-size: calc(6px + 1vmin);
+    box-shadow: 0 0 3px red;
+    border-radius: 5px;
+  }
+
+.post-delete-prompt a {
+    text-decoration: none;
+    padding: 2px;
+    border-radius: 2px;
+    color: green;
+    font-weight: 500;
+  }
+  
+  .post-delete-prompt a:first-child:hover{
+    color: white;
+    background: red;
+  }
+  
+  .post-delete-prompt a:last-child:hover {
+    color: white;
+    background: green;
+  }
+
 .user-story-container .comment-form {
     display: flex;
     flex-direction: row;
 }
 
+.current-user-name{
+    margin: 5px;
+    padding: 5px;
+    font-size: calc(6px + 1vmin);
+    font-weight: 500;
+    color: rgb(0, 122, 0);
+  }
+
 .user-story-container .comment-field{
-    width: calc(100% - 20px);
     margin: 5px;
     padding: 5px;
     border: 1px solid rgb(168, 168, 168);
@@ -106,10 +155,10 @@
 }
 
 .user-story-container .comment-list{
-    
     width: calc(100% - 10px);
     max-height: 400px;
     list-style-type: none;
     padding-left: 10px;
+    border: 1px solid rgb(204, 204, 204);
     overflow-y: scroll;
 }

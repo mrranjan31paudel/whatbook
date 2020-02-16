@@ -17,6 +17,10 @@
   color: rgb(168, 168, 168);
 }
 
+.comment-content-wrapper {
+  width: 100%;
+}
+
 .comment-container .comment-content {
   width: calc(100% - 10px);
   margin: 5px;
@@ -31,6 +35,7 @@
   flex-direction: column;
 }
 .comment-edit-field {
+  width: calc(100% - 12px);
   padding: 5px;
   border: 1px solid rgb(211, 211, 211);
   border-radius: 2px;
@@ -69,4 +74,58 @@
   cursor: pointer;
   background: rgb(226, 226, 226);
   color: rgb(37, 37, 37);
+}
+
+.comment-delete-prompt {
+  padding: 2px;
+  font-size: calc(6px + 1vmin);
+  box-shadow: 0 0 3px red;
+  border-radius: 5px;
+}
+
+.comment-delete-prompt a {
+  text-decoration: none;
+  padding: 2px;
+  border-radius: 2px;
+  color: green;
+  font-weight: 500;
+}
+
+.comment-delete-prompt a:first-child:hover{
+  color: white;
+  background: red;
+}
+
+.comment-delete-prompt a:last-child:hover {
+  color: white;
+  background: green;
+}
+
+.comment-reply{
+  text-decoration: none;
+  font-size: calc(4px + 1vmin);
+  color: rgb(0, 190, 0);
+}
+
+.comment-reply:hover{
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.reply-form {
+  padding: 10px;
+}
+
+.reply-field {
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid rgb(168, 168, 168);
+  border-radius: 2px;
+  background: rgb(236, 236, 236);
+}
+
+.replies {
+  list-style-type: none;
+  margin-left: 10px;
+  padding: 0px;
 }

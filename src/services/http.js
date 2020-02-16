@@ -1,8 +1,6 @@
 import axios from 'axios';
 import token from './token';
-// import { BASE_URL } from '../constants/config';
 import { BASE_URL } from './../constants/config';
-// const BASE_URL = 'http://localhost:9090/api';
 
 function get(url, params = {}) {
   return axios({
@@ -14,7 +12,6 @@ function get(url, params = {}) {
 }
 
 function post(url, data) {
-  console.log('base:url:', BASE_URL);
   return axios({
     method: 'POST',
     url: BASE_URL + url,
@@ -53,15 +50,12 @@ function getRequestHeader() {
 
 axios.interceptors.response.use(
   response => {
-    console.log('in interceptor response');
     return response;
   },
   error => {
-    console.log('in interceptor error: ', error.response.data.msg);
 
     if (error.response && error.response.status === 401 && error.response.data.msg === 'TokenExpiredError') {
       if (!token.getRefreshToken()) {
-        console.log('in interceptor error if ');
         return Promise.reject(error);
       }
 
@@ -75,7 +69,6 @@ axios.interceptors.response.use(
         headers: getRequestHeader()
       })
         .then(res => {
-          console.log('in interceptor error res');
           token.setTokens(res.data.accessToken, res.data.refreshToken);
 
           error.config.headers.authorization = token.getAccessToken();
@@ -83,7 +76,6 @@ axios.interceptors.response.use(
           return axios(error.config);
         })
         .catch(err => {
-          console.log('in interceptor error err');
           return Promise.reject(err);
         });
     }

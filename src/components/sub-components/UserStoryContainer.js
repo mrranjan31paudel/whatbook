@@ -2,7 +2,8 @@ import React from 'react';
 
 import Comment from './Comment';
 import parseDateTime from './../../utils/dateParser';
-import { setPostPermissions } from './../../utils/permissionDefiner'
+import PopUpMenu from './../PopUpMenu';
+import { setPostPermissions } from './../../utils/permissionDefiner';
 
 import './../../styles/user/user.story.container.css';
 
@@ -13,7 +14,14 @@ class UserStoryContainer extends React.Component {
       commentText: '',
       comments: [],
       editText: '',
-      isSubmitted: false
+      isSubmitted: false,
+      isEditClicked: false,
+      isDeleteClicked: false,
+      popUpConfig: {
+        rights: '',
+        buttonId: '',
+        postContainerId: ''
+      }
     }
   }
 
@@ -21,71 +29,70 @@ class UserStoryContainer extends React.Component {
     this.getAllComments();
   }
 
-  onCommentChange = (e) => {
+  getAllComments = () => {
+    this.props.getCommentList(this.props.postData.id)
+      .then(commentList => {
+        this.setState({
+          comments: commentList
+        })
+      })
+      .catch(err => console.log('get all comments error: ', err));
+  }
+
+  handleCommentChange = (e) => {
     this.setState({
       commentText: e.target.value
     });
   }
 
-  submitComment = (e) => {
+  handleCommentSubmit = (e) => {
+    e.preventDefault();
     if (this.state.commentText) {
-      this.props.onSubmit(e, this.state.commentText, this.props.postData.id)
+      const commentData = {
+        text: this.state.commentText,
+        parentPostId: this.props.postData.id,
+        parentCommentId: ''
+      }
+      this.props.onCommentSubmit(commentData)
         .then(commentList => {
-          console.log('comment list: ', commentList);
           this.setState({
             commentText: '',
             comments: commentList
           });
         })
         .catch(err => {
-          console.log(err);
+          console.log('comment submit error: ', err);
         });
     }
-    else {
-      e.preventDefault();
-    }
   }
 
-  getAllComments = () => {
-    this.props.getCommentList(this.props.postData.id)
-      .then(commentList => {
-        console.log('list comments: ', commentList);
-        this.setState({
-          comments: commentList
-        })
-      })
-      .catch(err => console.log(err));
-  }
-
-  handleCommentOptionClick = (data) => {
-    this.props.onCommentOptionClick(data);
+  handleOptionClick = (e) => {
+    this.props.onOptionClick(this.props.postData.id, null);
     this.setState({
-      isSubmitted: false
-    })
+      popUpConfig: {
+        rights: setPostPermissions(this.props.userId, this.props.postData.userid),
+        buttonId: `post-option-button-${this.props.postData.id}`,
+        postContainerId: `user-story-container-${this.props.postData.id}`
+      }
+    });
   }
 
-  handlePostOptionClick = (e) => {
-    let bodyRect = document.body.getBoundingClientRect();
-
-    let { x, y } = document.getElementById(e.target.id).getBoundingClientRect();
-
-    let popUpConfig = {
-      type: 'post',
-      buttonId: e.target.id,
-      posX: parseInt(x - bodyRect.x),
-      posY: parseInt(y - bodyRect.y),
-      postId: this.props.postData.id,
-      posterId: this.props.postData.userid,
-      rights: setPostPermissions(this.props.userId, this.props.postData.userid)
+  handleOptionItemClick = (clickedItem) => {
+    if (clickedItem === 'Edit') {
+      this.setState({
+        isEditClicked: true
+      })
     }
-    console.log('to pass obj: ', popUpConfig);
-
-    this.props.onOptionClick(popUpConfig);
+    else if (clickedItem === 'Delete') {
+      this.setState({
+        isDeleteClicked: true
+      })
+    }
   }
 
   handleEditChange = (e) => {
     this.setState({
-      editText: e.target.value
+      postText: e.target.value
     });
   }
 
@@ -95,16 +102,42 @@ class UserStoryContainer extends React.Component {
       type: 'post',
       data: {
         postId: this.props.postData.id,
-        newPostText: this.state.editText
+        newPostText: this.state.editText ? this.state.editText : this.props.postData.content
       }
     });
     this.getAllComments();
+    this.setState({
+      isEditClicked: false
+    })
   }
 
-  handleCommentEditSubmit = (data) => {
-    this.props.onEditSubmit(data)
+  handleCancelEdit = (e) => {
+    e.preventDefault();
+    this.setState({
+      isEditClicked: false
+    })
+  }
+
+  handleDeleteOptionClick = (e, decision) => {
+    e.preventDefault();
+    if (decision === 'yes') {
+      const postData = {
+        postId: this.props.postData.id,
+        postOwnerData: this.props.postData.userid
+      }
+      this.props.onPostDelete(postData);
+    }
+    else if (decision === 'no') {
+
+    }
+    this.setState({
+      isDeleteClicked: false
+    })
+  }
+
+  handleCommentEditSubmit = (commentData) => {
+    this.props.onEditSubmit(commentData)
       .then(commentList => {
-        console.log('comment List: ', commentList);
         this.setState({
           comments: commentList,
           isSubmitted: true
@@ -115,18 +148,34 @@ class UserStoryContainer extends React.Component {
       });
   }
 
-  handleCancelEdit = (e) => {
-    e.preventDefault();
-    this.props.onCancelEditClick();
-    this.setState({
-      editText: ''
-    });
+  handleCommentDeleteClick = (commentData) => {
+    this.props.onCommentDelete(commentData)
+      .then(commentList => {
+        this.setState({
+          comments: commentList
+        });
+      })
+      .catch(err => {
+        console.log('comment edit error: ', err);
+      });
+  }
+
+  handleReplySubmit = (replyData) => {
+    this.props.onCommentSubmit(replyData)
+      .then(commentList => {
+        this.setState({
+          comments: commentList
+        });
+      })
+      .catch(err => {
+        console.log('comment submit error: ', err);
+      });
   }
 
   render() {
 
     return (
-      <div className="user-story-container">
+      <div className="user-story-container" id={`user-story-container-${this.props.postData.id}`}>
 
         <div className="post-head-wrapper">
           <div className="poster-title">
@@ -134,40 +183,69 @@ class UserStoryContainer extends React.Component {
               <img src="userpic.png" alt="userpic"></img>
               <span className="poster-name">{this.props.postData.name}</span>
             </div>
-            <div className="post-option-button" id={`post-option-button-${this.props.postData.id}`} onClick={this.handlePostOptionClick}>...</div>
+            <div className="post-option-button" id={`post-option-button-${this.props.postData.id}`} onClick={this.handleOptionClick}>...</div>
           </div>
           <span className="post-date-time">{parseDateTime(this.props.postData.date_time)}</span>
         </div>
 
-
-
         <div className="post-body-wrapper">
-          {this.props.postOnSelection && this.props.postOnSelection.type === 'post' ?
+          {this.state.isEditClicked ?
             <form className="post-edit-wrapper" onSubmit={this.handleEditSubmit}>
-              <input className="post-edit-field" type="text" defaultValue={this.props.postData.content} onChange={this.handleEditChange}>
-              </input>
-              <a className="post-edit-cancel" href="/#" onClick={this.handleCancelEdit}>Cancel</a>
+              <textarea className="post-edit-field" type="text" defaultValue={this.props.postData.content} onChange={this.handleEditChange} autoFocus>
+              </textarea>
+              <div className="post-eidt-decision-wrapper">
+                <input className="post-edit-submit-button" type="submit" value="Save"></input>
+                <a className="post-edit-cancel" href="/#" onClick={this.handleCancelEdit}>Cancel</a>
+              </div>
             </form> :
             <div className="user-story">{this.props.postData.content}</div>
           }
+          {
+            this.state.isDeleteClicked ?
+              <span className="post-delete-prompt" >
+                Delete this post?
+                <a href="/#" onClick={(e) => this.handleDeleteOptionClick(e, 'yes')}>
+                  Yes
+                </a> |
+                <a href="/#" onClick={(e) => this.handleDeleteOptionClick(e, 'no')} >
+                  No
+                </a>
+              </span> :
+              ''
+          }
 
-          <hr />
           <div className="comment-part-wrapper">
             <ul className="comment-list">
               {
                 this.state.comments && this.state.comments.length > 0 ? this.state.comments.map((data, index) =>
                   <li key={data.id}>
-                    <Comment userId={this.props.userId} postId={this.props.postData.id} posterId={this.props.postData.userid} commentData={data} commentOnSelection={data.id === this.props.postOnSelection.commentId && !this.state.isSubmitted ? this.props.postOnSelection : ''} onOptionClick={this.handleCommentOptionClick} onCancelEditClick={this.handleCancelEdit} onEditSubmit={this.handleCommentEditSubmit} />
-                  </li>) : ''
+                    <Comment
+                      userId={this.props.userId}
+                      userName={this.props.userName}
+                      postId={this.props.postData.id}
+                      posterId={this.props.postData.userid}
+                      commentData={data}
+                      isOptionClicked={this.props.isOptionClicked}
+                      selectedCommentId={this.props.selectedCommentId}
+                      onOptionClick={this.props.onOptionClick}
+                      onReplySubmit={this.handleReplySubmit}
+                      onEditSubmit={this.handleCommentEditSubmit}
+                      onDeleteOptionClick={this.handleCommentDeleteClick}
+                    />
+                  </li>) :
+                  ''
               }
             </ul>
-            <form className="comment-form" onSubmit={this.submitComment}>
-              <input className="comment-field" type="text" placeholder="Write a comment..." onChange={this.onCommentChange} value={this.state.commentText}></input>
+            <form className="comment-form" onSubmit={this.handleCommentSubmit}>
+              <span className="current-user-name">{this.props.userName}</span>
+              <input className="comment-field" type="text" placeholder="Write a comment..." value={this.state.commentText} onChange={this.handleCommentChange} ></input>
             </form>
           </div>
         </div>
 
+        {this.props.isOptionClicked && this.props.postData.id === this.props.selectedPostId ? <PopUpMenu config={this.state.popUpConfig} onItemClick={this.handleOptionItemClick} /> : ''}
       </div>
+
     )
   }
 }

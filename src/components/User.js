@@ -5,7 +5,6 @@ import tokenService from './../services/token';
 import UserStoryContainer from './sub-components/UserStoryContainer';
 import ActiveFriend from './sub-components/ActiveFriend';
 import Header from './Header';
-import PopUpMenu from './PopUpMenu';
 
 import './../styles/user/user.wrapper.css';
 import './../styles/user/profile.info.wrapper.css';
@@ -24,14 +23,9 @@ class User extends React.Component {
       },
       postFieldData: '',
       userStories: [],
-      isOptionSelected: false,
-      selectedOptionConfig: {},
-      selectionId: {
-        type: '',
-        postId: '',
-        commentId: ''
-      },
-      toUpdatePostId: {}
+      isOptionClicked: false,
+      selectedCommentId: null,
+      selectedPostId: null
     }
   }
 
@@ -59,13 +53,10 @@ class User extends React.Component {
   getNewsFeed = () => {
     getUserStories('/user/feeds')
       .then(response => {
-
         this.setState({
           ...this.state,
-          userStories: response.data,
-          selectionId: {}
+          userStories: response.data
         });
-        console.log('user stories: ', this.state.userStories);
       })
       .catch(err => {
         console.log('Unable to load feeds: ', err);
@@ -73,12 +64,12 @@ class User extends React.Component {
   }
 
   getCommentList = (postId) => {
-    console.log('get comment list called');
     return new Promise((resolve, reject) => {
       getComments('/user/comment', {
         postId: postId
       })
         .then(response => {
+          console.log('commentList  after: ', response.data);
           this.setState({
             toUpdatePostId: ''
           });
@@ -90,19 +81,26 @@ class User extends React.Component {
     });
   }
 
+  handleOptionClick = (postId, commentId) => {
+    this.setState({
+      isOptionClicked: !this.state.isOptionClicked,
+      selectedCommentId: commentId,
+      selectedPostId: postId
+    })
+  }
+
   handlePostFieldChange = (e) => {
     this.setState({
       postFieldData: e.target.value
     });
   }
 
-  handlepost = () => {
+  handlePost = () => {
     if (this.state.postFieldData) {
       createNewPost('/user', {
         postData: this.state.postFieldData
       })
         .then(response => {
-          console.log('posted: ', response);
           this.setState({
             postFieldData: ''
           });
@@ -114,97 +112,15 @@ class User extends React.Component {
     }
   }
 
-  handleCommentSubmit = (e, commentText, postId) => {
-    e.preventDefault();
-
-    return new Promise((resolve, reject) => {
-      postComment('/user/comment', {
-        postId: postId,
-        commentText: commentText
-      })
-        .then(response => {
-          resolve(this.getCommentList(postId));
-        })
-        .catch(err => {
-          console.log('error comment post: ', err);
-        });
-    })
-  }
-
-  handleOptionClick = (data) => {
-    this.setState({
-      isOptionSelected: !this.state.isOptionSelected,
-      selectedOptionConfig: data
-    });
-  }
-
-  handleOptionItemClick = (value) => {
-    if (value === "Delete") {
-      if (this.state.selectedOptionConfig.type === 'post') {
-        const postData = {
-          postId: this.state.selectedOptionConfig.postId,
-          userId: this.state.selectedOptionConfig.posterId
-        }
-        deleteContent('/user', postData)
-          .then(response => {
-            this.getNewsFeed();
-          })
-          .catch(err => {
-            console.log('delete error: ', err);
-          });
-      }
-      else if (this.state.selectedOptionConfig.type === 'comment') {
-        const commentData = {
-          commentId: this.state.selectedOptionConfig.commentId,
-          userId: this.state.selectedOptionConfig.commenterId,
-          postId: this.state.selectedOptionConfig.postId,
-          postOwnerId: this.state.selectedOptionConfig.posterId
-        }
-        deleteContent('/user/comment', commentData)
-          .then(response => {
-            this.setState({
-              toUpdatePostId: {
-                postId: this.state.selectedOptionConfig.postId,
-                commentId: this.state.selectedOptionConfig.commentId
-              }
-            });
-          })
-          .catch(err => {
-            console.log('delete error: ', err);
-          });
-      }
-      this.setState({
-        isOptionSelected: !this.state.isOptionSelected,
-        selectedOptionConfig: {}
-      });
-    }
-    else if (value === "Edit") {
-      this.setState({
-        isOptionSelected: !this.state.isOptionSelected,
-        selectedOptionConfig: {},
-        selectionId: {
-          type: this.state.selectedOptionConfig.type,
-          postId: this.state.selectedOptionConfig.postId,
-          commentId: this.state.selectedOptionConfig.commentId ? this.state.selectedOptionConfig.commentId : ''
-        }
-      });
-    }
-  }
-
-  handleCancelEdit = () => {
-    this.setState({
-      selectionId: {}
-    })
-  }
-
   handleEditSubmit = (submitInfo) => {
+    console.log('type:', submitInfo.type);
     if (submitInfo.type === 'post') {
       updateContent('/user', submitInfo.data)
         .then(response => {
           this.getNewsFeed();
         })
         .catch(err => {
-          console.log('err', err);
+          console.log('post edit submit error: ', err);
         });
     }
     else if (submitInfo.type === 'comment') {
@@ -217,8 +133,56 @@ class User extends React.Component {
             resolve(this.getCommentList(submitInfo.data.postId));
           })
           .catch(err => {
-            console.log('err', err);
+            console.log('comment edit submit error: ', err);
           });
+      })
+    }
+  }
+
+  handleCommentSubmit = (commentData) => {
+    console.log('submit : ', commentData);
+    return new Promise((resolve, reject) => {
+      postComment('/user/comment', commentData)
+        .then(response => {
+          console.log('response: ', response);
+          resolve(this.getCommentList(commentData.parentPostId));
+        })
+        .catch(err => {
+          console.log('error comment post: ', err);
+        });
+    })
+  }
+
+  handleCommentDelete = (commentData) => {
+    return new Promise((resolve, reject) => {
+      deleteContent('/user/comment', commentData)
+        .then(response => {
+          resolve(this.getCommentList(commentData.postId));
+        })
+        .catch(err => {
+          console.log('comment delete error: ', err);
+        });
+    })
+  }
+
+  handlePostDelete = (postData) => {
+    deleteContent('/user', postData)
+      .then(response => {
+        this.getNewsFeed();
+        this.setState({
+          isPostDeleteClicked: false,
+          selectionId: {}
+        });
+      })
+      .catch(err => {
+        console.log('delete error: ', err);
+      });
+  }
+
+  handleUserWrapperClick = (e) => { //to hide the popUp menu.
+    if (this.state.isOptionClicked) {
+      this.setState({
+        isOptionClicked: false
       })
     }
   }
@@ -227,7 +191,7 @@ class User extends React.Component {
     return (
       <Fragment>
         <Header profileName={this.state.userData.name} isInsideUser={true} {...this.props} />
-        <div className="user-wrapper">
+        <div className="user-wrapper" onClick={this.handleUserWrapperClick}>
           <div className="profile-info-container">
             <img src="userpic.png" alt="user"></img>
             <span>
@@ -237,7 +201,7 @@ class User extends React.Component {
           <div className="news-feed-container">
             <div className="post-field-wrapper">
               <textarea rows="4" cols="50" name="post-field" placeholder="What are you thinking today?" onChange={this.handlePostFieldChange} value={this.state.postFieldData} ></textarea>
-              <button onClick={this.handlepost}>Post</button>
+              <button onClick={this.handlePost}>Post</button>
             </div>
             <hr />
 
@@ -245,7 +209,19 @@ class User extends React.Component {
               <h3>Feed</h3>
               <ul className="user-stroy-list">
                 {this.state.userStories.map((data, index) => <li key={data.id}>
-                  <UserStoryContainer userId={this.state.userData.id} postData={data} onSubmit={this.handleCommentSubmit} getCommentList={this.getCommentList} postOnSelection={data.id === this.state.selectionId.postId ? this.state.selectionId : ''} onOptionClick={this.handleOptionClick} onCommentOptionClick={this.handleOptionClick} onCancelEditClick={this.handleCancelEdit} onEditSubmit={this.handleEditSubmit} deletedContent={this.state.selectedOptionConfig ? this.state.selectedOptionConfig.type : ''} toUpdatePostId={this.state.toUpdatePostId && this.state.toUpdatePostId.postId === data.id ? this.state.toUpdatePostId : ''} />
+                  <UserStoryContainer
+                    userId={this.state.userData.id}
+                    userName={this.state.userData.name}
+                    postData={data}
+                    onCommentSubmit={this.handleCommentSubmit}
+                    getCommentList={this.getCommentList}
+                    isOptionClicked={this.state.isOptionClicked}
+                    selectedCommentId={this.state.selectedCommentId}
+                    selectedPostId={this.state.selectedPostId}
+                    onOptionClick={this.handleOptionClick}
+                    onEditSubmit={this.handleEditSubmit}
+                    onCommentDelete={this.handleCommentDelete}
+                    onPostDelete={this.handlePostDelete} />
                 </li>)}
               </ul>
             </div>
@@ -255,7 +231,6 @@ class User extends React.Component {
             {/* place a list of friends here */}
             <ActiveFriend />
           </div>
-          {this.state.isOptionSelected ? <PopUpMenu config={this.state.selectedOptionConfig} onItemClick={this.handleOptionItemClick} /> : ''}
         </div>
       </Fragment>
     );

@@ -13,6 +13,7 @@ class PopUpMenu extends React.Component {
   }
 
   componentDidMount() {
+
     if (this.props.config.rights === 'd') {
       this.setState({
         optionList: DELETE_ONLY
@@ -30,9 +31,11 @@ class PopUpMenu extends React.Component {
   }
 
   render() {
+    const buttonRect = document.getElementById(this.props.config.buttonId).getBoundingClientRect();
+    const postRect = document.getElementById(this.props.config.postContainerId).getBoundingClientRect();
     const popUpPosition = {
-      top: `calc(${this.props.config.posY}px - 8vmin)`,
-      left: `calc(${this.props.config.posX}px - 120px)`
+      top: `${buttonRect.top - postRect.top + buttonRect.height}px`,
+      left: `${buttonRect.left - postRect.left}px`
     }
     return (
       <ul id="pop-up-menu" style={popUpPosition}>
