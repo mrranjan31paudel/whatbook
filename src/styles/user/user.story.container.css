@@ -49,12 +49,20 @@
     border-radius: 50%;
 }
 
-.user-story-container .poster-title .poster-name{
+.poster-name {
     margin: 5px;
+}
+
+.poster-name a {
+    text-decoration: none;
     font-size: calc(8px + 1vmin);
     font-weight: 500;
     color: rgb(0, 122, 0);
 }
+
+.poster-name a:hover {
+    text-decoration: underline;
+  }
 
 .user-story-container .post-date-time {
     font-size: calc(5px + 1vmin);

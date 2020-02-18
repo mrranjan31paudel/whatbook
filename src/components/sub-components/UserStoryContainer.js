@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import Comment from './Comment';
 import parseDateTime from './../../utils/dateParser';
@@ -180,8 +181,8 @@ class UserStoryContainer extends React.Component {
         <div className="post-head-wrapper">
           <div className="poster-title">
             <div className="poster-title-wrapper">
-              <img src="userpic.png" alt="userpic"></img>
-              <span className="poster-name">{this.props.postData.name}</span>
+              <img src="http://localhost:3000/userpic.png" alt="userpic"></img>
+              <span className="poster-name"><Link to={`/user/user_${this.props.postData.userid}`}>{this.props.postData.name}</Link></span>
             </div>
             <div className="post-option-button" id={`post-option-button-${this.props.postData.id}`} onClick={this.handleOptionClick}>...</div>
           </div>

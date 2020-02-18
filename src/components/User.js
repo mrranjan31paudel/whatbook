@@ -2,9 +2,11 @@ import React, { Fragment } from 'react';
 
 import { getUserDetails, getUserStories, createNewPost, postComment, getComments, updateContent, deleteContent } from './../services/user';
 import tokenService from './../services/token';
+
 import UserStoryContainer from './sub-components/UserStoryContainer';
 import ActiveFriend from './sub-components/ActiveFriend';
 import Header from './Header';
+import NoServerConnection from './NoServerConnection';
 
 import './../styles/user/user.wrapper.css';
 import './../styles/user/profile.info.wrapper.css';
@@ -17,6 +19,7 @@ class User extends React.Component {
     super();
     this.state = {
       userData: {
+        id: '',
         name: '',
         dob: '',
         email: ''
@@ -25,7 +28,8 @@ class User extends React.Component {
       userStories: [],
       isOptionClicked: false,
       selectedCommentId: null,
-      selectedPostId: null
+      selectedPostId: null,
+      isConnectedToServer: true
     }
   }
 
@@ -43,7 +47,13 @@ class User extends React.Component {
         this.getNewsFeed();
       })
       .catch((err) => {
-        if (err.response && err.response.status === 401) {
+
+        if (!err.response) {
+          this.setState({
+            isConnectedToServer: false
+          })
+        }
+        else if (err.response && err.response.status === 401) {
           tokenService.removeTokens();
           return this.props.history.push('/');
         }
@@ -59,7 +69,7 @@ class User extends React.Component {
         });
       })
       .catch(err => {
-        console.log('Unable to load feeds: ', err);
+        // console.log('Unable to load feeds: ', err);
       });
   }
 
@@ -69,7 +79,7 @@ class User extends React.Component {
         postId: postId
       })
         .then(response => {
-          console.log('commentList  after: ', response.data);
+
           this.setState({
             toUpdatePostId: ''
           });
@@ -113,7 +123,7 @@ class User extends React.Component {
   }
 
   handleEditSubmit = (submitInfo) => {
-    console.log('type:', submitInfo.type);
+
     if (submitInfo.type === 'post') {
       updateContent('/user', submitInfo.data)
         .then(response => {
@@ -140,11 +150,11 @@ class User extends React.Component {
   }
 
   handleCommentSubmit = (commentData) => {
-    console.log('submit : ', commentData);
+
     return new Promise((resolve, reject) => {
       postComment('/user/comment', commentData)
         .then(response => {
-          console.log('response: ', response);
+
           resolve(this.getCommentList(commentData.parentPostId));
         })
         .catch(err => {
@@ -188,52 +198,59 @@ class User extends React.Component {
   }
 
   render() {
-    return (
-      <Fragment>
-        <Header profileName={this.state.userData.name} isInsideUser={true} {...this.props} />
-        <div className="user-wrapper" onClick={this.handleUserWrapperClick}>
-          <div className="profile-info-container">
-            <img src="userpic.png" alt="user"></img>
-            <span>
-              {this.state.userData.name}
-            </span>
-          </div>
-          <div className="news-feed-container">
-            <div className="post-field-wrapper">
-              <textarea rows="4" cols="50" name="post-field" placeholder="What are you thinking today?" onChange={this.handlePostFieldChange} value={this.state.postFieldData} ></textarea>
-              <button onClick={this.handlePost}>Post</button>
+    if (this.state.isConnectedToServer) {
+      return (
+        <Fragment>
+          <Header userId={this.state.userData.id} profileName={this.state.userData.name} isInsideUser={true} {...this.props} />
+          <div className="user-wrapper" onClick={this.handleUserWrapperClick}>
+            <div className="profile-info-container">
+              <img src="http://localhost:3000/userpic.png" alt="user"></img>
+              <span>
+                {this.state.userData.name}
+              </span>
             </div>
-            <hr />
+            <div className="news-feed-container">
+              <div className="post-field-wrapper">
+                <textarea rows="4" cols="50" name="post-field" placeholder="What are you thinking today?" onChange={this.handlePostFieldChange} value={this.state.postFieldData} ></textarea>
+                <button onClick={this.handlePost}>Post</button>
+              </div>
+              <hr />
 
-            <div className="news-feed-wrapper">
-              <h3>Feed</h3>
-              <ul className="user-stroy-list">
-                {this.state.userStories.map((data, index) => <li key={data.id}>
-                  <UserStoryContainer
-                    userId={this.state.userData.id}
-                    userName={this.state.userData.name}
-                    postData={data}
-                    onCommentSubmit={this.handleCommentSubmit}
-                    getCommentList={this.getCommentList}
-                    isOptionClicked={this.state.isOptionClicked}
-                    selectedCommentId={this.state.selectedCommentId}
-                    selectedPostId={this.state.selectedPostId}
-                    onOptionClick={this.handleOptionClick}
-                    onEditSubmit={this.handleEditSubmit}
-                    onCommentDelete={this.handleCommentDelete}
-                    onPostDelete={this.handlePostDelete} />
-                </li>)}
-              </ul>
+              <div className="news-feed-wrapper">
+                <h3>Feed</h3>
+                <ul className="user-stroy-list">
+                  {this.state.userStories.map((data, index) => <li key={data.id}>
+                    <UserStoryContainer
+                      userId={this.state.userData.id}
+                      userName={this.state.userData.name}
+                      postData={data}
+                      onCommentSubmit={this.handleCommentSubmit}
+                      getCommentList={this.getCommentList}
+                      isOptionClicked={this.state.isOptionClicked}
+                      selectedCommentId={this.state.selectedCommentId}
+                      selectedPostId={this.state.selectedPostId}
+                      onOptionClick={this.handleOptionClick}
+                      onEditSubmit={this.handleEditSubmit}
+                      onCommentDelete={this.handleCommentDelete}
+                      onPostDelete={this.handlePostDelete} />
+                  </li>)}
+                </ul>
+              </div>
+            </div>
+            <div className="active-friendlist-container">
+              <h4>Active Friends</h4>
+              {/* place a list of friends here */}
+              <ActiveFriend />
             </div>
           </div>
-          <div className="active-friendlist-container">
-            <h4>Active Friends</h4>
-            {/* place a list of friends here */}
-            <ActiveFriend />
-          </div>
-        </div>
-      </Fragment>
-    );
+        </Fragment>
+      );
+    }
+    else {
+      return (
+        <NoServerConnection />
+      );
+    }
   }
 }
 

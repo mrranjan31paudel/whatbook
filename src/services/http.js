@@ -54,7 +54,7 @@ axios.interceptors.response.use(
   },
   error => {
 
-    if (error.response && error.response.status === 401 && error.response.data.msg === 'TokenExpiredError') {
+    if (error.response && error.response.status === 401 && error.response.data.msg === 'TOKEN_EXPIRED') {
       if (!token.getRefreshToken()) {
         return Promise.reject(error);
       }
@@ -79,6 +79,7 @@ axios.interceptors.response.use(
           return Promise.reject(err);
         });
     }
+
     return Promise.reject(error);
   }
 );

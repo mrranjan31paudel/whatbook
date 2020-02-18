@@ -54,10 +54,15 @@
   font-weight: 500;
 }
 
-.comment-container .commenter-name{
+.commenter-name a{
+  text-decoration: none;
   font-size: calc(6px + 1vmin);
   font-weight: 500;
   color: rgb(0, 122, 0);
+}
+
+.commenter-name a:hover {
+  text-decoration: underline;
 }
 
 .comment-option-button {
@@ -102,14 +107,27 @@
 }
 
 .comment-reply{
+  margin: 0 5px;
   text-decoration: none;
   font-size: calc(4px + 1vmin);
-  color: rgb(0, 190, 0);
+  color: rgb(0, 122, 0);
 }
 
 .comment-reply:hover{
   cursor: pointer;
-  font-weight: 500;
+  color: rgb(0, 192, 0);
+}
+
+.view-reply{
+  margin: 0 5px;
+  text-decoration: none;
+  font-size: calc(4px + 1vmin);
+  color: rgb(0, 122, 0);
+}
+
+.view-reply:hover{
+  cursor: pointer;
+  color: rgb(0, 192, 0);
 }
 
 .reply-form {

@@ -1,0 +1,119 @@
+.user-profile-wrapper {
+  width: 100%;
+}
+
+.profile-banner {
+  position: relative;
+  width: calc(100% - 12px);
+  height: calc(30vmin - 12px);
+  border-radius: 5px;
+  margin: 5px;
+  display: flex;
+  flex-direction: row;
+  background-image: url("http://localhost:3000/userpic.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(3px);
+  border: 1px solid rgb(233, 233, 233);
+}
+
+.profile-banner-cover-layer {
+  position: absolute;
+  width: calc(100% - 12px);
+  height: 30vmin;
+  top: 0px;
+  left: 0px;
+  z-index: 5;
+  display: flex;
+  flex-direction: row;
+  margin: 0 5px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.452);
+}
+
+.profile-image-container {
+  height: 100%;
+  width: 25%;
+}
+
+.profile-image {
+  height: 100%;
+}
+
+.profile-name-container {
+  width: 75%;
+  color: white;
+  display: flex;
+  flex-direction: column-reverse;
+}
+.profile-name-container h1 {
+  margin: 10px;
+}
+
+.profile-body {
+  width: calc(100% - 12px);
+  margin: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.profile-intro-container{
+  width: calc(30% - 12px);
+  border-radius: 5px;
+  margin: 5px;
+  background: rgb(247, 247, 247);
+  border: 1px solid rgb(233, 233, 233);
+}
+
+.profile-intro-container h3 {
+  margin: 5px;
+}
+
+.profile-intro-wrapper {
+  width: calc(100% - 10px);
+  margin: 5px;
+  font-size: 2vmin;
+}
+
+.profile-intro-wrapper tbody {
+  width: 100%;
+}
+
+.profile-intro-wrapper tr th {
+  width: calc(25% - 4px);
+  padding: 2px 0;
+  color: rgb(77, 77, 77);
+  text-align: left;
+  border-bottom: 1px solid rgb(202, 202, 202);
+}
+
+.profile-intro-wrapper tr td {
+  width: calc(75% - 4px);
+  word-break: break-all;
+  padding: 2px 0;
+  border-bottom: 1px solid rgb(202, 202, 202);
+}
+
+.profile-posts-container{
+  width: calc(70% - 12px);
+  border-radius: 5px;
+  margin: 5px;
+  background: rgb(247, 247, 247);
+  border: 1px solid rgb(233, 233, 233);
+}
+
+.profile-posts-container h3 {
+  margin: 5px;
+}
+
+.profile-post-lists {
+  list-style-type: none;
+  padding: 0px;
+}
+
+.page-not-available {
+  width: 100%;
+  text-align: center;
+}

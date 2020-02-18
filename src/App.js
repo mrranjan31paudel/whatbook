@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import User from './components/User';
+import UserProfile from './components/UserProfile';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import './styles/common/contentContainer.css';
@@ -23,7 +24,9 @@ class App extends React.Component {
             <Switch>
               <Route exact path="/" component={Login} />
               <Route exact path="/signup" component={SignUp} />
+              <ProtectedRoute path="/user/:userId" comp={UserProfile} />
               <ProtectedRoute path="/user" comp={User} />
+
             </Switch>
           </Router>
         </div>

@@ -5,7 +5,7 @@ class Activefriend extends Component {
     render() {
         return (
             <div className="active-friend-container">
-                <img src="userpic.png" alt="activefriend"></img>
+                <img src="http://localhost:3000/userpic.png" alt="activefriend"></img>
                 <span>Active friend name</span>
             </div>
         )

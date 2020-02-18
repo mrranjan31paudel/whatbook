@@ -16,7 +16,7 @@ class Header extends React.Component {
         this.props.history.push('/');
       })
       .catch(err => {
-        console.log('logout err: ', err);
+        console.log(err);
       });
 
   }
@@ -27,7 +27,7 @@ class Header extends React.Component {
         <header className="header-seg">
           <nav>
             <ul >
-              <li><Link to="/">{this.props.profileName}</Link></li>
+              <li><Link to={`/user/user_${this.props.userId}`} >{this.props.profileName}</Link></li>
               <li><Link to="/">Home</Link></li>
               <li><Link onClick={this.logOutFunction} to="/">Log Out</Link></li>
               <li>Search</li>

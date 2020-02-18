@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
 import { setCommentPermissions } from './../../utils/permissionDefiner';
 import parseDateTime from './../../utils/dateParser';
@@ -17,6 +18,7 @@ class Comment extends React.Component {
       isSubmitted: false,
       isEditClicked: false,
       isDeleteClicked: false,
+      isViewReplyClicked: false,
       popUpConfig: {
         rights: '',
         buttonId: '',
@@ -124,13 +126,21 @@ class Comment extends React.Component {
     })
   }
 
+  handleViewReplyClick = (e) => {
+    e.preventDefault();
+    this.setState({
+      isViewReplyClicked: !this.state.isViewReplyClicked
+    })
+  }
+
   render() {
+
     return (
       <Fragment>
         <div className="comment-container">
           <div className="comment-header">
             <div className="comment-content-wrapper">
-              <span className="commenter-name">{this.props.commentData.name}</span>
+              <span className="commenter-name"><Link to={`/user/user_${this.props.commentData.userid}`}>{this.props.commentData.name}</Link></span>
               {
                 this.state.isEditClicked ?
                   <form className="comment-edit-wrapper" onSubmit={this.handleEditSubmit}>
@@ -163,14 +173,25 @@ class Comment extends React.Component {
               ''
           }
           <div>
+            <span>
+              <a className="comment-reply" href="/#" onClick={this.handleReplyClick}>- Reply</a>
+              {
+                this.props.commentData.replyList.length > 0 ?
+                  <a className="view-reply" href="/#" onClick={this.handleViewReplyClick}>{this.state.isViewReplyClicked ? '- Hide Replies' : '- View Replies'}</a> :
+                  ''
+              }
+            </span>
             <span className="comment-time">
               {parseDateTime(this.props.commentData.date_time)}
             </span>
-            <a className="comment-reply" href="/#" onClick={this.handleReplyClick}>Reply</a>
           </div>
 
         </div>
-        {this.props.isOptionClicked && this.props.commentData.id === this.props.selectedCommentId ? <PopUpMenu config={this.state.popUpConfig} onItemClick={this.handleOptionItemClick} /> : ''}
+        {
+          this.props.isOptionClicked && this.props.commentData.id === this.props.selectedCommentId ?
+            <PopUpMenu config={this.state.popUpConfig} onItemClick={this.handleOptionItemClick} /> :
+            ''
+        }
         {
           this.state.replyMode ?
             <form className="reply-form" onSubmit={this.handleReplySubmit}>
@@ -182,7 +203,7 @@ class Comment extends React.Component {
             ''
         }
         {
-          this.props.commentData.replyList ?
+          this.props.commentData.replyList.length > 0 && this.state.isViewReplyClicked ?
             <ul className="replies">
               {
                 this.props.commentData.replyList.map((reply, index) =>

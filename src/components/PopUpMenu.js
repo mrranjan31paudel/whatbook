@@ -35,7 +35,7 @@ class PopUpMenu extends React.Component {
     const postRect = document.getElementById(this.props.config.postContainerId).getBoundingClientRect();
     const popUpPosition = {
       top: `${buttonRect.top - postRect.top + buttonRect.height}px`,
-      left: `${buttonRect.left - postRect.left}px`
+      right: '0px'
     }
     return (
       <ul id="pop-up-menu" style={popUpPosition}>
