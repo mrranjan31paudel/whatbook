@@ -1,36 +1,58 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import tokenService from './../services/token';
-import { logoutUser } from './../services/user';
+import { localhost } from './../constants/config';
 
 import './../styles/common/Header.css';
 
 class Header extends React.Component {
-  logOutFunction = () => {
-    logoutUser('/logout', {
-      refreshToken: tokenService.getRefreshToken()
-    })
-      .then(() => {
-        tokenService.removeTokens();
-        this.props.history.push('/');
-      })
-      .catch(err => {
-        console.log(err);
-      });
-
-  }
 
   render() {
     if (this.props.isInsideUser) {
       return (
         <header className="header-seg">
           <nav>
+            <div className="search-bar-container">
+              <input className="search-bar" type="text" placeholder="Search People..."></input>
+              <img className="search-img" src={`http://${localhost}:3000/search-solid.svg`} alt="searchSVG"></img>
+            </div>
             <ul >
-              <li><Link to={`/user/user_${this.props.userId}`} >{this.props.profileName}</Link></li>
-              <li><Link to="/">Home</Link></li>
-              <li><Link onClick={this.logOutFunction} to="/">Log Out</Link></li>
-              <li>Search</li>
+              {/* <li>
+                
+              </li> */}
+
+              <li>
+                <div>
+                  <Link onClick={this.props.onProfileClick} to={`/user/user_${this.props.userId}`} >
+                    {this.props.profileName} <img className="nav-img" src={`http://${localhost}:3000/user-solid.svg`} alt="profileSVG"></img>
+                  </Link>
+                </div>
+              </li>
+
+              <li>
+                <div>
+                  <Link onClick={this.props.onHomeClick} to="/user">
+                    <img className="nav-img" src={`http://${localhost}:3000/home-solid.svg`} alt="homeSVG"></img>
+                  </Link>
+                </div>
+              </li>
+
+              <li>
+                <div>
+                  <Link to="/people">{/* link to should be 'people'*/}
+                    <img className="nav-img" src={`http://${localhost}:3000/user-friends-solid.svg`} alt="friendsSVG"></img>
+                  </Link>
+                </div>
+              </li>
+
+              <li>
+                <div>
+                  <Link onClick={this.props.onLogOutClick} to="/">
+                    <img className="nav-img" src={`http://${localhost}:3000/sign-out-alt-solid.svg`} alt="logoutSVG"></img>
+                  </Link>
+                </div>
+              </li>
+
             </ul>
           </nav>
         </header>

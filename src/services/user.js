@@ -32,4 +32,28 @@ function deleteContent(url, params = {}) {
   return remove(url, params);
 }
 
-export { getUserDetails, getUserStories, createNewPost, logoutUser, postComment, getComments, updateContent, deleteContent };
+function sendRequest(url, requestBody) {
+  return post(url, requestBody);
+}
+
+function acceptRequest(url, requestBody) {
+  return put(url, requestBody);
+}
+
+function deleteRequest(url, params = {}) {
+  return remove(url, params);
+}
+
+function getPeopleList(url, params = {}) {
+  return get(url, params);
+}
+
+function getFriendList(url, params = {}) {
+  return get(url, params);
+}
+
+function getRequestList(url, params = {}) {
+  return get(url, params);
+}
+
+export { getUserDetails, getUserStories, createNewPost, logoutUser, postComment, getComments, updateContent, deleteContent, sendRequest, acceptRequest, deleteRequest, getPeopleList, getFriendList, getRequestList };

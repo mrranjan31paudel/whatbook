@@ -2,6 +2,9 @@ import axios from 'axios';
 import token from './token';
 import { BASE_URL } from './../constants/config';
 
+let isTokenBeingRefreshed = false;
+let heldRequests = [];
+
 function get(url, params = {}) {
   return axios({
     method: 'GET',
@@ -55,32 +58,45 @@ axios.interceptors.response.use(
   error => {
 
     if (error.response && error.response.status === 401 && error.response.data.msg === 'TOKEN_EXPIRED') {
+      console.log('in token expired interceptor');
       if (!token.getRefreshToken()) {
         return Promise.reject(error);
       }
 
-      return axios({
-        method: 'POST',
-        url: BASE_URL + '/tokenrenew',
-        data: {
-          accessToken: token.getAccessToken(),
-          refreshToken: token.getRefreshToken()
-        },
-        headers: getRequestHeader()
-      })
-        .then(res => {
-          token.setTokens(res.data.accessToken, res.data.refreshToken);
-
-          error.config.headers.authorization = token.getAccessToken();
-
-          return axios(error.config);
+      if (isTokenBeingRefreshed) {
+        heldRequests.push(error);
+      }
+      else {
+        heldRequests.push(error);
+        isTokenBeingRefreshed = true;
+        return axios({
+          method: 'POST',
+          url: BASE_URL + '/tokenrenew',
+          data: {
+            accessToken: token.getAccessToken(),
+            refreshToken: token.getRefreshToken()
+          },
+          headers: getRequestHeader()
         })
-        .catch(err => {
-          return Promise.reject(err);
-        });
+          .then(res => {
+            isTokenBeingRefreshed = false;
+            token.setTokens(res.data.accessToken, res.data.refreshToken);
+            heldRequests.forEach(element => {
+              element.config.headers.authorization = token.getAccessToken();
+              axios(element.config);
+            });
+            heldRequests = [];
+          })
+          .catch(err => {
+            return Promise.reject(err);
+          });
+
+      }
+
+    } else {
+      return Promise.reject(error);
     }
 
-    return Promise.reject(error);
   }
 );
 

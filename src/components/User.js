@@ -1,12 +1,14 @@
 import React, { Fragment } from 'react';
 
-import { getUserDetails, getUserStories, createNewPost, postComment, getComments, updateContent, deleteContent } from './../services/user';
+import { getUserDetails, getUserStories, createNewPost, postComment, getComments, updateContent, deleteContent, logoutUser } from './../services/user';
 import tokenService from './../services/token';
 
 import UserStoryContainer from './sub-components/UserStoryContainer';
-import ActiveFriend from './sub-components/ActiveFriend';
+// import UserHolder from './sub-components/UserHolder';
 import Header from './Header';
 import NoServerConnection from './NoServerConnection';
+
+import { localhost } from './../constants/config';
 
 import './../styles/user/user.wrapper.css';
 import './../styles/user/profile.info.wrapper.css';
@@ -36,18 +38,21 @@ class User extends React.Component {
   componentDidMount() {
     getUserDetails('/user')
       .then(response => {
-        this.setState({
-          userData: {
-            id: response.data.id,
-            name: response.data.name,
-            dob: response.data.dob,
-            email: response.data.email
-          }
-        });
-        this.getNewsFeed();
+
+        if (response) {
+          this.setState({
+            userData: {
+              id: response.data.id,
+              name: response.data.name,
+              dob: response.data.dob,
+              email: response.data.email
+            }
+          });
+          this.getNewsFeed();
+        }
       })
       .catch((err) => {
-
+        console.log('Component mount error: ', err.response)
         if (!err.response) {
           this.setState({
             isConnectedToServer: false
@@ -61,7 +66,7 @@ class User extends React.Component {
   }
 
   getNewsFeed = () => {
-    getUserStories('/user/feeds')
+    getUserStories('/user/post')
       .then(response => {
         this.setState({
           ...this.state,
@@ -107,7 +112,7 @@ class User extends React.Component {
 
   handlePost = () => {
     if (this.state.postFieldData) {
-      createNewPost('/user', {
+      createNewPost('/user/post', {
         postData: this.state.postFieldData
       })
         .then(response => {
@@ -117,6 +122,10 @@ class User extends React.Component {
           this.getNewsFeed();
         })
         .catch(err => {
+          if (err.response && err.response.status === 401) {
+            tokenService.removeTokens();
+            this.props.history.push('/');
+          }
           console.log('not posted: ', err);
         });
     }
@@ -125,8 +134,9 @@ class User extends React.Component {
   handleEditSubmit = (submitInfo) => {
 
     if (submitInfo.type === 'post') {
-      updateContent('/user', submitInfo.data)
+      updateContent('/user/post', submitInfo.data)
         .then(response => {
+
           this.getNewsFeed();
         })
         .catch(err => {
@@ -147,6 +157,7 @@ class User extends React.Component {
           });
       })
     }
+
   }
 
   handleCommentSubmit = (commentData) => {
@@ -176,7 +187,7 @@ class User extends React.Component {
   }
 
   handlePostDelete = (postData) => {
-    deleteContent('/user', postData)
+    deleteContent('/user/post', postData)
       .then(response => {
         this.getNewsFeed();
         this.setState({
@@ -197,14 +208,41 @@ class User extends React.Component {
     }
   }
 
+  handleLogOut = () => {
+    logoutUser('/logout', {
+      refreshToken: tokenService.getRefreshToken()
+    })
+      .then(() => {
+        tokenService.removeTokens();
+        this.props.history.push('/');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  handleProfileClick = () => {
+    return this.props.history.push(`/user/user_${this.state.userData.id}`);
+  }
+
+  handleHomeClick = () => {
+    this.props.history.push('/user');
+    window.location.reload();
+  }
+
+  handleProfileNameClick = (ownerId) => {
+    this.props.history.push(`/user/user_${ownerId}`);
+    window.location.reload();
+  }
+
   render() {
     if (this.state.isConnectedToServer) {
       return (
         <Fragment>
-          <Header userId={this.state.userData.id} profileName={this.state.userData.name} isInsideUser={true} {...this.props} />
+          <Header userId={this.state.userData.id} profileName={this.state.userData.name} isInsideUser={true} {...this.props} onLogOutClick={this.handleLogOut} onProfileClick={this.handleProfileClick} onHomeClick={this.handleHomeClick} />
           <div className="user-wrapper" onClick={this.handleUserWrapperClick}>
             <div className="profile-info-container">
-              <img src="http://localhost:3000/userpic.png" alt="user"></img>
+              <img src={`http://${localhost}:3000/userpic.png`} alt="user"></img>
               <span>
                 {this.state.userData.name}
               </span>
@@ -232,7 +270,9 @@ class User extends React.Component {
                       onOptionClick={this.handleOptionClick}
                       onEditSubmit={this.handleEditSubmit}
                       onCommentDelete={this.handleCommentDelete}
-                      onPostDelete={this.handlePostDelete} />
+                      onPostDelete={this.handlePostDelete}
+                      onProfileNameClick={this.handleProfileNameClick}
+                    />
                   </li>)}
                 </ul>
               </div>
@@ -240,10 +280,10 @@ class User extends React.Component {
             <div className="active-friendlist-container">
               <h4>Active Friends</h4>
               {/* place a list of friends here */}
-              <ActiveFriend />
+              {/* <UserHolder /> */}
             </div>
           </div>
-        </Fragment>
+        </Fragment >
       );
     }
     else {

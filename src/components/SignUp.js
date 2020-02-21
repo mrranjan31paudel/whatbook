@@ -5,6 +5,7 @@ import { EMAIL_REGEXP } from './../constants/config';
 import signupRequest from '../services/signup';
 import { MONTH, DAY, Year } from '../constants/dob';
 import validateSignup from '../validators/signup';
+import tokenService from './../services/token';
 
 import Header from './Header';
 import Label from './sub-components/Label';
@@ -37,6 +38,12 @@ class Register extends React.Component {
       userAlreadyExist: false,
       isConnectedToServer: true
     };
+  }
+
+  componentDidMount() {
+    if (tokenService.getAccessToken()) {
+      return this.props.history.push('/user');
+    }
   }
 
   handleChange = (targetField, value) => {

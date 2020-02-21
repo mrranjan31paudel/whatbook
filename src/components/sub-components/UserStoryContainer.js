@@ -5,6 +5,7 @@ import Comment from './Comment';
 import parseDateTime from './../../utils/dateParser';
 import PopUpMenu from './../PopUpMenu';
 import { setPostPermissions } from './../../utils/permissionDefiner';
+import { localhost } from './../../constants/config';
 
 import './../../styles/user/user.story.container.css';
 
@@ -14,7 +15,7 @@ class UserStoryContainer extends React.Component {
     this.state = {
       commentText: '',
       comments: [],
-      editText: '',
+      postText: '',
       isSubmitted: false,
       isEditClicked: false,
       isDeleteClicked: false,
@@ -103,7 +104,7 @@ class UserStoryContainer extends React.Component {
       type: 'post',
       data: {
         postId: this.props.postData.id,
-        newPostText: this.state.editText ? this.state.editText : this.props.postData.content
+        newPostText: this.state.postText ? this.state.postText : this.props.postData.content
       }
     });
     this.getAllComments();
@@ -173,6 +174,11 @@ class UserStoryContainer extends React.Component {
       });
   }
 
+  handlePostNameClick = (e) => {
+    e.preventDefault();
+    this.props.onProfileNameClick(this.props.postData.userid);
+  }
+
   render() {
 
     return (
@@ -181,12 +187,12 @@ class UserStoryContainer extends React.Component {
         <div className="post-head-wrapper">
           <div className="poster-title">
             <div className="poster-title-wrapper">
-              <img src="http://localhost:3000/userpic.png" alt="userpic"></img>
-              <span className="poster-name"><Link to={`/user/user_${this.props.postData.userid}`}>{this.props.postData.name}</Link></span>
+              <img src={`http://${localhost}:3000/userpic.png`} alt="userpic"></img>
+              <span className="poster-name"><Link to={`/user/user_${this.props.postData.userid}`} onClick={this.handlePostNameClick}>{this.props.postData.name}</Link></span>
             </div>
             <div className="post-option-button" id={`post-option-button-${this.props.postData.id}`} onClick={this.handleOptionClick}>...</div>
           </div>
-          <span className="post-date-time">{parseDateTime(this.props.postData.date_time)}</span>
+          <span className="post-date-time">{parseDateTime(this.props.postData.date, this.props.postData.time)}</span>
         </div>
 
         <div className="post-body-wrapper">
@@ -232,6 +238,7 @@ class UserStoryContainer extends React.Component {
                       onReplySubmit={this.handleReplySubmit}
                       onEditSubmit={this.handleCommentEditSubmit}
                       onDeleteOptionClick={this.handleCommentDeleteClick}
+                      onCommentNameClick={this.props.onProfileNameClick}
                     />
                   </li>) :
                   ''
@@ -245,7 +252,7 @@ class UserStoryContainer extends React.Component {
         </div>
 
         {this.props.isOptionClicked && this.props.postData.id === this.props.selectedPostId ? <PopUpMenu config={this.state.popUpConfig} onItemClick={this.handleOptionItemClick} /> : ''}
-      </div>
+      </div >
 
     )
   }

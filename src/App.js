@@ -5,6 +5,7 @@ import Login from './components/Login';
 import SignUp from './components/SignUp';
 import User from './components/User';
 import UserProfile from './components/UserProfile';
+import People from './components/People';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import './styles/common/contentContainer.css';
@@ -26,6 +27,7 @@ class App extends React.Component {
               <Route exact path="/signup" component={SignUp} />
               <ProtectedRoute path="/user/:userId" comp={UserProfile} />
               <ProtectedRoute path="/user" comp={User} />
+              <ProtectedRoute path="/people" comp={People} />
 
             </Switch>
           </Router>

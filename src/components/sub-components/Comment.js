@@ -133,6 +133,11 @@ class Comment extends React.Component {
     })
   }
 
+  handleCommentNameClick = (e) => {
+    e.preventDefault();
+    this.props.onCommentNameClick(this.props.commentData.userid);
+  }
+
   render() {
 
     return (
@@ -140,7 +145,7 @@ class Comment extends React.Component {
         <div className="comment-container">
           <div className="comment-header">
             <div className="comment-content-wrapper">
-              <span className="commenter-name"><Link to={`/user/user_${this.props.commentData.userid}`}>{this.props.commentData.name}</Link></span>
+              <span className="commenter-name"><Link onClick={this.handleCommentNameClick} to={`/user/user_${this.props.commentData.userid}`}>{this.props.commentData.name}</Link></span>
               {
                 this.state.isEditClicked ?
                   <form className="comment-edit-wrapper" onSubmit={this.handleEditSubmit}>
@@ -182,7 +187,7 @@ class Comment extends React.Component {
               }
             </span>
             <span className="comment-time">
-              {parseDateTime(this.props.commentData.date_time)}
+              {parseDateTime(this.props.commentData.date, this.props.commentData.time)}
             </span>
           </div>
 
@@ -220,6 +225,7 @@ class Comment extends React.Component {
                       onReplySubmit={this.props.onReplySubmit}
                       onEditSubmit={this.props.onEditSubmit}
                       onDeleteOptionClick={this.props.onDeleteOptionClick}
+                      onCommentNameClick={this.props.onCommentNameClick}
                     />
                   </li>
                 )

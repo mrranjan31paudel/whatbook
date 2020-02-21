@@ -8,9 +8,36 @@
 }
 
 .header-seg nav{
-    width: 60%;
+    width: 80%;
     margin: 1px auto;
     padding: 1px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.search-bar-container {
+    margin: auto 1px;
+    display: flex;
+    flex-direction: row;
+}
+
+.search-bar {
+    display: block;
+    padding: 8px;
+    border: none;
+    border-radius: 10px;
+    background: rgb(233, 233, 233);
+}
+
+.search-bar:focus {
+    outline: none;
+    background: white;
+}
+
+.search-img {
+    margin: 4px;
+    height: 2.5vmin;
 }
 
 .header-seg nav ul{
@@ -24,13 +51,20 @@
 .header-seg nav ul li{
     margin: 5px;
     padding: 5px;
-    
 }
 
-.header-seg nav ul li a{
+.header-seg nav ul li div {
+    height: 100%;
+}
+
+.nav-img {
+    height: 2.5vmin;
+}
+
+.header-seg nav ul li div a{
     color: white;
-    font-weight: 500;
     text-decoration: none;
+    font-size: calc(6px + 1vmin);
 }
 
 .header-seg .not-in-user{

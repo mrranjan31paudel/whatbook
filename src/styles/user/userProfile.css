@@ -10,7 +10,6 @@
   margin: 5px;
   display: flex;
   flex-direction: row;
-  background-image: url("http://localhost:3000/userpic.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -32,23 +31,44 @@
   background: rgba(0, 0, 0, 0.452);
 }
 
-.profile-image-container {
-  height: 100%;
-  width: 25%;
-}
-
-.profile-image {
+.profile-image-container, .profile-image {
   height: 100%;
 }
 
 .profile-name-container {
-  width: 75%;
+  width: 50%;
   color: white;
   display: flex;
   flex-direction: column-reverse;
 }
 .profile-name-container h1 {
   margin: 10px;
+}
+
+.frienship-button-container {
+  width: 25%;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.frienship-button-container button {
+  margin: 5px;
+  padding: 5px;
+  background: rgb(0, 158, 0);
+  color: white;
+  font-weight: 600;
+  border: 2px solid rgb(0, 180, 0);
+  border-radius: 4px;
+}
+
+.frienship-button-container button:hover {
+  cursor: pointer;
+  background: rgb(0, 180, 0);
+  border: 2px solid rgb(0, 158, 0); 
+}
+
+.frienship-button-container span {
+  color: white;
 }
 
 .profile-body {
@@ -94,6 +114,21 @@
   word-break: break-all;
   padding: 2px 0;
   border-bottom: 1px solid rgb(202, 202, 202);
+}
+
+.profile-edit-button {
+  margin: 5px;
+  padding: 5px;
+  background: rgb(0, 158, 0);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+}
+
+.profile-edit-button:hover {
+  cursor: pointer;
+  background: rgb(0, 180, 0);
 }
 
 .profile-posts-container{
