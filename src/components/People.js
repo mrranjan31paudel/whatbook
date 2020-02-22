@@ -15,7 +15,10 @@ class People extends React.Component {
     this.state = {
       friendList: [],
       peopleList: [],
-      requestList: [],
+      requestList: {
+        sentList: [],
+        recievedList: []
+      },
       userData: {
         id: '',
         name: '',
@@ -93,7 +96,7 @@ class People extends React.Component {
 
   getListOfRequests = () => {
     getRequestList('/user/requests', {
-      userId: this.state.userData.id
+      type: 'list'
     })
       .then(response => {
         console.log('RESPONSE: ', response);
@@ -170,13 +173,21 @@ class People extends React.Component {
 
   handleHomeClick = () => {
     this.props.history.push('/user');
-    window.location.reload();
+    // window.location.reload();
   }
 
   render() {
     return (
       <Fragment>
-        <Header userId={this.state.userData.id} profileName={this.state.userData.name} isInsideUser={true} {...this.props} onLogOutClick={this.handleLogOut} onProfileClick={this.handleProfileClick} onHomeClick={this.handleHomeClick} />
+        <Header
+          userId={this.state.userData.id}
+          profileName={this.state.userData.name}
+          numberOfUnansweredRequests={this.state.requestList.recievedList.length}
+          isInsideUser={true} {...this.props}
+          onLogOutClick={this.handleLogOut}
+          onProfileClick={this.handleProfileClick}
+          onHomeClick={this.handleHomeClick}
+        />
 
         <div className="people-container">
           <div className="friend-list-container">
@@ -199,28 +210,55 @@ class People extends React.Component {
               <h3>
                 Friend Requests
               </h3>
-              <ul className="request-list-wrapper">
+
+              <div className="sent-list-wrapper">
+                <span className="request-type-text">Sent</span>
                 {
-                  this.state.requestList.map((data, index) =>
-                    <li key={index}>
-                      <UserHolder userData={data.user} />
+                  this.state.requestList.sentList.length > 0 ?
+                    <ul className="sent-list">
                       {
-                        data.isSender ? <button id={`cancel-${data.user.id}`} onClick={this.handleDeleteRequestClick}>Cancel Request</button> : ''
+                        this.state.requestList.sentList.map((data, index) =>
+                          <li key={index}>
+                            <Fragment>
+                              <UserHolder userData={data} />
+                              <button id={`cancel-${data.id}`} onClick={this.handleDeleteRequestClick}>Cancel Request</button>
+                            </Fragment>
+                          </li>
+                        )
                       }
-                      {
-                        data.isReciever ?
-                          <Fragment>
-                            <button id={`accept-${data.user.id}`} onClick={this.handleAcceptRequestClick}>Accept</button>
-                            <button id={`delete-${data.user.id}`} onClick={this.handleDeleteRequestClick}>Delete</button>
-                          </Fragment> : ''
-                      }
-                    </li>
-                  )
+                    </ul> :
+                    <Fragment>
+                      <br></br><span className="empty-request-list-text">No Requests Sent.</span>
+                    </Fragment>
+
                 }
-              </ul>
+              </div>
+              <hr />
+              <div className="recieved-list-wrapper">
+                <span className="request-type-text">Recieved</span>
+                {
+                  this.state.requestList.recievedList.length > 0 ?
+                    <ul className="recieved-list">
+                      {
+                        this.state.requestList.recievedList.map((data, index) =>
+                          <li key={index}>
+                            <Fragment>
+                              <UserHolder userData={data} />
+                              <button id={`accept-${data.id}`} onClick={this.handleAcceptRequestClick}>Accept</button>
+                              <button id={`delete-${data.id}`} onClick={this.handleDeleteRequestClick}>Delete</button>
+                            </Fragment>
+                          </li>
+                        )
+                      }
+                    </ul> :
+                    <Fragment>
+                      <br></br><span className="empty-request-list-text">No Requests Recieved.</span>
+                    </Fragment>
+                }
+              </div>
 
             </div>
-            <hr />
+
             <div className="people-list-container">
               <h3>
                 People
@@ -238,7 +276,7 @@ class People extends React.Component {
             </div>
           </div>
         </div>
-      </Fragment>
+      </Fragment >
     );
   }
 }

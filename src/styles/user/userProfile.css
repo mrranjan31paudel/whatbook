@@ -152,3 +152,9 @@
   width: 100%;
   text-align: center;
 }
+
+.no-posts-to-show {
+  margin: 10px;
+  font-size: calc(10px + 1vmin);
+  color: grey;
+}

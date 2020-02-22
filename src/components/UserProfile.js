@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-import { getUserDetails, getUserStories, updateContent, postComment, deleteContent, getComments, logoutUser, sendRequest, acceptRequest, deleteRequest } from './../services/user';
+import { getUserDetails, getUserStories, updateContent, postComment, deleteContent, getComments, logoutUser, sendRequest, acceptRequest, deleteRequest, getRequestList } from './../services/user';
 import tokenService from './../services/token';
 import { localhost } from './../constants/config';
 
@@ -31,6 +31,7 @@ class UserProfile extends React.Component {
         isRequestSent: ''
       },
       userPosts: [],
+      numberOfUnansweredRequests: 0,
       isConnectedToServer: true,
       isLoading: false,
       isOptionClicked: false,
@@ -75,7 +76,7 @@ class UserProfile extends React.Component {
 
   getUserProfileDetails = () => {
 
-    const userId = parseInt(this.props.match.params.userId.split('_')[1]);
+    const userId = this.props.match.params.userId.split('_')[1];
     if (userId) {
       this.setState({
         isLoading: true
@@ -98,6 +99,7 @@ class UserProfile extends React.Component {
             isLoading: false
           });
           this.getUserPosts();
+          this.getNumberOfNewRequests();
         })
         .catch((err) => {
           console.log(err);
@@ -110,9 +112,24 @@ class UserProfile extends React.Component {
     }
   }
 
+  getNumberOfNewRequests = () => {
+    getRequestList('/user/requests', {
+      type: 'number'
+    })
+      .then(response => {
+        console.log('RESPONSE: ', response);
+        this.setState({
+          numberOfUnansweredRequests: response.data.numberOfUnansweredRequests
+        })
+      })
+      .catch(error => {
+        console.log('Request List Error: ', error);
+      });
+  }
+
   getUserPosts = () => {
     const userId = parseInt(this.props.match.params.userId.split('_')[1]);
-    if (userId) {
+    if (userId && (this.state.profileData.isFriend || this.state.profileData.isOwner)) {
       getUserStories('/user/post', {
         id: userId
       })
@@ -286,10 +303,8 @@ class UserProfile extends React.Component {
   handleProfileClick = (e) => {
 
     this.props.history.push(`/user/user_${this.state.userData.id}`);
-    window.location.reload();
-    this.setState({
-      isLoading: true
-    })
+    // window.location.reload();
+    this.getUserProfileDetails();
   }
 
   handleHomeClick = () => {
@@ -298,10 +313,9 @@ class UserProfile extends React.Component {
 
   handleProfileNameClick = (ownerId) => {
     this.props.history.push(`/user/user_${ownerId}`);
-    window.location.reload();
-    this.setState({
-      isLoading: true
-    })
+    // window.location.reload();
+    this.getUserProfileDetails();
+
   }
 
   render() {
@@ -311,7 +325,16 @@ class UserProfile extends React.Component {
       if (profileId === this.state.profileData.id) {
         return (
           <Fragment>
-            <Header userId={this.state.userData.id} profileName={this.state.userData.name} isInsideUser={true} {...this.props} onLogOutClick={this.handleLogOut} onProfileClick={this.handleProfileClick} onHomeClick={this.handleHomeClick} />
+            <Header
+              userId={this.state.userData.id}
+              profileName={this.state.userData.name}
+              numberOfUnansweredRequests={this.state.numberOfUnansweredRequests}
+              isInsideUser={true}
+              {...this.props}
+              onLogOutClick={this.handleLogOut}
+              onProfileClick={this.handleProfileClick}
+              onHomeClick={this.handleHomeClick}
+            />
             <div className="user-profile-wrapper" onClick={this.handleProfileWrapperClick}>
               <div className="profile-header">
                 <div className="profile-banner" style={{ backgroundImage: `http://${localhost}:3000/userpic.png` }}>
@@ -380,25 +403,29 @@ class UserProfile extends React.Component {
                   <h3>
                     Posts
                 </h3>
-                  <ul className="profile-post-lists">
-                    {this.state.userPosts.map((data, index) => <li key={data.id}>
-                      <UserStoryContainer
-                        userId={this.state.userData.id}
-                        userName={this.state.userData.name}
-                        postData={data}
-                        getCommentList={this.getCommentList}
-                        isOptionClicked={this.state.isOptionClicked}
-                        selectedCommentId={this.state.selectedCommentId}
-                        selectedPostId={this.state.selectedPostId}
-                        onCommentSubmit={this.handleCommentSubmit}
-                        onOptionClick={this.handleOptionClick}
-                        onEditSubmit={this.handleEditSubmit}
-                        onCommentDelete={this.handleCommentDelete}
-                        onPostDelete={this.handlePostDelete}
-                        onProfileNameClick={this.handleProfileNameClick}
-                      />
-                    </li>)}
-                  </ul>
+                  {
+                    this.state.profileData.isFriend || this.state.profileData.isOwner ?
+                      <ul className="profile-post-lists">
+                        {this.state.userPosts.map((data, index) => <li key={data.id}>
+                          <UserStoryContainer
+                            userId={this.state.userData.id}
+                            userName={this.state.userData.name}
+                            postData={data}
+                            getCommentList={this.getCommentList}
+                            isOptionClicked={this.state.isOptionClicked}
+                            selectedCommentId={this.state.selectedCommentId}
+                            selectedPostId={this.state.selectedPostId}
+                            onCommentSubmit={this.handleCommentSubmit}
+                            onOptionClick={this.handleOptionClick}
+                            onEditSubmit={this.handleEditSubmit}
+                            onCommentDelete={this.handleCommentDelete}
+                            onPostDelete={this.handlePostDelete}
+                            onProfileNameClick={this.handleProfileNameClick}
+                          />
+                        </li>)}
+                      </ul> :
+                      <span className="no-posts-to-show">No Posts to show.</span>
+                  }
                 </div>
               </div>
             </div>

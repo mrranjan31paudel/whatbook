@@ -17,10 +17,6 @@ class Header extends React.Component {
               <img className="search-img" src={`http://${localhost}:3000/search-solid.svg`} alt="searchSVG"></img>
             </div>
             <ul >
-              {/* <li>
-                
-              </li> */}
-
               <li>
                 <div>
                   <Link onClick={this.props.onProfileClick} to={`/user/user_${this.props.userId}`} >
@@ -39,10 +35,25 @@ class Header extends React.Component {
 
               <li>
                 <div>
+                  <Link onClick={this.props.onHomeClick} to="/user">
+                    <img className="nav-img" src={`http://${localhost}:3000/bell-solid.svg`} alt="notificationSVG"></img>
+                  </Link>
+                </div>
+              </li>
+
+              <li>
+                <div className="friends-link-container">
                   <Link to="/people">{/* link to should be 'people'*/}
                     <img className="nav-img" src={`http://${localhost}:3000/user-friends-solid.svg`} alt="friendsSVG"></img>
                   </Link>
                 </div>
+                {
+                  this.props.numberOfUnansweredRequests > 0 ?
+                    <span className="red-dot-notification">
+                      {this.props.numberOfUnansweredRequests}
+                    </span> :
+                    ''
+                }
               </li>
 
               <li>

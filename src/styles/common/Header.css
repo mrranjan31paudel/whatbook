@@ -8,6 +8,7 @@
 }
 
 .header-seg nav{
+    position: relative;
     width: 80%;
     margin: 1px auto;
     padding: 1px;
@@ -41,6 +42,7 @@
 }
 
 .header-seg nav ul{
+    position: relative;
     list-style-type: none;
     margin: 5px;
     padding: 5px;
@@ -49,6 +51,7 @@
     justify-content: flex-end;
 }
 .header-seg nav ul li{
+    position: relative;
     margin: 5px;
     padding: 5px;
 }
@@ -69,4 +72,20 @@
 
 .header-seg .not-in-user{
     height: 10vmin;
+}
+
+.friends-link-container {
+    position: relative;
+}
+
+.red-dot-notification {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    z-index: 15;
+    background: red;
+    font-size: 12px;
+    font-weight: 500;
+    color: white;
+    border-radius: 50%;
 }

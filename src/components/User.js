@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-import { getUserDetails, getUserStories, createNewPost, postComment, getComments, updateContent, deleteContent, logoutUser } from './../services/user';
+import { getUserDetails, getUserStories, createNewPost, postComment, getComments, updateContent, deleteContent, logoutUser, getRequestList } from './../services/user';
 import tokenService from './../services/token';
 
 import UserStoryContainer from './sub-components/UserStoryContainer';
@@ -28,6 +28,7 @@ class User extends React.Component {
       },
       postFieldData: '',
       userStories: [],
+      numberOfUnansweredRequests: 0,
       isOptionClicked: false,
       selectedCommentId: null,
       selectedPostId: null,
@@ -49,6 +50,7 @@ class User extends React.Component {
             }
           });
           this.getNewsFeed();
+          this.getNumberOfNewRequests();
         }
       })
       .catch((err) => {
@@ -62,6 +64,21 @@ class User extends React.Component {
           tokenService.removeTokens();
           return this.props.history.push('/');
         }
+      });
+  }
+
+  getNumberOfNewRequests = () => {
+    getRequestList('/user/requests', {
+      type: 'number'
+    })
+      .then(response => {
+        console.log('RESPONSE: ', response);
+        this.setState({
+          numberOfUnansweredRequests: response.data.numberOfUnansweredRequests
+        })
+      })
+      .catch(error => {
+        console.log('Request List Error: ', error);
       });
   }
 
@@ -227,19 +244,28 @@ class User extends React.Component {
 
   handleHomeClick = () => {
     this.props.history.push('/user');
-    window.location.reload();
+    // window.location.reload();
   }
 
   handleProfileNameClick = (ownerId) => {
     this.props.history.push(`/user/user_${ownerId}`);
-    window.location.reload();
+    // window.location.reload();
   }
 
   render() {
     if (this.state.isConnectedToServer) {
       return (
         <Fragment>
-          <Header userId={this.state.userData.id} profileName={this.state.userData.name} isInsideUser={true} {...this.props} onLogOutClick={this.handleLogOut} onProfileClick={this.handleProfileClick} onHomeClick={this.handleHomeClick} />
+          <Header
+            userId={this.state.userData.id}
+            profileName={this.state.userData.name}
+            numberOfUnansweredRequests={this.state.numberOfUnansweredRequests}
+            isInsideUser={true}
+            {...this.props}
+            onLogOutClick={this.handleLogOut}
+            onProfileClick={this.handleProfileClick}
+            onHomeClick={this.handleHomeClick}
+          />
           <div className="user-wrapper" onClick={this.handleUserWrapperClick}>
             <div className="profile-info-container">
               <img src={`http://${localhost}:3000/userpic.png`} alt="user"></img>
