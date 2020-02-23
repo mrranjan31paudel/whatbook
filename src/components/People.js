@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-import { getUserDetails, getPeopleList, getFriendList, getRequestList, logoutUser, sendRequest, acceptRequest, deleteRequest } from './../services/user';
+import { getUserDetails, getPeopleList, getFriendList, getRequestList, logoutUser, sendRequest, acceptRequest, deleteRequest, getNotificationsList } from './../services/user';
 import tokenService from './../services/token';
 
 import Header from './Header';
@@ -25,7 +25,8 @@ class People extends React.Component {
         dob: '',
         email: ''
       },
-
+      numberOfUnreadNotifications: 0,
+      userNotifications: []
     }
   }
 
@@ -44,6 +45,7 @@ class People extends React.Component {
             }
           });
           //this.getPeopleList();
+          this.getNumberOfUnreadNotifications();
           this.getListOfFriends();
           this.getListOfRequests();
           this.getListOfPeople();
@@ -106,6 +108,21 @@ class People extends React.Component {
       })
       .catch(error => {
         console.log('Request List Error: ', error);
+      });
+  }
+
+  getNumberOfUnreadNotifications = () => { // called while loading the user
+    getNotificationsList('/user/notifications', {
+      type: 'number'
+    })
+      .then(response => {
+        console.log('notifications response: ', response);
+        this.setState({
+          numberOfUnreadNotifications: response.data.numberOfUnreadNotifications
+        });
+      })
+      .catch(err => {
+        console.log('Notification number error: ', err);
       });
   }
 
@@ -172,7 +189,7 @@ class People extends React.Component {
   }
 
   handleHomeClick = () => {
-    this.props.history.push('/user');
+    return this.props.history.push('/user');
     // window.location.reload();
   }
 
@@ -183,10 +200,12 @@ class People extends React.Component {
           userId={this.state.userData.id}
           profileName={this.state.userData.name}
           numberOfUnansweredRequests={this.state.requestList.recievedList.length}
+          numberOfUnreadNotifications={this.state.numberOfUnreadNotifications}
           isInsideUser={true} {...this.props}
           onLogOutClick={this.handleLogOut}
           onProfileClick={this.handleProfileClick}
           onHomeClick={this.handleHomeClick}
+
         />
 
         <div className="people-container">

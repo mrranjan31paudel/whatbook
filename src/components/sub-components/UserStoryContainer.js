@@ -53,7 +53,8 @@ class UserStoryContainer extends React.Component {
       const commentData = {
         text: this.state.commentText,
         parentPostId: this.props.postData.id,
-        parentCommentId: ''
+        parentCommentId: '',
+        postOwnerId: this.props.postData.userid
       }
       this.props.onCommentSubmit(commentData)
         .then(commentList => {

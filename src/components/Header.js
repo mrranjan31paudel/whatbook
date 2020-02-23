@@ -8,6 +8,7 @@ import './../styles/common/Header.css';
 class Header extends React.Component {
 
   render() {
+
     if (this.props.isInsideUser) {
       return (
         <header className="header-seg">
@@ -35,15 +36,22 @@ class Header extends React.Component {
 
               <li>
                 <div>
-                  <Link onClick={this.props.onHomeClick} to="/user">
+                  <Link onClick={this.props.onNotificationsClick} to="/notifications">
                     <img className="nav-img" src={`http://${localhost}:3000/bell-solid.svg`} alt="notificationSVG"></img>
                   </Link>
                 </div>
+                {
+                  this.props.numberOfUnreadNotifications > 0 ?
+                    <span className="red-dot-notification">
+                      {this.props.numberOfUnreadNotifications}
+                    </span> :
+                    ''
+                }
               </li>
 
               <li>
-                <div className="friends-link-container">
-                  <Link to="/people">{/* link to should be 'people'*/}
+                <div>
+                  <Link to="/people">
                     <img className="nav-img" src={`http://${localhost}:3000/user-friends-solid.svg`} alt="friendsSVG"></img>
                   </Link>
                 </div>

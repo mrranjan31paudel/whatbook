@@ -13,7 +13,7 @@ class ProtectedRoute extends React.Component {
     render() {
         const Component = this.props.comp;
         return (
-            <Route path={this.props.path} {...this.props} render={props => {
+            <Route exact path={this.props.path} {...this.props} render={props => {
                 return (
                     this.isLoggedIn() ? <Component {...this.props} {...props} /> : <Redirect to="/" />
                 );

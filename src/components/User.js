@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-import { getUserDetails, getUserStories, createNewPost, postComment, getComments, updateContent, deleteContent, logoutUser, getRequestList } from './../services/user';
+import { getUserDetails, getUserStories, createNewPost, postComment, getComments, updateContent, deleteContent, logoutUser, getRequestList, getNotificationsList } from './../services/user';
 import tokenService from './../services/token';
 
 import UserStoryContainer from './sub-components/UserStoryContainer';
@@ -28,7 +28,9 @@ class User extends React.Component {
       },
       postFieldData: '',
       userStories: [],
+      userNotifications: [],
       numberOfUnansweredRequests: 0,
+      numberOfUnreadNotifications: 0,
       isOptionClicked: false,
       selectedCommentId: null,
       selectedPostId: null,
@@ -51,6 +53,7 @@ class User extends React.Component {
           });
           this.getNewsFeed();
           this.getNumberOfNewRequests();
+          this.getNumberOfUnreadNotifications();
         }
       })
       .catch((err) => {
@@ -85,6 +88,7 @@ class User extends React.Component {
   getNewsFeed = () => {
     getUserStories('/user/post')
       .then(response => {
+        console.log('FEEDS: ', response);
         this.setState({
           ...this.state,
           userStories: response.data
@@ -101,10 +105,6 @@ class User extends React.Component {
         postId: postId
       })
         .then(response => {
-
-          this.setState({
-            toUpdatePostId: ''
-          });
           resolve(response.data);
         })
         .catch(err => {
@@ -113,12 +113,19 @@ class User extends React.Component {
     });
   }
 
-  handleOptionClick = (postId, commentId) => {
-    this.setState({
-      isOptionClicked: !this.state.isOptionClicked,
-      selectedCommentId: commentId,
-      selectedPostId: postId
+  getNumberOfUnreadNotifications = () => { // called while loading the user
+    getNotificationsList('/user/notifications', {
+      type: 'number'
     })
+      .then(response => {
+        console.log('notifications response: ', response);
+        this.setState({
+          numberOfUnreadNotifications: response.data.numberOfUnreadNotifications
+        });
+      })
+      .catch(err => {
+        console.log('Notification number error: ', err);
+      });
   }
 
   handlePostFieldChange = (e) => {
@@ -146,6 +153,14 @@ class User extends React.Component {
           console.log('not posted: ', err);
         });
     }
+  }
+
+  handleOptionClick = (postId, commentId) => {
+    this.setState({
+      isOptionClicked: !this.state.isOptionClicked,
+      selectedCommentId: commentId,
+      selectedPostId: postId
+    })
   }
 
   handleEditSubmit = (submitInfo) => {
@@ -243,12 +258,12 @@ class User extends React.Component {
   }
 
   handleHomeClick = () => {
-    this.props.history.push('/user');
+    return this.props.history.push('/user');
     // window.location.reload();
   }
 
   handleProfileNameClick = (ownerId) => {
-    this.props.history.push(`/user/user_${ownerId}`);
+    return this.props.history.push(`/user/user_${ownerId}`);
     // window.location.reload();
   }
 
@@ -260,11 +275,13 @@ class User extends React.Component {
             userId={this.state.userData.id}
             profileName={this.state.userData.name}
             numberOfUnansweredRequests={this.state.numberOfUnansweredRequests}
+            numberOfUnreadNotifications={this.state.numberOfUnreadNotifications}
             isInsideUser={true}
             {...this.props}
             onLogOutClick={this.handleLogOut}
             onProfileClick={this.handleProfileClick}
             onHomeClick={this.handleHomeClick}
+
           />
           <div className="user-wrapper" onClick={this.handleUserWrapperClick}>
             <div className="profile-info-container">

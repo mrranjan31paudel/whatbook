@@ -57,6 +57,7 @@
 }
 
 .header-seg nav ul li div {
+    position: relative;
     height: 100%;
 }
 
@@ -70,12 +71,23 @@
     font-size: calc(6px + 1vmin);
 }
 
-.header-seg .not-in-user{
-    height: 10vmin;
+.header-seg nav ul li div button {
+    color: white;
+    background: transparent;
+    border: none;
+    padding: 0px;
 }
 
-.friends-link-container {
-    position: relative;
+.header-seg nav ul li div button:hover {
+    cursor: pointer;
+}
+
+.header-seg nav ul li div button:focus{
+    outline: none;
+}
+
+.header-seg .not-in-user{
+    height: 10vmin;
 }
 
 .red-dot-notification {
@@ -85,7 +97,8 @@
     z-index: 15;
     background: red;
     font-size: 12px;
+    padding: 1px 2px;
     font-weight: 500;
     color: white;
-    border-radius: 50%;
+    border-radius: 3px
 }

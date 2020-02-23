@@ -116,6 +116,8 @@ class Comment extends React.Component {
         text: this.state.replyText,
         parentPostId: this.props.postId,
         parentCommentId: this.props.commentData.id,
+        parentCommentOwnerId: this.props.commentData.userid,
+        postOwnerId: this.props.posterId
       }
 
       this.props.onReplySubmit(replyData);

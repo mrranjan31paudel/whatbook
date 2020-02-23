@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-import { getUserDetails, getUserStories, updateContent, postComment, deleteContent, getComments, logoutUser, sendRequest, acceptRequest, deleteRequest, getRequestList } from './../services/user';
+import { getUserDetails, getUserStories, updateContent, postComment, deleteContent, getComments, logoutUser, sendRequest, acceptRequest, deleteRequest, getRequestList, getNotificationsList } from './../services/user';
 import tokenService from './../services/token';
 import { localhost } from './../constants/config';
 
@@ -31,6 +31,8 @@ class UserProfile extends React.Component {
         isRequestSent: ''
       },
       userPosts: [],
+      userNotifications: [],
+      numberOfUnreadNotifications: 0,
       numberOfUnansweredRequests: 0,
       isConnectedToServer: true,
       isLoading: false,
@@ -57,6 +59,7 @@ class UserProfile extends React.Component {
           }
         });
         this.getUserProfileDetails();
+        this.getNumberOfUnreadNotifications();
       })
       .catch((err) => {
         console.log('ERROR: ', err);
@@ -131,7 +134,7 @@ class UserProfile extends React.Component {
     const userId = parseInt(this.props.match.params.userId.split('_')[1]);
     if (userId && (this.state.profileData.isFriend || this.state.profileData.isOwner)) {
       getUserStories('/user/post', {
-        id: userId
+        userId: userId
       })
         .then(response => {
           this.setState({
@@ -166,6 +169,21 @@ class UserProfile extends React.Component {
           console.log('comments get error: ', err);
         });
     });
+  }
+
+  getNumberOfUnreadNotifications = () => { // called while loading the user
+    getNotificationsList('/user/notifications', {
+      type: 'number'
+    })
+      .then(response => {
+        console.log('notifications response: ', response);
+        this.setState({
+          numberOfUnreadNotifications: response.data.numberOfUnreadNotifications
+        });
+      })
+      .catch(err => {
+        console.log('Notification number error: ', err);
+      });
   }
 
   handleProfileWrapperClick = (e) => { //to hide the popUp menu.
@@ -301,10 +319,9 @@ class UserProfile extends React.Component {
   }
 
   handleProfileClick = (e) => {
-
-    this.props.history.push(`/user/user_${this.state.userData.id}`);
+    return this.props.history.push(`/user/user_${this.state.userData.id}`);
     // window.location.reload();
-    this.getUserProfileDetails();
+    // this.getUserProfileDetails();
   }
 
   handleHomeClick = () => {
@@ -312,9 +329,9 @@ class UserProfile extends React.Component {
   }
 
   handleProfileNameClick = (ownerId) => {
-    this.props.history.push(`/user/user_${ownerId}`);
+    return this.props.history.push(`/user/user_${ownerId}`);
     // window.location.reload();
-    this.getUserProfileDetails();
+    // this.getUserProfileDetails();
 
   }
 
@@ -329,11 +346,13 @@ class UserProfile extends React.Component {
               userId={this.state.userData.id}
               profileName={this.state.userData.name}
               numberOfUnansweredRequests={this.state.numberOfUnansweredRequests}
+              numberOfUnreadNotifications={this.state.numberOfUnreadNotifications}
               isInsideUser={true}
               {...this.props}
               onLogOutClick={this.handleLogOut}
               onProfileClick={this.handleProfileClick}
               onHomeClick={this.handleHomeClick}
+
             />
             <div className="user-profile-wrapper" onClick={this.handleProfileWrapperClick}>
               <div className="profile-header">

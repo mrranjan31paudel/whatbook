@@ -56,4 +56,12 @@ function getRequestList(url, params = {}) {
   return get(url, params);
 }
 
-export { getUserDetails, getUserStories, createNewPost, logoutUser, postComment, getComments, updateContent, deleteContent, sendRequest, acceptRequest, deleteRequest, getPeopleList, getFriendList, getRequestList };
+function getNotificationsList(url, params = {}) {
+  return get(url, params);
+}
+
+function markNotificationAsRead(url, requestBody) {
+  return put(url, requestBody);
+}
+
+export { getUserDetails, getUserStories, createNewPost, logoutUser, postComment, getComments, updateContent, deleteContent, sendRequest, acceptRequest, deleteRequest, getPeopleList, getFriendList, getRequestList, getNotificationsList, markNotificationAsRead };
