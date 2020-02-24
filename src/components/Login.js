@@ -6,9 +6,9 @@ import tokenService from './../services/token';
 import validateLogin from '../validators/login';
 
 import Header from './Header';
-import TextField from './sub-components/TextField';
-import Label from './sub-components/Label';
-import Button from './sub-components/Button';
+import TextField from './TextField';
+import Label from './Label';
+import Button from './Button';
 import NoServerConnection from './NoServerConnection';
 
 import './../styles/loginsignup/formWrapper.css';

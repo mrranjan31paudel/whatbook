@@ -4,7 +4,7 @@ import { getUserDetails, getPeopleList, getFriendList, getRequestList, logoutUse
 import tokenService from './../services/token';
 
 import Header from './Header';
-import UserHolder from './sub-components/UserHolder';
+import UserHolder from './UserHolder';
 
 import './../styles/people/people.css';
 

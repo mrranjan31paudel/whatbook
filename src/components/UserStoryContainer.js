@@ -2,12 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import Comment from './Comment';
-import parseDateTime from './../../utils/dateParser';
-import PopUpMenu from './../PopUpMenu';
-import { setPostPermissions } from './../../utils/permissionDefiner';
-import { localhost } from './../../constants/config';
+import parseDateTime from '../utils/dateParser';
+import PopUpMenu from './PopUpMenu';
+import { setPostPermissions } from '../utils/permissionDefiner';
+import { localhost } from '../constants/config';
 
-import './../../styles/user/user.story.container.css';
+import './../styles/user/user.story.container.css';
 
 class UserStoryContainer extends React.Component {
   constructor() {

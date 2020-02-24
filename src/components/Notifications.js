@@ -112,6 +112,20 @@ class Notifications extends React.Component {
 
   }
 
+  handleMarkAsReadClick = (e) => {
+    e.preventDefault();
+
+    markNotificationAsRead('/user/notifications', {
+      notificationId: 'all'
+    })
+      .then(response => {
+        this.getListOfNotifications();
+      })
+      .catch(err => {
+        console.log('mark notification as read err: ', err)
+      })
+  }
+
   handleProfileClick = () => {
     return this.props.history.push(`/user/user_${this.state.userData.id}`);
   }
@@ -129,6 +143,7 @@ class Notifications extends React.Component {
   getUnreadNotifications = () => {
     return this.state.notificationList.filter(element => element.status === 0);
   }
+
 
   render() {
     return (
@@ -152,20 +167,23 @@ class Notifications extends React.Component {
           <hr />
           {
             this.state.notificationList.length > 0 ?
-              <ul className="notification-list-wrapper">
-                {
-                  this.state.notificationList.map((data, index) =>
-                    <li key={data.id} >
-                      <div className={data.status === 0 ? 'notification-container' : 'notification-container read-notification'} onClick={(e) => this.handleNotificationClick(e, data.id, data.target, data.targetid, data.post_ownerid, data.status)}>
-                        <p>
-                          <span className="issuer-name">{data.name}</span> {data.action} {data.target}.
+              <Fragment>
+                <a className="mark-as-read" href="/#" onClick={this.handleMarkAsReadClick} >Mark all as read</a>
+                <ul className="notification-list-wrapper">
+                  {
+                    this.state.notificationList.map((data, index) =>
+                      <li key={data.id} >
+                        <div className={data.status === 0 ? 'notification-container' : 'notification-container read-notification'} onClick={(e) => this.handleNotificationClick(e, data.id, data.target, data.targetid, data.post_ownerid, data.status)}>
+                          <p>
+                            <span className="issuer-name">{data.name}</span> {data.action} {data.target}.
                     </p>
-                        <span className="notification-date-time">{data.date} at {data.time}</span>
-                      </div>
-                    </li>
-                  )
-                }
-              </ul> :
+                          <span className="notification-date-time">{data.date} at {data.time}</span>
+                        </div>
+                      </li>
+                    )
+                  }
+                </ul>
+              </Fragment> :
               <span className="empty-notification-list-msg">No notifications.</span>
           }
         </div>

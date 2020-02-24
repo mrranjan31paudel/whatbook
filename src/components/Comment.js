@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import { setCommentPermissions } from './../../utils/permissionDefiner';
-import parseDateTime from './../../utils/dateParser';
-import PopUpMenu from './../PopUpMenu';
+import { setCommentPermissions } from '../utils/permissionDefiner';
+import parseDateTime from '../utils/dateParser';
+import PopUpMenu from './PopUpMenu';
 
-import './../../styles/user/comment.css';
+import './../styles/user/comment.css';
 
 class Comment extends React.Component {
 

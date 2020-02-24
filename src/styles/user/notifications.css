@@ -52,3 +52,15 @@
   font-size: calc(5px + 1vmin);
   color: grey;
 }
+
+.mark-as-read {
+  text-decoration: none;
+  margin: 5px;
+  padding: 5px;
+  color: green;
+  font-size: calc(6px + 1vmin);
+}
+
+.mark-as-read:hover {
+  text-decoration: underline;
+}

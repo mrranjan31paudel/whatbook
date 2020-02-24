@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import { localhost } from '../../constants/config';
+import { localhost } from '../constants/config';
 
-import './../../styles/user/active.friend.container.css';
+import './../styles/user/active.friend.container.css';
 
 class UserHolder extends Component {
     render() {

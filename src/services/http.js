@@ -54,12 +54,14 @@ function getRequestHeader() {
 axios.interceptors.response.use(
   response => {
     return response;
+
   },
   error => {
 
     if (error.response && error.response.status === 401 && error.response.data.msg === 'TOKEN_EXPIRED') {
-      console.log('in token expired interceptor');
+
       if (!token.getRefreshToken()) {
+        token.removeTokens();
         return Promise.reject(error);
       }
 
@@ -67,6 +69,7 @@ axios.interceptors.response.use(
         heldRequests.push(error);
       }
       else {
+        heldRequests = [];
         heldRequests.push(error);
         isTokenBeingRefreshed = true;
         return axios({
@@ -79,28 +82,35 @@ axios.interceptors.response.use(
           headers: getRequestHeader()
         })
           .then(res => {
+
             isTokenBeingRefreshed = false;
             token.setTokens(res.data.accessToken, res.data.refreshToken);
+            let heldRequestsInAxios = [];
             heldRequests.forEach(element => {
               element.config.headers.authorization = token.getAccessToken();
-              axios(element.config);
+              heldRequestsInAxios.push(axios(element.config));
             });
-            heldRequests = [];
+
+            return axios.all(heldRequestsInAxios)
+              .then(axios.spread((...responses) => {
+                return responses[0];
+              }))
+              .catch(axios.spread((...errors) => {
+                return errors[0];
+              }));
           })
           .catch(err => {
             if (err.response.status === 401) {
               token.removeTokens();
-              return;
+              return Promise.reject(err);
             }
             return Promise.reject(err);
           });
-
       }
-
-    } else {
+    }
+    else {
       return Promise.reject(error);
     }
-
   }
 );
 

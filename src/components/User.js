@@ -3,8 +3,8 @@ import React, { Fragment } from 'react';
 import { getUserDetails, getUserStories, createNewPost, postComment, getComments, updateContent, deleteContent, logoutUser, getRequestList, getNotificationsList } from './../services/user';
 import tokenService from './../services/token';
 
-import UserStoryContainer from './sub-components/UserStoryContainer';
-// import UserHolder from './sub-components/UserHolder';
+import UserStoryContainer from './UserStoryContainer';
+// import UserHolder from './UserHolder';
 import Header from './Header';
 import NoServerConnection from './NoServerConnection';
 
@@ -29,6 +29,7 @@ class User extends React.Component {
       postFieldData: '',
       userStories: [],
       userNotifications: [],
+      activeFriendList: [],
       numberOfUnansweredRequests: 0,
       numberOfUnreadNotifications: 0,
       isOptionClicked: false,
@@ -39,8 +40,10 @@ class User extends React.Component {
   }
 
   componentDidMount() {
+    console.log('from user component did mount.');
     getUserDetails('/user')
       .then(response => {
+        console.log('USER DATA RESPONSE: ', response);
 
         if (response) {
           this.setState({
@@ -320,11 +323,11 @@ class User extends React.Component {
                 </ul>
               </div>
             </div>
-            <div className="active-friendlist-container">
+            {/* <div className="active-friendlist-container">
               <h4>Active Friends</h4>
-              {/* place a list of friends here */}
-              {/* <UserHolder /> */}
-            </div>
+              place a list of friends here
+              <UserHolder />
+            </div> */}
           </div>
         </Fragment >
       );

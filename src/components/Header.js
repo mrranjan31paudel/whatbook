@@ -21,7 +21,7 @@ class Header extends React.Component {
               <li>
                 <div>
                   <Link onClick={this.props.onProfileClick} to={`/user/user_${this.props.userId}`} >
-                    {this.props.profileName} <img className="nav-img" src={`http://${localhost}:3000/user-solid.svg`} alt="profileSVG"></img>
+                    <span>{this.props.profileName}</span> <img className="nav-img" src={`http://${localhost}:3000/user-solid.svg`} alt="profileSVG"></img>
                   </Link>
                 </div>
               </li>

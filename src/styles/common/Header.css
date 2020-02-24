@@ -54,6 +54,7 @@
     position: relative;
     margin: 5px;
     padding: 5px;
+    border-radius: 2px;
 }
 
 .header-seg nav ul li div {
@@ -63,27 +64,23 @@
 
 .nav-img {
     height: 2.5vmin;
+    padding: 2px;
+    border-radius: 2px;
+}
+
+.header-seg nav ul li div span{
+    padding: 2px;
 }
 
 .header-seg nav ul li div a{
+    display: block;
     color: white;
     text-decoration: none;
     font-size: calc(6px + 1vmin);
 }
 
-.header-seg nav ul li div button {
-    color: white;
-    background: transparent;
-    border: none;
-    padding: 0px;
-}
-
-.header-seg nav ul li div button:hover {
-    cursor: pointer;
-}
-
-.header-seg nav ul li div button:focus{
-    outline: none;
+.header-seg nav ul li div a:hover .nav-img {
+    background: rgba(0, 0, 0, 0.157);
 }
 
 .header-seg .not-in-user{

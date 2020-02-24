@@ -8,10 +8,10 @@ import validateSignup from '../validators/signup';
 import tokenService from './../services/token';
 
 import Header from './Header';
-import Label from './sub-components/Label';
-import TextField from './sub-components/TextField';
-import Button from './sub-components/Button';
-import Dropdown from './sub-components/Dropdown';
+import Label from './Label';
+import TextField from './TextField';
+import Button from './Button';
+import Dropdown from './Dropdown';
 import NoServerConnection from './NoServerConnection';
 
 import './../styles/loginsignup/formWrapper.css';

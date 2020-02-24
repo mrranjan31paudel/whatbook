@@ -4,7 +4,7 @@ import { getUserDetails, getUserStories, getRequestList, getNotificationsList, u
 import tokenService from './../services/token';
 
 import Header from './Header';
-import UserStoryContainer from './sub-components/UserStoryContainer';
+import UserStoryContainer from './UserStoryContainer';
 
 import './../styles/user/singlePost.css';
 
@@ -236,24 +236,26 @@ class Post extends React.Component {
           onHomeClick={this.handleHomeClick}
         />
         <div className="user-post-container" onClick={this.handleUserWrapperClick}>
-          {
-            this.state.userPost.length > 0 ?
-              <UserStoryContainer
-                userId={this.state.userData.id}
-                userName={this.state.userData.name}
-                postData={this.state.userPost[0]}
-                getCommentList={this.getCommentList}
-                isOptionClicked={this.state.isOptionClicked}
-                selectedCommentId={this.state.selectedCommentId}
-                selectedPostId={this.state.selectedPostId}
-                onOptionClick={this.handleOptionClick}
-                onCommentSubmit={this.handleCommentSubmit}
-                onEditSubmit={this.handleEditSubmit}
-                onCommentDelete={this.handleCommentDelete}
-                onPostDelete={this.handlePostDelete}
-                onProfileNameClick={this.handleProfileNameClick}
-              /> : ''
-          }
+          <div className="user-post-wrapper">
+            {
+              this.state.userPost.length > 0 ?
+                <UserStoryContainer
+                  userId={this.state.userData.id}
+                  userName={this.state.userData.name}
+                  postData={this.state.userPost[0]}
+                  getCommentList={this.getCommentList}
+                  isOptionClicked={this.state.isOptionClicked}
+                  selectedCommentId={this.state.selectedCommentId}
+                  selectedPostId={this.state.selectedPostId}
+                  onOptionClick={this.handleOptionClick}
+                  onCommentSubmit={this.handleCommentSubmit}
+                  onEditSubmit={this.handleEditSubmit}
+                  onCommentDelete={this.handleCommentDelete}
+                  onPostDelete={this.handlePostDelete}
+                  onProfileNameClick={this.handleProfileNameClick}
+                /> : ''
+            }
+          </div>
         </div>
       </Fragment>
     );
