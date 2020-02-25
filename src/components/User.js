@@ -112,6 +112,7 @@ class User extends React.Component {
         })
         .catch(err => {
           console.log('comments get error: ', err);
+          reject(err);
         });
     });
   }

@@ -39,6 +39,7 @@ class Header extends React.Component {
                   <Link onClick={this.props.onNotificationsClick} to="/notifications">
                     <img className="nav-img" src={`http://${localhost}:3000/bell-solid.svg`} alt="notificationSVG"></img>
                   </Link>
+
                 </div>
                 {
                   this.props.numberOfUnreadNotifications > 0 ?

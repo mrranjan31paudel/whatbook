@@ -136,7 +136,7 @@ class Post extends React.Component {
       updateContent('/user/post', submitInfo.data)
         .then(response => {
 
-          this.getNewsFeed();
+          this.getUserPost();
         })
         .catch(err => {
           console.log('post edit submit error: ', err);
@@ -188,7 +188,7 @@ class Post extends React.Component {
   handlePostDelete = (postData) => {
     deleteContent('/user/post', postData)
       .then(response => {
-        this.getNewsFeed();
+        this.getUserPost();
         this.setState({
           isPostDeleteClicked: false,
           selectionId: {}

@@ -1,9 +1,11 @@
 import React, { Fragment } from 'react';
 
-import { getUserDetails, getRequestList, getNotificationsList, markNotificationAsRead } from './../services/user';
+import { getUserDetails, getRequestList, getNotificationsList, markNotificationAsRead, deleteNotification } from './../services/user';
 import tokenService from './../services/token';
+import { localhost } from './../constants/config';
 
 import Header from './Header';
+import ToolTip from './ToolTip';
 
 import './../styles/user/notifications.css';
 
@@ -126,6 +128,35 @@ class Notifications extends React.Component {
       })
   }
 
+  handleNotificationReadClick = (e, id, status) => {
+    e.preventDefault();
+
+    markNotificationAsRead('/user/notifications', {
+      notificationId: id,
+      toMakeStatus: status === 0 ? 1 : 0
+    })
+      .then(response => {
+        this.getListOfNotifications();
+      })
+      .catch(err => {
+        console.log('mark notification as read/unread err: ', err)
+      })
+  }
+
+  handleDeleteNotificationClick = (e, id) => {
+    e.preventDefault();
+
+    deleteNotification('/user/notifications', {
+      notificationId: id
+    })
+      .then(response => {
+        this.getListOfNotifications();
+      })
+      .catch(err => {
+        console.log('delete notification err: ', err)
+      })
+  }
+
   handleProfileClick = () => {
     return this.props.history.push(`/user/user_${this.state.userData.id}`);
   }
@@ -172,12 +203,38 @@ class Notifications extends React.Component {
                 <ul className="notification-list-wrapper">
                   {
                     this.state.notificationList.map((data, index) =>
-                      <li key={data.id} >
-                        <div className={data.status === 0 ? 'notification-container' : 'notification-container read-notification'} onClick={(e) => this.handleNotificationClick(e, data.id, data.target, data.targetid, data.post_ownerid, data.status)}>
+                      <li key={data.id} className={data.status === 0 ? 'unread-notification' : 'read-notification'}>
+
+                        <div className="notification-container" onClick={(e) => this.handleNotificationClick(e, data.id, data.target, data.targetid, data.post_ownerid, data.status)}>
                           <p>
                             <span className="issuer-name">{data.name}</span> {data.action} {data.target}.
-                    </p>
+                          </p>
                           <span className="notification-date-time">{data.date} at {data.time}</span>
+                        </div>
+
+                        <div className="notification-button-container">
+
+                          <button
+                            id={`notification-delete-button-${data.id}`}
+                            className="notification-action-button"
+                            style={{ backgroundImage: `url(http://${localhost}:3000/trash-alt-solid.svg)` }}
+                            onClick={(e) => this.handleDeleteNotificationClick(e, data.id)}
+                          >
+                            <ToolTip toolTipText={'Delete'} positionTop='0' positionLeft='100' />
+                          </button>
+
+                          <button
+                            id={`notification-read-button-${data.id}`}
+                            className="notification-action-button"
+                            style={{ backgroundImage: `url(http://${localhost}:3000/dot-circle-regular.svg)` }}
+                            onClick={(e) => this.handleNotificationReadClick(e, data.id, data.status)}
+                          >
+                            <ToolTip
+                              toolTipText={data.status === 0 ? 'Mark as read' : 'Mark as unread'}
+                              positionTop={0} positionLeft={100}
+                            />
+                          </button>
+
                         </div>
                       </li>
                     )

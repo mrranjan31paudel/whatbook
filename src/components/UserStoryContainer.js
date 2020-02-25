@@ -108,7 +108,9 @@ class UserStoryContainer extends React.Component {
         newPostText: this.state.postText ? this.state.postText : this.props.postData.content
       }
     });
+
     this.getAllComments();
+
     this.setState({
       isEditClicked: false
     })

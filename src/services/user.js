@@ -68,4 +68,8 @@ function changeUserData(url, requestBody) {
   return put(url, requestBody);
 }
 
-export { getUserDetails, getUserStories, createNewPost, logoutUser, postComment, getComments, updateContent, deleteContent, sendRequest, acceptRequest, deleteRequest, getPeopleList, getFriendList, getRequestList, getNotificationsList, markNotificationAsRead, changeUserData };
+function deleteNotification(url, params = {}) {
+  return remove(url, params);
+}
+
+export { getUserDetails, getUserStories, createNewPost, logoutUser, postComment, getComments, updateContent, deleteContent, sendRequest, acceptRequest, deleteRequest, getPeopleList, getFriendList, getRequestList, getNotificationsList, markNotificationAsRead, changeUserData, deleteNotification };

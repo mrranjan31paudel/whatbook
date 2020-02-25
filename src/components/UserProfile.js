@@ -382,6 +382,19 @@ class UserProfile extends React.Component {
       });
   }
 
+  handleUserPasswordChange = (newPassWordData) => {
+    return changeUserData('/user', {
+      type: 'password',
+      submitData: newPassWordData
+    });
+    // .then(response => {
+    //   this.loadProfilePage();
+    // })
+    // .catch(err => {
+    //   console.log('Name change Error: ', err);
+    // });
+  }
+
   render() {
     if (this.state.isConnectedToServer) {
       const profileId = parseInt(this.props.match.params.userId.split('_')[1]);
@@ -502,6 +515,7 @@ class UserProfile extends React.Component {
                   onNameEditSubmit={this.handleUserNameEditSubmit}
                   onDOBEditSubmit={this.handleUserDOBEditSubmit}
                   onClosePopUpClick={this.handleCloseEditProfilePopUp}
+                  onPasswordChangeSubmit={this.handleUserPasswordChange}
                 /> :
                 ''
             }
