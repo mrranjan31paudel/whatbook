@@ -85,6 +85,13 @@ class ProfileEditPopUp extends React.Component {
     e.preventDefault();
     if (this.state.clickedEditButton) {
       this.setState({
+        profileEditData: {
+          name: '',
+          dob: '',
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        },
         clickedEditButton: ''
       })
     }
@@ -153,7 +160,7 @@ class ProfileEditPopUp extends React.Component {
           <h3>
             Edit Profile
           </h3>
-          <form className="profile-edit-wrapper-form">
+          <div className="profile-edit-wrapper-form">
 
             <div className="profile-edit-field-container">
               <div className="profile-edit-field-wrapper">
@@ -254,7 +261,7 @@ class ProfileEditPopUp extends React.Component {
                 </div>
               </div>
             </div>
-          </form>
+          </div>
 
           <button className="edit-profile-close-button" onClick={(e) => this.props.onClosePopUpClick(e)}>Close</button>
         </div>

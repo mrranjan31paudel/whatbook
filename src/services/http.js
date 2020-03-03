@@ -100,7 +100,7 @@ axios.interceptors.response.use(
         .catch(err => {
           if (err.response.status === 401) {
             token.removeTokens();
-            return;
+            return Promise.reject(err);
           }
           releaseHeldRequests(err, null);
         });

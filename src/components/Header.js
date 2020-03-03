@@ -13,9 +13,18 @@ class Header extends React.Component {
       return (
         <header className="header-seg">
           <nav>
-            <div className="search-bar-container">
-              <input className="search-bar" type="text" placeholder="Search People..."></input>
-              <img className="search-img" src={`http://${localhost}:3000/search-solid.svg`} alt="searchSVG"></img>
+            <div className="header-logo-search-bar-container">
+              <div className="header-logo-container">
+                <Link className="header-logo-link" to="/user">
+                  <span className="header-logo-image" style={{ backgroundImage: `url(http://${localhost}:3000/whatbooklogo.png)` }}></span>
+                </Link>
+              </div>
+              <div className="search-bar-container">
+                <input className="search-bar" type="text" placeholder="Search People..."></input>
+                <button className="search-img-container">
+                  <img className="search-img" src={`http://${localhost}:3000/search-solid.svg`} alt="searchSVG"></img>
+                </button>
+              </div>
             </div>
             <ul >
               <li>
