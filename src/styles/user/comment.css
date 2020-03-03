@@ -2,14 +2,13 @@
   width: calc(100% - 20px);
   margin: 5px;
   padding: 5px;
-  background: rgb(236, 236, 236);
+  background: rgb(245, 245, 245);
 }
 
-.comment-container .commenter-name{
-  margin: 5px;
-  font-size: calc(6px + 1vmin);
-  font-weight: 500;
-  color: rgb(7, 88, 2);
+.comment-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .comment-container .comment-time {
@@ -18,8 +17,133 @@
   color: rgb(168, 168, 168);
 }
 
+.comment-content-wrapper {
+  width: 100%;
+}
+
 .comment-container .comment-content {
   width: calc(100% - 10px);
   margin: 5px;
   font-size: calc(5px + 1vmin);
+  line-height: 2.5vmin;
+}
+
+.comment-edit-wrapper {
+  width: calc(100% - 10px);
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+}
+.comment-edit-field {
+  width: calc(100% - 12px);
+  padding: 5px;
+  border: 1px solid rgb(211, 211, 211);
+  border-radius: 2px;
+  font-size: calc(7px + 1vmin);
+}
+.comment-edit-cancel {
+  width: 30%;
+  text-align: center;
+  text-decoration: none;
+  color: green;
+  padding: 5px;
+  font-size: calc(4px + 1vmin);
+}
+
+.comment-edit-cancel:hover {
+  font-weight: 500;
+}
+
+.commenter-name a{
+  text-decoration: none;
+  font-size: calc(6px + 1vmin);
+  font-weight: 500;
+  color: rgb(0, 122, 0);
+}
+
+.commenter-name a:hover {
+  text-decoration: underline;
+}
+
+.comment-option-button {
+  
+  padding: 4px;
+  font-size: calc(10px + 1vmin);
+  font-weight: 600;
+  color: grey;
+  border-radius: 5px;
+  background: none;
+}
+
+.comment-option-button:hover{
+  cursor: pointer;
+  background: rgb(226, 226, 226);
+  color: rgb(37, 37, 37);
+}
+
+.comment-delete-prompt {
+  padding: 2px;
+  font-size: calc(6px + 1vmin);
+  box-shadow: 0 0 3px red;
+  border-radius: 5px;
+}
+
+.comment-delete-prompt a {
+  text-decoration: none;
+  padding: 2px;
+  border-radius: 2px;
+  color: green;
+  font-weight: 500;
+}
+
+.comment-delete-prompt a:first-child:hover{
+  color: white;
+  background: red;
+}
+
+.comment-delete-prompt a:last-child:hover {
+  color: white;
+  background: green;
+}
+
+.comment-reply{
+  margin: 0 5px;
+  text-decoration: none;
+  font-size: calc(4px + 1vmin);
+  color: rgb(0, 122, 0);
+}
+
+.comment-reply:hover{
+  cursor: pointer;
+  color: rgb(0, 192, 0);
+}
+
+.view-reply{
+  margin: 0 5px;
+  text-decoration: none;
+  font-size: calc(4px + 1vmin);
+  color: rgb(0, 122, 0);
+}
+
+.view-reply:hover{
+  cursor: pointer;
+  color: rgb(0, 192, 0);
+}
+
+.reply-form {
+  padding: 10px;
+}
+
+.reply-field {
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid rgb(168, 168, 168);
+  border-radius: 2px;
+  background: rgb(236, 236, 236);
+}
+
+.replies {
+  list-style-type: none;
+  margin-left: 10px;
+  padding: 0px;
 }

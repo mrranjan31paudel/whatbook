@@ -1,8 +1,9 @@
 import axios from 'axios';
 import token from './token';
-// import { BASE_URL } from '../constants/config';
 import { BASE_URL } from './../constants/config';
-// const BASE_URL = 'http://localhost:9090/api';
+
+let isTokenBeingRefreshed = false;
+let heldRequests = [];
 
 function get(url, params = {}) {
   return axios({
@@ -14,7 +15,6 @@ function get(url, params = {}) {
 }
 
 function post(url, data) {
-  console.log('base:url:', BASE_URL);
   return axios({
     method: 'POST',
     url: BASE_URL + url,
@@ -32,10 +32,11 @@ function put(url, data) {
   });
 }
 
-function remove(url) {
+function remove(url, params = {}) {
   return axios({
     method: 'DELETE',
     url: BASE_URL + url,
+    params: params,
     headers: getRequestHeader()
   });
 }
@@ -52,17 +53,33 @@ function getRequestHeader() {
 
 axios.interceptors.response.use(
   response => {
-    console.log('in interceptor response');
     return response;
+
   },
   error => {
-    console.log('in interceptor error: ', error.response.data.msg);
+    const newRequest = error.config;
+    if (error.response && error.response.status === 401 && error.response.data.msg === 'TOKEN_EXPIRED') {
 
-    if (error.response && error.response.status === 401 && error.response.data.msg === 'TokenExpiredError') {
       if (!token.getRefreshToken()) {
-        console.log('in interceptor error if ');
+        token.removeTokens();
         return Promise.reject(error);
       }
+
+      if (isTokenBeingRefreshed) {
+        return new Promise((resolve, reject) => {
+          heldRequests.push({ resolve, reject });
+        })
+          .then(newToken => {
+            newRequest.headers.authorization = newToken;
+            return axios(newRequest);
+          })
+          .catch(err => {
+            return Promise.reject(err);
+          })
+
+      }
+
+      isTokenBeingRefreshed = true;
 
       return axios({
         method: 'POST',
@@ -74,20 +91,38 @@ axios.interceptors.response.use(
         headers: getRequestHeader()
       })
         .then(res => {
-          console.log('in interceptor error res');
+          isTokenBeingRefreshed = false;
           token.setTokens(res.data.accessToken, res.data.refreshToken);
-
-          error.config.headers.authorization = token.getAccessToken();
-
-          return axios(error.config);
+          newRequest.headers.authorization = res.data.accessToken;
+          releaseHeldRequests(null, res.data.accessToken);
+          return axios(newRequest);
         })
         .catch(err => {
-          console.log('in interceptor error err');
-          return Promise.reject(err);
+          if (err.response.status === 401) {
+            token.removeTokens();
+            return Promise.reject(err);
+          }
+          releaseHeldRequests(err, null);
         });
+
     }
-    return Promise.reject(error);
+    else {
+      return Promise.reject(error);
+    }
   }
 );
+
+function releaseHeldRequests(err, refreshedAccessToken = null) {
+  heldRequests.forEach(elementPromise => {
+    if (err) {
+      elementPromise.reject(err);
+    }
+    else {
+      elementPromise.resolve(refreshedAccessToken)
+    }
+  });
+
+  heldRequests = [];
+}
 
 export { get, post, put, remove };

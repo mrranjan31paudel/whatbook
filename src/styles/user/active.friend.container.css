@@ -8,11 +8,16 @@
 }
 
 .active-friend-container img{
-    width: 25%;
+    height: 6vmin;
+    /* width: 25%; */
 }
 
 .active-friend-container span{
-    width: 75%;
     font-size: calc(7px + 1vmin);
     font-weight: 500;
+}
+
+.active-friend-container span a {
+    text-decoration: none;
+    color: rgb(0, 122, 0);
 }

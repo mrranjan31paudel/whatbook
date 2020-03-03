@@ -1,0 +1,148 @@
+.profile-edit-popup {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 19;
+  background: rgba(0, 0, 0, 0.164);
+}
+
+.profile-edit-container {
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  width: calc(50% - 10px);
+  padding: 5px;
+  background: white;
+  border-radius: 5px;
+}
+
+.profile-edit-container h3 {
+  margin: 5px;
+}
+
+.profile-edit-wrapper-form {
+  margin: 5px;
+  padding: 5px;
+}
+
+.profile-edit-field-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 5px;
+}
+
+.profile-edit-field-container:nth-child(odd) {
+  background: rgb(231, 231, 231);
+}
+
+.profile-edit-field-wrapper {
+  width: 60%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.profile-edit-field-label {
+  font-size: calc(6px + 1vmin);
+}
+
+.profile-edit-input-field {
+  margin: 5px;
+  padding: 5px;
+  font-size: calc(8px + 1vmin);
+  border: none;
+  border-bottom: 1px solid green;
+  text-align: right;
+}
+
+.profile-edit-input-field:focus {
+  outline: none;
+  background: rgb(241, 255, 241);
+}
+
+.edit-action-buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+.edit-action-buttons button{
+  background: none;
+  border: none;
+  padding: 0 10px;
+  height: 4vmin;
+  font-weight: 600;
+  color: green;
+  border-radius: 3px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.edit-action-buttons button:focus {
+  outline: none;
+} 
+
+.edit-action-buttons button:hover {
+  cursor: pointer;
+  background: rgb(0, 187, 0);
+  color: white;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.edit-profile-close-button {
+  border: none;
+  background: none;
+  padding: 5px;
+  font-size: calc(8px + 1vmin);
+  font-weight: 600;
+  color: green;
+  border-radius: 3px;
+}
+
+.edit-profile-close-button:hover{
+  cursor: pointer;
+  background: rgb(0, 187, 0);
+  color: white;
+}
+
+.password-change-match{
+  color: green;
+}
+
+.password-change-not-match{
+  color: red;
+}
+
+.password-successfully-changed-label {
+  padding: 5px;
+  font-size: calc(4px + 1vmin);
+  text-align: center;
+  color: green;
+}
+
+.password-length-constraint-label {
+  margin: 2px;
+  padding: 2px;
+  font-size: calc(4px + 1vmin);
+  color: rgb(255, 72, 0);
+}
+
+.password-wrong-label {
+  margin: 2px;
+  padding: 2px;
+  font-size: calc(4px + 1vmin);
+  color: red;
+}
+
+.current-password-wrong {
+  border-bottom: 1px solid red;
+}
+
+.current-password-wrong:focus {
+  background: rgb(255, 241, 242);
+}

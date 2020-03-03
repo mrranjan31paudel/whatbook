@@ -1,0 +1,13 @@
+.tool-tip {
+  position: absolute;
+  z-index: 25;
+  background: rgb(29, 29, 29);
+  padding: 5px;
+  border-radius: 5px;
+  visibility: hidden;
+}
+
+.tool-tip-text {
+  color: white;
+  font-size: calc(4px + 1vmin);
+}

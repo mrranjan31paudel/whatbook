@@ -1,36 +1,87 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import tokenService from './../services/token';
-import { logoutUser } from './../services/user';
+import { localhost } from './../constants/config';
 
 import './../styles/common/Header.css';
 
 class Header extends React.Component {
-  logOutFunction = () => {
-    logoutUser('/logout', {
-      refreshToken: tokenService.getRefreshToken()
-    })
-      .then(() => {
-        tokenService.removeTokens();
-        this.props.history.push('/');
-      })
-      .catch(err => {
-        console.log('logout err: ', err);
-      });
-
-  }
 
   render() {
+
     if (this.props.isInsideUser) {
       return (
         <header className="header-seg">
           <nav>
+            <div className="header-logo-search-bar-container">
+              <div className="header-logo-container">
+                <Link className="header-logo-link" to="/user">
+                  <span className="header-logo-image" style={{ backgroundImage: `url(http://${localhost}:3000/whatbooklogo.png)` }}></span>
+                </Link>
+              </div>
+              <div className="search-bar-container">
+                <input className="search-bar" type="text" placeholder="Search People..."></input>
+                <button className="search-img-container">
+                  <img className="search-img" src={`http://${localhost}:3000/search-solid.svg`} alt="searchSVG"></img>
+                </button>
+              </div>
+            </div>
             <ul >
-              <li><Link to="/">{this.props.profileName}</Link></li>
-              <li><Link to="/">Home</Link></li>
-              <li><Link onClick={this.logOutFunction} to="/">Log Out</Link></li>
-              <li>Search</li>
+              <li>
+                <div>
+                  <Link onClick={this.props.onProfileClick} to={`/user/user_${this.props.userId}`} >
+                    <span>{this.props.profileName}</span> <img className="nav-img" src={`http://${localhost}:3000/user-solid.svg`} alt="profileSVG"></img>
+                  </Link>
+                </div>
+              </li>
+
+              <li>
+                <div>
+                  <Link onClick={this.props.onHomeClick} to="/user">
+                    <img className="nav-img" src={`http://${localhost}:3000/home-solid.svg`} alt="homeSVG"></img>
+                  </Link>
+                </div>
+              </li>
+
+              <li>
+                <div>
+                  <Link onClick={this.props.onNotificationsClick} to="/notifications">
+                    <img className="nav-img" src={`http://${localhost}:3000/bell-solid.svg`} alt="notificationSVG"></img>
+                  </Link>
+
+                </div>
+                {
+                  this.props.numberOfUnreadNotifications > 0 ?
+                    <span className="red-dot-notification">
+                      {this.props.numberOfUnreadNotifications}
+                    </span> :
+                    ''
+                }
+              </li>
+
+              <li>
+                <div>
+                  <Link to="/people">
+                    <img className="nav-img" src={`http://${localhost}:3000/user-friends-solid.svg`} alt="friendsSVG"></img>
+                  </Link>
+                </div>
+                {
+                  this.props.numberOfUnansweredRequests > 0 ?
+                    <span className="red-dot-notification">
+                      {this.props.numberOfUnansweredRequests}
+                    </span> :
+                    ''
+                }
+              </li>
+
+              <li>
+                <div>
+                  <Link onClick={this.props.onLogOutClick} to="/">
+                    <img className="nav-img" src={`http://${localhost}:3000/sign-out-alt-solid.svg`} alt="logoutSVG"></img>
+                  </Link>
+                </div>
+              </li>
+
             </ul>
           </nav>
         </header>
