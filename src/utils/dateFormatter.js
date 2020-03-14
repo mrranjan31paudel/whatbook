@@ -1,7 +1,6 @@
 import { MONTH } from './../constants/dob';
 
 function formatToYYYYMMDD(date) {
-
   let dateParts = date.split(' ');
   let monthNumber = `${MONTH.indexOf(dateParts[1])}`;
 
