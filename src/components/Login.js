@@ -35,32 +35,39 @@ class Login extends React.Component {
     }
   }
 
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     e.preventDefault();
     const validFlag = validateLogin(this.state);
     if (validFlag) {
       loginRequest(this.state.data)
-        .then((response) => {
-          tokenService.setTokens(response.data.accessToken, response.data.refreshToken);
+        .then(response => {
+          tokenService.setTokens(
+            response.data.accessToken,
+            response.data.refreshToken
+          );
           return this.props.history.push('/user');
         })
         .catch(err => {
           if (!err.response) {
             this.setState({
               isConnectedToServer: false
-            })
-          }
-          else if (err.response && err.response.data.msg === 'USER_NOT_FOUND') {
+            });
+          } else if (
+            err.response &&
+            err.response.data.msg === 'USER_NOT_FOUND'
+          ) {
             this.setState({
               emailExists: false,
               validPassword: true
-            })
-          }
-          else if (err.response && err.response.data.msg === 'INVALID_PASSWORD') {
+            });
+          } else if (
+            err.response &&
+            err.response.data.msg === 'INVALID_PASSWORD'
+          ) {
             this.setState({
               emailExists: true,
               validPassword: false
-            })
+            });
           }
           this.setState({
             isWaitingServer: false
@@ -69,8 +76,7 @@ class Login extends React.Component {
       this.setState({
         isWaitingServer: true
       });
-    }
-    else {
+    } else {
       this.setState({
         data: {
           ...this.state.data,
@@ -79,16 +85,16 @@ class Login extends React.Component {
         }
       });
     }
-
-  }
+  };
 
   handleChange = (targetField, value) => {
     this.setState({
       data: {
-        ...this.state.data, [targetField]: value
+        ...this.state.data,
+        [targetField]: value
       }
     });
-  }
+  };
 
   render() {
     if (this.state.isConnectedToServer) {
@@ -97,35 +103,81 @@ class Login extends React.Component {
           <Header isInsideUser={false} />
           <div className="form-wrapper">
             <h2>Log In</h2>
-            <form className="login-form" onSubmit={this.handleSubmit} autoComplete="on">
+            <form
+              className="login-form"
+              onSubmit={this.handleSubmit}
+              autoComplete="on"
+            >
               <div className="field-segment">
-                <TextField className={this.state.data.email === '' || !this.state.emailExists ? ' empty' : ''} name="email" type="text" placeHolder="E-mail" onChange={this.handleChange} autoComplete="on" />
-                {
-                  this.state.data.email === '' && this.state.emailExists ?
-                    <Label className="error-label" htmlFor="" value="E-mail cannot be Empty!" /> : ''
-                }
-                {
-                  !this.state.emailExists ?
-                    <Label className="error-label" htmlFor="" value="User doesn't exist!" /> :
-                    ''
-                }
-
+                <TextField
+                  className={
+                    this.state.data.email === '' || !this.state.emailExists
+                      ? ' empty'
+                      : ''
+                  }
+                  name="email"
+                  type="text"
+                  placeHolder="E-mail"
+                  onChange={this.handleChange}
+                  autoComplete="on"
+                />
+                {this.state.data.email === '' && this.state.emailExists ? (
+                  <Label
+                    className="error-label"
+                    htmlFor=""
+                    value="E-mail cannot be Empty!"
+                  />
+                ) : (
+                  ''
+                )}
+                {!this.state.emailExists ? (
+                  <Label
+                    className="error-label"
+                    htmlFor=""
+                    value="User doesn't exist!"
+                  />
+                ) : (
+                  ''
+                )}
               </div>
               <div className="field-segment">
-                <TextField className={this.state.data.password === '' || !this.state.validPassword ? ' empty' : ''} name="password" type="password" placeHolder="Password" onChange={this.handleChange} autoComplete="off" />
-                {
-                  this.state.data.password === '' && this.state.validPassword ?
-                    <Label className="error-label" htmlFor="" value="Password cannot be Empty!" /> :
-                    ''
-                }
-                {
-                  !this.state.validPassword ?
-                    <Label className="error-label" htmlFor="" value="Password doesn't match with user!" /> :
-                    ''
-                }
+                <TextField
+                  className={
+                    this.state.data.password === '' || !this.state.validPassword
+                      ? ' empty'
+                      : ''
+                  }
+                  name="password"
+                  type="password"
+                  placeHolder="Password"
+                  onChange={this.handleChange}
+                  autoComplete="off"
+                />
+                {this.state.data.password === '' && this.state.validPassword ? (
+                  <Label
+                    className="error-label"
+                    htmlFor=""
+                    value="Password cannot be Empty!"
+                  />
+                ) : (
+                  ''
+                )}
+                {!this.state.validPassword ? (
+                  <Label
+                    className="error-label"
+                    htmlFor=""
+                    value="Password doesn't match with user!"
+                  />
+                ) : (
+                  ''
+                )}
               </div>
-              <Button className={this.state.isWaitingServer ? ' busy' : ''} type="submit" value={this.state.isWaitingServer ? 'Logging In...' : 'Log In'} isDisabled={this.state.isWaitingServer ? true : false} />
-
+              <Button
+                className={this.state.isWaitingServer ? ' busy' : ''}
+                type="submit"
+                value={this.state.isWaitingServer ? 'Logging In...' : 'Log In'}
+                isDisabled={this.state.isWaitingServer ? true : false}
+              />
             </form>
             <p>
               Don't have an account? Sign Up <Link to="/signup">here.</Link>
@@ -133,11 +185,8 @@ class Login extends React.Component {
           </div>
         </Fragment>
       );
-    }
-    else {
-      return (
-        <NoServerConnection />
-      );
+    } else {
+      return <NoServerConnection />;
     }
   }
 }

@@ -12,12 +12,10 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 import './styles/common/contentContainer.css';
 
-
 class App extends React.Component {
   constructor() {
     super();
-    this.state = {
-    };
+    this.state = {};
   }
 
   render() {

@@ -1,6 +1,16 @@
 import React, { Fragment } from 'react';
 
-import { getUserDetails, getPeopleList, getFriendList, getRequestList, logoutUser, sendRequest, acceptRequest, deleteRequest, getNotificationsList } from './../services/user';
+import {
+  getUserDetails,
+  getPeopleList,
+  getFriendList,
+  getRequestList,
+  logoutUser,
+  sendRequest,
+  acceptRequest,
+  deleteRequest,
+  getNotificationsList
+} from './../services/user';
 import tokenService from './../services/token';
 
 import Header from './Header';
@@ -9,7 +19,6 @@ import UserHolder from './UserHolder';
 import './../styles/people/people.css';
 
 class People extends React.Component {
-
   constructor() {
     super();
     this.state = {
@@ -27,15 +36,13 @@ class People extends React.Component {
       },
       numberOfUnreadNotifications: 0,
       userNotifications: []
-    }
+    };
   }
 
   componentDidMount() {
     getUserDetails('/user')
       .then(response => {
-
         if (response) {
-
           this.setState({
             userData: {
               id: response.data.id,
@@ -51,14 +58,13 @@ class People extends React.Component {
           this.getListOfPeople();
         }
       })
-      .catch((err) => {
-        console.log('Component mount error: ', err.response)
+      .catch(err => {
+        console.log('Component mount error: ', err.response);
         if (!err.response) {
           this.setState({
             isConnectedToServer: false
-          })
-        }
-        else if (err.response && err.response.status === 401) {
+          });
+        } else if (err.response && err.response.status === 401) {
           tokenService.removeTokens();
           return this.props.history.push('/');
         }
@@ -74,12 +80,25 @@ class People extends React.Component {
         console.log(response);
         this.setState({
           peopleList: response.data
-        })
+        });
       })
       .catch(error => {
         console.log('People List: ', error);
       });
-  }
+  };
+
+  searchPeople = searchText => {
+    return new Promise((resolve, reject) => {
+      getPeopleList('/user/people', {
+        userId: this.state.userData.id,
+        searchText: searchText
+      })
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(err => console.log('Sear result ERROR: ', err));
+    });
+  };
 
   getListOfFriends = () => {
     getFriendList('/user/friend', {
@@ -89,12 +108,12 @@ class People extends React.Component {
         console.log('RESPONSE: ', response);
         this.setState({
           friendList: response.data
-        })
+        });
       })
       .catch(error => {
         console.log('Friend List Error: ', error);
       });
-  }
+  };
 
   getListOfRequests = () => {
     getRequestList('/user/requests', {
@@ -104,14 +123,15 @@ class People extends React.Component {
         console.log('RESPONSE: ', response);
         this.setState({
           requestList: response.data
-        })
+        });
       })
       .catch(error => {
         console.log('Request List Error: ', error);
       });
-  }
+  };
 
-  getNumberOfUnreadNotifications = () => { // called while loading the user
+  getNumberOfUnreadNotifications = () => {
+    // called while loading the user
     getNotificationsList('/user/notifications', {
       type: 'number'
     })
@@ -124,7 +144,7 @@ class People extends React.Component {
       .catch(err => {
         console.log('Notification number error: ', err);
       });
-  }
+  };
 
   handleLogOut = () => {
     logoutUser('/logout', {
@@ -137,9 +157,9 @@ class People extends React.Component {
       .catch(err => {
         console.log(err);
       });
-  }
+  };
 
-  handleAddFriendClick = (e) => {
+  handleAddFriendClick = e => {
     console.log('clicked button ID: ', e.target.id);
     sendRequest('/user/friend', {
       recieverId: e.target.id.split('-')[1]
@@ -151,10 +171,11 @@ class People extends React.Component {
       })
       .catch(error => {
         console.log(error);
-      })
-  }
+      });
+  };
 
-  handleAcceptRequestClick = (e) => {//sends PUT request
+  handleAcceptRequestClick = e => {
+    //sends PUT request
     console.log('clicked button ID: ', e.target.id);
     acceptRequest('/user/friend', {
       senderId: e.target.id.split('-')[1]
@@ -167,9 +188,9 @@ class People extends React.Component {
       .catch(error => {
         console.log(error);
       });
-  }
+  };
 
-  handleDeleteRequestClick = (e) => {
+  handleDeleteRequestClick = e => {
     console.log('clicked button ID: ', e.target.id);
     deleteRequest('/user/friend', {
       friendId: e.target.id.split('-')[1]
@@ -182,16 +203,16 @@ class People extends React.Component {
       .catch(error => {
         console.log(error);
       });
-  }
+  };
 
   handleProfileClick = () => {
     return this.props.history.push(`/user/user_${this.state.userData.id}`);
-  }
+  };
 
   handleHomeClick = () => {
     return this.props.history.push('/user');
     // window.location.reload();
-  }
+  };
 
   render() {
     return (
@@ -199,103 +220,116 @@ class People extends React.Component {
         <Header
           userId={this.state.userData.id}
           profileName={this.state.userData.name}
-          numberOfUnansweredRequests={this.state.requestList.recievedList.length}
+          numberOfUnansweredRequests={
+            this.state.requestList.recievedList.length
+          }
           numberOfUnreadNotifications={this.state.numberOfUnreadNotifications}
-          isInsideUser={true} {...this.props}
+          isInsideUser={true}
+          {...this.props}
           onLogOutClick={this.handleLogOut}
           onProfileClick={this.handleProfileClick}
           onHomeClick={this.handleHomeClick}
-
+          searchPeople={this.searchPeople}
         />
 
         <div className="people-container">
           <div className="friend-list-container">
-            <h3>
-              Friends ({this.state.friendList.length})
-            </h3>
+            <h3>Friends ({this.state.friendList.length})</h3>
             <ul className="friend-list-wrapper">
-              {
-                this.state.friendList.map((data, index) =>
-                  <li key={index}>
-                    <UserHolder userData={data} />
-                  </li>
-                )
-              }
+              {this.state.friendList.map((data, index) => (
+                <li key={index}>
+                  <UserHolder userData={data} />
+                </li>
+              ))}
             </ul>
           </div>
 
           <div className="people-n-request-list-container">
             <div className="request-list-container">
-              <h3>
-                Friend Requests
-              </h3>
+              <h3>Friend Requests</h3>
 
               <div className="sent-list-wrapper">
                 <span className="request-type-text">Sent</span>
-                {
-                  this.state.requestList.sentList.length > 0 ?
-                    <ul className="sent-list">
-                      {
-                        this.state.requestList.sentList.map((data, index) =>
-                          <li key={index}>
-                            <Fragment>
-                              <UserHolder userData={data} />
-                              <button id={`cancel-${data.id}`} onClick={this.handleDeleteRequestClick}>Cancel Request</button>
-                            </Fragment>
-                          </li>
-                        )
-                      }
-                    </ul> :
-                    <Fragment>
-                      <br></br><span className="empty-request-list-text">No Requests Sent.</span>
-                    </Fragment>
-
-                }
+                {this.state.requestList.sentList.length > 0 ? (
+                  <ul className="sent-list">
+                    {this.state.requestList.sentList.map((data, index) => (
+                      <li key={index}>
+                        <Fragment>
+                          <UserHolder userData={data} />
+                          <button
+                            id={`cancel-${data.id}`}
+                            onClick={this.handleDeleteRequestClick}
+                          >
+                            Cancel Request
+                          </button>
+                        </Fragment>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <Fragment>
+                    <br></br>
+                    <span className="empty-request-list-text">
+                      No Requests Sent.
+                    </span>
+                  </Fragment>
+                )}
               </div>
               <hr />
               <div className="recieved-list-wrapper">
                 <span className="request-type-text">Recieved</span>
-                {
-                  this.state.requestList.recievedList.length > 0 ?
-                    <ul className="recieved-list">
-                      {
-                        this.state.requestList.recievedList.map((data, index) =>
-                          <li key={index}>
-                            <Fragment>
-                              <UserHolder userData={data} />
-                              <button id={`accept-${data.id}`} onClick={this.handleAcceptRequestClick}>Accept</button>
-                              <button id={`delete-${data.id}`} onClick={this.handleDeleteRequestClick}>Delete</button>
-                            </Fragment>
-                          </li>
-                        )
-                      }
-                    </ul> :
-                    <Fragment>
-                      <br></br><span className="empty-request-list-text">No Requests Recieved.</span>
-                    </Fragment>
-                }
+                {this.state.requestList.recievedList.length > 0 ? (
+                  <ul className="recieved-list">
+                    {this.state.requestList.recievedList.map((data, index) => (
+                      <li key={index}>
+                        <Fragment>
+                          <UserHolder userData={data} />
+                          <button
+                            id={`accept-${data.id}`}
+                            onClick={this.handleAcceptRequestClick}
+                          >
+                            Accept
+                          </button>
+                          <button
+                            id={`delete-${data.id}`}
+                            onClick={this.handleDeleteRequestClick}
+                          >
+                            Delete
+                          </button>
+                        </Fragment>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <Fragment>
+                    <br></br>
+                    <span className="empty-request-list-text">
+                      No Requests Recieved.
+                    </span>
+                  </Fragment>
+                )}
               </div>
-
             </div>
 
             <div className="people-list-container">
-              <h3>
-                People
-              </h3>
+              <h3>People</h3>
               <ul className="people-list-wrapper">
-                {
-                  this.state.peopleList.map((data, index) =>
-                    <li key={index}>
-                      <UserHolder userData={data} />
-                      <button id={`add-${data.id}`} onClick={this.handleAddFriendClick}>Add Friend +</button>
-                    </li>
-                  )
-                }
+                {this.state.peopleList.map((data, index) => (
+                  <li key={index}>
+                    <UserHolder userData={data} />
+                    <button
+                      id={`add-${data.id}`}
+                      onClick={this.handleAddFriendClick}
+                    >
+                      Add Friend +
+                    </button>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
         </div>
-      </Fragment >
+      </Fragment>
     );
   }
 }

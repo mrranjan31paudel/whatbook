@@ -25,7 +25,7 @@ function getComments(url, params = {}) {
 }
 
 function updateContent(url, requestBody) {
-  return put(url, requestBody)
+  return put(url, requestBody);
 }
 
 function deleteContent(url, params = {}) {
@@ -72,4 +72,23 @@ function deleteNotification(url, params = {}) {
   return remove(url, params);
 }
 
-export { getUserDetails, getUserStories, createNewPost, logoutUser, postComment, getComments, updateContent, deleteContent, sendRequest, acceptRequest, deleteRequest, getPeopleList, getFriendList, getRequestList, getNotificationsList, markNotificationAsRead, changeUserData, deleteNotification };
+export {
+  getUserDetails,
+  getUserStories,
+  createNewPost,
+  logoutUser,
+  postComment,
+  getComments,
+  updateContent,
+  deleteContent,
+  sendRequest,
+  acceptRequest,
+  deleteRequest,
+  getPeopleList,
+  getFriendList,
+  getRequestList,
+  getNotificationsList,
+  markNotificationAsRead,
+  changeUserData,
+  deleteNotification
+};

@@ -18,6 +18,7 @@
 }
 
 .header-logo-search-bar-container{
+    position: relative;
     margin: 5px;
     padding: 5px;
     display: flex;
@@ -38,6 +39,7 @@
 }
 
 .search-bar-container {
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -72,6 +74,11 @@
 
 .search-img-container:focus {
     outline: none;
+    background: rgba(0, 158, 0, 0.363);
+}
+
+.search-img-container.focus-on-search-bar{
+    background: rgba(0, 158, 0, 0.363);
 }
 
 .search-img {
@@ -80,7 +87,34 @@
     height: 2.5vmin;    
 }
 
-.header-seg nav ul{
+.search-result-list-modal {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    margin: 1px;
+    overflow: hidden;
+    border-radius: 5px;
+    box-shadow: 0 0 5px grey;
+    background: white;
+}
+
+.search-result-list {
+    list-style-type: none;
+    padding: 0px;
+    margin: 5px 0px;
+}
+
+.search-result-list li {
+    padding: 5px;
+}
+
+.search-result-list li:hover {
+    cursor: pointer;
+    background: rgba(0, 158, 0, 0.363);
+}
+
+.navigation-links{
     position: relative;
     list-style-type: none;
     margin: 5px;
@@ -89,14 +123,14 @@
     flex-direction: row;
     justify-content: flex-end;
 }
-.header-seg nav ul li{
+.navigation-links li{
     position: relative;
     margin: 5px;
     padding: 5px;
     border-radius: 2px;
 }
 
-.header-seg nav ul li div {
+.navigation-links li div {
     position: relative;
     height: 100%;
 }
@@ -107,18 +141,18 @@
     border-radius: 2px;
 }
 
-.header-seg nav ul li div span{
+.navigation-links li div span{
     padding: 2px;
 }
 
-.header-seg nav ul li div a{
+.navigation-links li div a{
     display: block;
     color: white;
     text-decoration: none;
     font-size: calc(6px + 1vmin);
 }
 
-.header-seg nav ul li div a:hover .nav-img {
+.navigation-links li div a:hover .nav-img {
     background: rgba(0, 0, 0, 0.157);
 }
 

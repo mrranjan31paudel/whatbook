@@ -1,12 +1,9 @@
 function setCommentPermissions(userId, posterId, commenterId) {
   if (userId === commenterId) {
     return 'ed';
-  }
-
-  else if (userId === posterId && userId !== commenterId) {
+  } else if (userId === posterId && userId !== commenterId) {
     return 'd';
-  }
-  else {
+  } else {
     return '';
   }
 }
@@ -14,8 +11,7 @@ function setCommentPermissions(userId, posterId, commenterId) {
 function setPostPermissions(userId, posterId) {
   if (userId === posterId) {
     return 'ed';
-  }
-  else {
+  } else {
     return '';
   }
 }

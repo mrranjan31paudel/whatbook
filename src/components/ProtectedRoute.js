@@ -4,22 +4,29 @@ import { Route, Redirect } from 'react-router-dom';
 import tokenService from './../services/token';
 
 class ProtectedRoute extends React.Component {
-    isLoggedIn = () => {
-        if (tokenService.getAccessToken()) {
-            return true;
-        }
-        return false;
+  isLoggedIn = () => {
+    if (tokenService.getAccessToken()) {
+      return true;
     }
-    render() {
-        const Component = this.props.comp;
-        return (
-            <Route exact path={this.props.path} {...this.props} render={props => {
-                return (
-                    this.isLoggedIn() ? <Component {...this.props} {...props} /> : <Redirect to="/" />
-                );
-            }} />
-        );
-    }
+    return false;
+  };
+  render() {
+    const Component = this.props.comp;
+    return (
+      <Route
+        exact
+        path={this.props.path}
+        {...this.props}
+        render={props => {
+          return this.isLoggedIn() ? (
+            <Component {...this.props} {...props} />
+          ) : (
+            <Redirect to="/" />
+          );
+        }}
+      />
+    );
+  }
 }
 
 export default ProtectedRoute;

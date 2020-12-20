@@ -7,7 +7,15 @@ function validateSignup(state) {
   const month = state.data.dob.month ? state.data.dob.month : '0';
   const year = state.data.dob.year ? state.data.dob.year : '0';
 
-  if (name.length > 0 && email.length > 0 && password.length > 5 && password === confPassword && day !== '0' && month !== '0' && year !== '0') {
+  if (
+    name.length > 0 &&
+    email.length > 0 &&
+    password.length > 5 &&
+    password === confPassword &&
+    day !== '0' &&
+    month !== '0' &&
+    year !== '0'
+  ) {
     return true;
   }
 

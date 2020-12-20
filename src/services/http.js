@@ -54,12 +54,14 @@ function getRequestHeader() {
 axios.interceptors.response.use(
   response => {
     return response;
-
   },
   error => {
     const newRequest = error.config;
-    if (error.response && error.response.status === 401 && error.response.data.msg === 'TOKEN_EXPIRED') {
-
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      error.response.data.msg === 'TOKEN_EXPIRED'
+    ) {
       if (!token.getRefreshToken()) {
         token.removeTokens();
         return Promise.reject(error);
@@ -75,8 +77,7 @@ axios.interceptors.response.use(
           })
           .catch(err => {
             return Promise.reject(err);
-          })
-
+          });
       }
 
       isTokenBeingRefreshed = true;
@@ -104,9 +105,7 @@ axios.interceptors.response.use(
           }
           releaseHeldRequests(err, null);
         });
-
-    }
-    else {
+    } else {
       return Promise.reject(error);
     }
   }
@@ -116,9 +115,8 @@ function releaseHeldRequests(err, refreshedAccessToken = null) {
   heldRequests.forEach(elementPromise => {
     if (err) {
       elementPromise.reject(err);
-    }
-    else {
-      elementPromise.resolve(refreshedAccessToken)
+    } else {
+      elementPromise.resolve(refreshedAccessToken);
     }
   });
 
