@@ -1,20 +1,19 @@
 import React, { Fragment } from 'react';
 
 import {
-  getUserDetails,
-  getPeopleList,
-  getFriendList,
-  getRequestList,
   logoutUser,
   sendRequest,
   acceptRequest,
   deleteRequest,
+  getPeopleList,
+  getFriendList,
+  getRequestList,
+  getUserDetails,
   getNotificationsList
 } from './../services/user';
-import tokenService from './../services/token';
-
 import Header from './Header';
 import UserHolder from './UserHolder';
+import tokenService from './../services/token';
 
 import './../styles/people/people.css';
 
@@ -59,12 +58,11 @@ class People extends React.Component {
         }
       })
       .catch(err => {
-        console.log('Component mount error: ', err.response);
         if (!err.response) {
-          this.setState({
-            isConnectedToServer: false
-          });
-        } else if (err.response && err.response.status === 401) {
+          return this.setState({ isConnectedToServer: false });
+        }
+
+        if (err.response && err.response.status === 401) {
           tokenService.removeTokens();
           return this.props.history.push('/');
         }
@@ -72,15 +70,9 @@ class People extends React.Component {
   }
 
   getListOfPeople = () => {
-    getPeopleList('/user/people', {
-      userId: this.state.userData.id
-    })
+    getPeopleList('/user/people', { userId: this.state.userData.id })
       .then(response => {
-        console.log('RESPONSE: ', response);
-        console.log(response);
-        this.setState({
-          peopleList: response.data
-        });
+        this.setState({ peopleList: response.data });
       })
       .catch(error => {
         console.log('People List: ', error);
@@ -101,14 +93,9 @@ class People extends React.Component {
   };
 
   getListOfFriends = () => {
-    getFriendList('/user/friend', {
-      userId: this.state.userData.id
-    })
+    getFriendList('/user/friend', { userId: this.state.userData.id })
       .then(response => {
-        console.log('RESPONSE: ', response);
-        this.setState({
-          friendList: response.data
-        });
+        this.setState({ friendList: response.data });
       })
       .catch(error => {
         console.log('Friend List Error: ', error);
@@ -116,14 +103,9 @@ class People extends React.Component {
   };
 
   getListOfRequests = () => {
-    getRequestList('/user/requests', {
-      type: 'list'
-    })
+    getRequestList('/user/requests', { type: 'list' })
       .then(response => {
-        console.log('RESPONSE: ', response);
-        this.setState({
-          requestList: response.data
-        });
+        this.setState({ requestList: response.data });
       })
       .catch(error => {
         console.log('Request List Error: ', error);
@@ -132,11 +114,8 @@ class People extends React.Component {
 
   getNumberOfUnreadNotifications = () => {
     // called while loading the user
-    getNotificationsList('/user/notifications', {
-      type: 'number'
-    })
+    getNotificationsList('/user/notifications', { type: 'number' })
       .then(response => {
-        console.log('notifications response: ', response);
         this.setState({
           numberOfUnreadNotifications: response.data.numberOfUnreadNotifications
         });
@@ -160,10 +139,7 @@ class People extends React.Component {
   };
 
   handleAddFriendClick = e => {
-    console.log('clicked button ID: ', e.target.id);
-    sendRequest('/user/friend', {
-      recieverId: e.target.id.split('-')[1]
-    })
+    sendRequest('/user/friend', { recieverId: e.target.id.split('-')[1] })
       .then(response => {
         this.getListOfFriends();
         this.getListOfRequests();
@@ -176,10 +152,7 @@ class People extends React.Component {
 
   handleAcceptRequestClick = e => {
     //sends PUT request
-    console.log('clicked button ID: ', e.target.id);
-    acceptRequest('/user/friend', {
-      senderId: e.target.id.split('-')[1]
-    })
+    acceptRequest('/user/friend', { senderId: e.target.id.split('-')[1] })
       .then(response => {
         this.getListOfFriends();
         this.getListOfRequests();
@@ -191,10 +164,7 @@ class People extends React.Component {
   };
 
   handleDeleteRequestClick = e => {
-    console.log('clicked button ID: ', e.target.id);
-    deleteRequest('/user/friend', {
-      friendId: e.target.id.split('-')[1]
-    })
+    deleteRequest('/user/friend', { friendId: e.target.id.split('-')[1] })
       .then(response => {
         this.getListOfFriends();
         this.getListOfRequests();
@@ -211,7 +181,6 @@ class People extends React.Component {
 
   handleHomeClick = () => {
     return this.props.history.push('/user');
-    // window.location.reload();
   };
 
   render() {
@@ -229,8 +198,7 @@ class People extends React.Component {
           onLogOutClick={this.handleLogOut}
           onProfileClick={this.handleProfileClick}
           onHomeClick={this.handleHomeClick}
-          searchPeople={this.searchPeople}
-        />
+          searchPeople={this.searchPeople} />
 
         <div className="people-container">
           <div className="friend-list-container">
@@ -258,8 +226,7 @@ class People extends React.Component {
                           <UserHolder userData={data} />
                           <button
                             id={`cancel-${data.id}`}
-                            onClick={this.handleDeleteRequestClick}
-                          >
+                            onClick={this.handleDeleteRequestClick}>
                             Cancel Request
                           </button>
                         </Fragment>
@@ -267,13 +234,13 @@ class People extends React.Component {
                     ))}
                   </ul>
                 ) : (
-                  <Fragment>
-                    <br></br>
-                    <span className="empty-request-list-text">
-                      No Requests Sent.
-                    </span>
-                  </Fragment>
-                )}
+                    <Fragment>
+                      <br></br>
+                      <span className="empty-request-list-text">
+                        No Requests Sent.
+                      </span>
+                    </Fragment>
+                  )}
               </div>
               <hr />
               <div className="recieved-list-wrapper">
@@ -286,14 +253,12 @@ class People extends React.Component {
                           <UserHolder userData={data} />
                           <button
                             id={`accept-${data.id}`}
-                            onClick={this.handleAcceptRequestClick}
-                          >
+                            onClick={this.handleAcceptRequestClick}>
                             Accept
                           </button>
                           <button
                             id={`delete-${data.id}`}
-                            onClick={this.handleDeleteRequestClick}
-                          >
+                            onClick={this.handleDeleteRequestClick}>
                             Delete
                           </button>
                         </Fragment>
@@ -301,13 +266,13 @@ class People extends React.Component {
                     ))}
                   </ul>
                 ) : (
-                  <Fragment>
-                    <br></br>
-                    <span className="empty-request-list-text">
-                      No Requests Recieved.
-                    </span>
-                  </Fragment>
-                )}
+                    <Fragment>
+                      <br></br>
+                      <span className="empty-request-list-text">
+                        No Requests Recieved.
+                      </span>
+                    </Fragment>
+                  )}
               </div>
             </div>
 
@@ -319,8 +284,7 @@ class People extends React.Component {
                     <UserHolder userData={data} />
                     <button
                       id={`add-${data.id}`}
-                      onClick={this.handleAddFriendClick}
-                    >
+                      onClick={this.handleAddFriendClick}>
                       Add Friend +
                     </button>
                   </li>

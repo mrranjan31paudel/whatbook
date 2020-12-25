@@ -1,18 +1,16 @@
 import React, { Fragment } from 'react';
 
 import {
+  getPeopleList,
   getUserDetails,
   getRequestList,
-  getNotificationsList,
-  markNotificationAsRead,
   deleteNotification,
-  getPeopleList
+  getNotificationsList,
+  markNotificationAsRead
 } from './../services/user';
-import tokenService from './../services/token';
-import { localhost } from './../constants/config';
-
 import Header from './Header';
 import ToolTip from './ToolTip';
+import tokenService from './../services/token';
 
 import './../styles/user/notifications.css';
 
@@ -51,6 +49,7 @@ class Notifications extends React.Component {
       .catch(err => {
         if (err.response && err.response.status === 401) {
           tokenService.removeTokens();
+
           return this.props.history.push('/');
         }
       });
@@ -58,30 +57,24 @@ class Notifications extends React.Component {
 
   getListOfNotifications = () => {
     //called when user clicks notifications button
-    getNotificationsList('/user/notifications', {
-      type: 'list'
-    })
+    getNotificationsList('/user/notifications', { type: 'list' })
       .then(response => {
-        console.log('notifications response: ', response);
         this.setState({
           notificationList: response.data
         });
       })
       .catch(err => {
-        console.log('Notification number error: ', err);
         if (err.response && err.response.status === 401) {
           tokenService.removeTokens();
+
           return this.props.history.push('/');
         }
       });
   };
 
   getNumberOfNewRequests = () => {
-    getRequestList('/user/requests', {
-      type: 'number'
-    })
+    getRequestList('/user/requests', { type: 'number' })
       .then(response => {
-        console.log('RESPONSE: ', response);
         this.setState({
           numberOfUnansweredRequests: response.data.numberOfUnansweredRequests
         });
@@ -92,46 +85,41 @@ class Notifications extends React.Component {
   };
 
   handleNotificationClick = (e, id, target, targetid, postOwnerId, status) => {
-    console.log('post ownerid: ', postOwnerId);
     if (status === 0) {
-      markNotificationAsRead('/user/notifications', {
-        notificationId: id
-      })
+      return markNotificationAsRead('/user/notifications', { notificationId: id })
         .then(response => {
           if (target === 'your post' || target === 'your comment') {
             return this.props.history.push(
               `/user/user_${postOwnerId}/post/post_${targetid}`
             );
-          } else if (
-            target === 'you friend request' ||
-            target === 'your friend request'
-          ) {
+          }
+
+          if (target === 'you friend request' ||
+            target === 'your friend request') {
             return this.props.history.push(`/user/user_${targetid}`);
           }
         })
         .catch(err => {
           console.log('notification read error: ', err);
         });
-    } else {
-      if (target === 'your post' || target === 'your comment') {
-        return this.props.history.push(
-          `/user/user_${postOwnerId}/post/post_${targetid}`
-        );
-      } else if (
-        target === 'you friend request' ||
-        target === 'your friend request'
-      ) {
-        return this.props.history.push(`/user/user_${targetid}`);
-      }
+    }
+
+    if (target === 'your post' || target === 'your comment') {
+      return this.props.history.push(
+        `/user/user_${postOwnerId}/post/post_${targetid}`
+      );
+    }
+
+    if (target === 'you friend request' ||
+      target === 'your friend request') {
+      return this.props.history.push(`/user/user_${targetid}`);
     }
   };
 
   handleMarkAsReadClick = e => {
     e.preventDefault();
 
-    markNotificationAsRead('/user/notifications', {
-      notificationId: 'all'
-    })
+    markNotificationAsRead('/user/notifications', { notificationId: 'all' })
       .then(response => {
         this.getListOfNotifications();
       })
@@ -158,9 +146,7 @@ class Notifications extends React.Component {
   handleDeleteNotificationClick = (e, id) => {
     e.preventDefault();
 
-    deleteNotification('/user/notifications', {
-      notificationId: id
-    })
+    deleteNotification('/user/notifications', { notificationId: id })
       .then(response => {
         this.getListOfNotifications();
       })
@@ -188,12 +174,10 @@ class Notifications extends React.Component {
 
   handleHomeClick = () => {
     return this.props.history.push('/user');
-    // window.location.reload();
   };
 
   handleProfileNameClick = ownerId => {
     return this.props.history.push(`/user/user_${ownerId}`);
-    // window.location.reload();
   };
 
   getUnreadNotifications = () => {
@@ -213,8 +197,7 @@ class Notifications extends React.Component {
           onLogOutClick={this.handleLogOut}
           onProfileClick={this.handleProfileClick}
           onHomeClick={this.handleHomeClick}
-          searchPeople={this.searchPeople}
-        />
+          searchPeople={this.searchPeople} />
 
         <div className="notification-list-container">
           <h3>Notifications</h3>
@@ -224,8 +207,7 @@ class Notifications extends React.Component {
               <a
                 className="mark-as-read"
                 href="/#"
-                onClick={this.handleMarkAsReadClick}
-              >
+                onClick={this.handleMarkAsReadClick}>
                 Mark all as read
               </a>
               <ul className="notification-list-wrapper">
@@ -236,8 +218,7 @@ class Notifications extends React.Component {
                       data.status === 0
                         ? 'unread-notification'
                         : 'read-notification'
-                    }
-                  >
+                    }>
                     <div
                       className="notification-container"
                       onClick={e =>
@@ -249,10 +230,9 @@ class Notifications extends React.Component {
                           data.post_ownerid,
                           data.status
                         )
-                      }
-                    >
+                      }>
                       <p>
-                        <span className="issuer-name">{data.name}</span>{' '}
+                        <span className="issuer-name">{data.name}</span>&ensp;
                         {data.action} {data.target}.
                       </p>
                       <span className="notification-date-time">
@@ -265,24 +245,22 @@ class Notifications extends React.Component {
                         id={`notification-delete-button-${data.id}`}
                         className="notification-action-button"
                         style={{
-                          backgroundImage: `url(http://${localhost}:3000/trash-alt-solid.svg)`
+                          backgroundImage: `url(trash-alt-solid.svg)`
                         }}
                         onClick={e =>
                           this.handleDeleteNotificationClick(e, data.id)
-                        }
-                      >
+                        }>
                         <ToolTip
                           toolTipText={'Delete'}
                           positionTop="0"
-                          positionLeft="100"
-                        />
+                          positionLeft="100" />
                       </button>
 
                       <button
                         id={`notification-read-button-${data.id}`}
                         className="notification-action-button"
                         style={{
-                          backgroundImage: `url(http://${localhost}:3000/dot-circle-regular.svg)`
+                          backgroundImage: `url(dot-circle-regular.svg)`
                         }}
                         onClick={e =>
                           this.handleNotificationReadClick(
@@ -290,8 +268,7 @@ class Notifications extends React.Component {
                             data.id,
                             data.status
                           )
-                        }
-                      >
+                        }>
                         <ToolTip
                           toolTipText={
                             data.status === 0
@@ -299,8 +276,7 @@ class Notifications extends React.Component {
                               : 'Mark as unread'
                           }
                           positionTop={0}
-                          positionLeft={100}
-                        />
+                          positionLeft={100} />
                       </button>
                     </div>
                   </li>
@@ -308,10 +284,10 @@ class Notifications extends React.Component {
               </ul>
             </Fragment>
           ) : (
-            <span className="empty-notification-list-msg">
-              No notifications.
-            </span>
-          )}
+              <span className="empty-notification-list-msg">
+                No notifications.
+              </span>
+            )}
         </div>
       </Fragment>
     );

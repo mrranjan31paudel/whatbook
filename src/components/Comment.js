@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import { setCommentPermissions } from '../utils/permissionDefiner';
-import parseDateTime from '../utils/dateParser';
 import PopUpMenu from './PopUpMenu';
+import parseDateTime from '../utils/dateParser';
+import { setCommentPermissions } from '../utils/permissionDefiner';
 
 import './../styles/user/comment.css';
 
@@ -28,6 +28,7 @@ class Comment extends React.Component {
 
   handleOptionClick = e => {
     this.props.onOptionClick(null, this.props.commentData.id);
+
     this.setState({
       popUpConfig: {
         rights: setCommentPermissions(
@@ -43,24 +44,21 @@ class Comment extends React.Component {
 
   handleOptionItemClick = clickedItem => {
     if (clickedItem === 'Edit') {
-      this.setState({
-        isEditClicked: true
-      });
-    } else if (clickedItem === 'Delete') {
-      this.setState({
-        isDeleteClicked: true
-      });
+      return this.setState({ isEditClicked: true });
+    }
+
+    if (clickedItem === 'Delete') {
+      this.setState({ isDeleteClicked: true });
     }
   };
 
   handleEditChange = e => {
-    this.setState({
-      commentText: e.target.value
-    });
+    this.setState({ commentText: e.target.value });
   };
 
   handleEditSubmit = e => {
     e.preventDefault();
+
     this.props.onEditSubmit({
       type: 'comment',
       data: {
@@ -69,20 +67,19 @@ class Comment extends React.Component {
         newCommentText: this.state.commentText
       }
     });
-    this.setState({
-      isEditClicked: false
-    });
+
+    this.setState({ isEditClicked: false });
   };
 
   handleCancelEdit = e => {
     e.preventDefault();
-    this.setState({
-      isEditClicked: false
-    });
+
+    this.setState({ isEditClicked: false });
   };
 
   handleDeleteOptionClick = (e, decision) => {
     e.preventDefault();
+
     if (decision === 'yes') {
       const commentData = {
         commentId: this.props.commentData.id,
@@ -93,26 +90,22 @@ class Comment extends React.Component {
       this.props.onDeleteOptionClick(commentData);
     }
 
-    this.setState({
-      isDeleteClicked: false
-    });
+    this.setState({ isDeleteClicked: false });
   };
 
   handleReplyClick = e => {
     e.preventDefault();
-    this.setState({
-      replyMode: true
-    });
+
+    this.setState({ replyMode: true });
   };
 
   handleReplyChange = e => {
-    this.setState({
-      replyText: e.target.value
-    });
+    this.setState({ replyText: e.target.value });
   };
 
   handleReplySubmit = e => {
     e.preventDefault();
+
     if (this.state.replyText) {
       const replyData = {
         text: this.state.replyText,
@@ -124,6 +117,7 @@ class Comment extends React.Component {
 
       this.props.onReplySubmit(replyData);
     }
+
     this.setState({
       replyText: '',
       replyMode: false
@@ -132,6 +126,7 @@ class Comment extends React.Component {
 
   handleViewReplyClick = e => {
     e.preventDefault();
+
     this.setState({
       isViewReplyClicked: !this.state.isViewReplyClicked
     });
@@ -139,6 +134,7 @@ class Comment extends React.Component {
 
   handleCommentNameClick = e => {
     e.preventDefault();
+
     this.props.onCommentNameClick(this.props.commentData.userid);
   };
 
@@ -151,86 +147,74 @@ class Comment extends React.Component {
               <span className="commenter-name">
                 <Link
                   onClick={this.handleCommentNameClick}
-                  to={`/user/user_${this.props.commentData.userid}`}
-                >
+                  to={`/user/user_${this.props.commentData.userid}`}>
                   {this.props.commentData.name}
                 </Link>
               </span>
               {this.state.isEditClicked ? (
                 <form
                   className="comment-edit-wrapper"
-                  onSubmit={this.handleEditSubmit}
-                >
+                  onSubmit={this.handleEditSubmit}>
                   <input
                     className="comment-edit-field"
                     type="text"
                     defaultValue={this.props.commentData.comment}
                     onChange={this.handleEditChange}
-                    autoFocus
-                  ></input>
+                    autoFocus />
                   <a
                     className="comment-edit-cancel"
                     href="/#"
-                    onClick={this.handleCancelEdit}
-                  >
+                    onClick={this.handleCancelEdit}>
                     Cancel
                   </a>
                 </form>
               ) : (
-                <span className="comment-content">
-                  {this.props.commentData.comment}
-                </span>
-              )}
+                  <span className="comment-content">
+                    {this.props.commentData.comment}
+                  </span>
+                )}
             </div>
             <div className="comment-option-container">
               <div
                 className="comment-option-button"
                 onClick={this.handleOptionClick}
-                id={`comment-option-button-${this.props.commentData.id}`}
-              >
+                id={`comment-option-button-${this.props.commentData.id}`}>
                 ...
               </div>
             </div>
           </div>
           {this.state.isDeleteClicked ? (
             <span className="comment-delete-prompt">
-              Delete this comment?
+              Delete this comment?&ensp;
               <a
                 href="/#"
-                onClick={e => this.handleDeleteOptionClick(e, 'yes')}
-              >
+                onClick={e => this.handleDeleteOptionClick(e, 'yes')}>
                 Yes
-              </a>{' '}
-              |
+              </a>
+              &ensp;|&ensp;
               <a href="/#" onClick={e => this.handleDeleteOptionClick(e, 'no')}>
                 No
               </a>
             </span>
-          ) : (
-            ''
-          )}
+          ) : ''}
           <div>
             <span>
               <a
                 className="comment-reply"
                 href="/#"
-                onClick={this.handleReplyClick}
-              >
+                onClick={this.handleReplyClick}>
                 - Reply
               </a>
               {this.props.commentData.replyList.length > 0 ? (
                 <a
                   className="view-reply"
                   href="/#"
-                  onClick={this.handleViewReplyClick}
-                >
+                  onClick={this.handleViewReplyClick}>
                   {this.state.isViewReplyClicked
                     ? '- Hide Replies'
                     : '- View Replies'}
                 </a>
-              ) : (
-                ''
-              )}
+              ) : ''}
             </span>
             <span className="comment-time">
               {parseDateTime(
@@ -241,14 +225,11 @@ class Comment extends React.Component {
           </div>
         </div>
         {this.props.isOptionClicked &&
-        this.props.commentData.id === this.props.selectedCommentId ? (
-          <PopUpMenu
-            config={this.state.popUpConfig}
-            onItemClick={this.handleOptionItemClick}
-          />
-        ) : (
-          ''
-        )}
+          this.props.commentData.id === this.props.selectedCommentId ? (
+            <PopUpMenu
+              config={this.state.popUpConfig}
+              onItemClick={this.handleOptionItemClick} />
+          ) : ''}
         {this.state.replyMode ? (
           <form className="reply-form" onSubmit={this.handleReplySubmit}>
             <span className="current-user-name">{this.props.userName}</span>
@@ -257,37 +238,31 @@ class Comment extends React.Component {
               type="text"
               placeholder="Write a reply..."
               onChange={this.handleReplyChange}
-              autoFocus
-            ></input>
+              autoFocus />
           </form>
-        ) : (
-          ''
-        )}
+        ) : ''}
         {this.props.commentData.replyList.length > 0 &&
-        this.state.isViewReplyClicked ? (
-          <ul className="replies">
-            {this.props.commentData.replyList.map((reply, index) => (
-              <li key={reply.id}>
-                <Comment
-                  userId={this.props.userId}
-                  userName={this.props.userName}
-                  postId={this.props.postId}
-                  posterId={this.props.posterId}
-                  commentData={reply}
-                  isOptionClicked={this.props.isOptionClicked}
-                  selectedCommentId={this.props.selectedCommentId}
-                  onOptionClick={this.props.onOptionClick}
-                  onReplySubmit={this.props.onReplySubmit}
-                  onEditSubmit={this.props.onEditSubmit}
-                  onDeleteOptionClick={this.props.onDeleteOptionClick}
-                  onCommentNameClick={this.props.onCommentNameClick}
-                />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          ''
-        )}
+          this.state.isViewReplyClicked ? (
+            <ul className="replies">
+              {this.props.commentData.replyList.map((reply, index) => (
+                <li key={reply.id}>
+                  <Comment
+                    userId={this.props.userId}
+                    userName={this.props.userName}
+                    postId={this.props.postId}
+                    posterId={this.props.posterId}
+                    commentData={reply}
+                    isOptionClicked={this.props.isOptionClicked}
+                    selectedCommentId={this.props.selectedCommentId}
+                    onOptionClick={this.props.onOptionClick}
+                    onReplySubmit={this.props.onReplySubmit}
+                    onEditSubmit={this.props.onEditSubmit}
+                    onDeleteOptionClick={this.props.onDeleteOptionClick}
+                    onCommentNameClick={this.props.onCommentNameClick} />
+                </li>
+              ))}
+            </ul>
+          ) : ''}
       </Fragment>
     );
   }

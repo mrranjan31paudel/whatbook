@@ -18,13 +18,11 @@ class PopUpMenu extends React.Component {
 
   componentDidMount() {
     if (this.props.config.rights === 'd') {
-      this.setState({
-        optionList: DELETE_ONLY
-      });
-    } else if (this.props.config.rights === 'ed') {
-      this.setState({
-        optionList: EDIT_DELETE
-      });
+      return this.setState({ optionList: DELETE_ONLY });
+    }
+
+    if (this.props.config.rights === 'ed') {
+      this.setState({ optionList: EDIT_DELETE });
     }
   }
 
@@ -49,8 +47,7 @@ class PopUpMenu extends React.Component {
           <li
             key={index}
             onClick={e => this.handleItemClick(e, listValue)}
-            value={listValue}
-          >
+            value={listValue}>
             {listValue}
           </li>
         ))}

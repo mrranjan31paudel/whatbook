@@ -1,24 +1,20 @@
 import React from 'react';
-import './../styles/loginsignup/Dropdown.css';
 
-class Dropdown extends React.Component {
-  render() {
-    const itemKeys = Object.keys(this.props.items);
-    const itemValues = Object.values(this.props.items);
-    return (
-      <select
-        className={'drop-list' + this.props.status}
-        name={this.props.className}
-        onChange={e => this.props.onChange(e.target.value, e.target.name)}
-      >
-        {itemKeys.map((itemValue, itemIndex) => (
-          <option key={itemValue} value={`${itemValue}`}>
-            {itemValues[itemIndex]}
-          </option>
-        ))}
-      </select>
-    );
-  }
+import './../styles/loginsignup/dropdown.css';
+
+const Dropdown = props => {
+  return (
+    <select
+      className={'drop-list' + props.status}
+      name={props.name}
+      onChange={e => props.onChange(e.target.value, e.target.name)}>
+      {Object.keys(props.options).map(key => (
+        <option key={key} value={`${key}`}>
+          {props.options[key]}
+        </option>
+      ))}
+    </select>
+  );
 }
 
 export default Dropdown;

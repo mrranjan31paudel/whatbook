@@ -49,12 +49,12 @@ const DAY = [
   '31'
 ];
 
-let Year = {
-  '0': 'Year'
-};
+let Year = ['Year'];
 
-for (let i = 1950; i <= 2020; ++i) {
-  Year[`${i}`] = `${i}`;
+let currYear = new Date().getFullYear();
+
+for (let i = currYear - 50; i <= currYear; ++i) {
+  Year.push(`${i}`);
 }
 
 export { MONTH, DAY, Year };

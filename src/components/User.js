@@ -1,31 +1,28 @@
 import React, { Fragment } from 'react';
 
 import {
-  getUserDetails,
-  getUserStories,
-  createNewPost,
+  logoutUser,
   postComment,
   getComments,
+  createNewPost,
   updateContent,
   deleteContent,
-  logoutUser,
+  getPeopleList,
+  getUserDetails,
+  getUserStories,
   getRequestList,
-  getNotificationsList,
-  getPeopleList
+  getNotificationsList
 } from './../services/user';
-import tokenService from './../services/token';
-
-import UserStoryContainer from './UserStoryContainer';
-// import UserHolder from './UserHolder';
 import Header from './Header';
+// import UserHolder from './UserHolder';
+import tokenService from './../services/token';
 import NoServerConnection from './NoServerConnection';
+import UserStoryContainer from './UserStoryContainer';
 
-import { localhost } from './../constants/config';
-
-import './../styles/user/user.wrapper.css';
-import './../styles/user/profile.info.wrapper.css';
-import './../styles/user/news.feed.wrapper.css';
-import './../styles/user/friendlist.wrapper.css';
+import './../styles/user/user_wrapper.css';
+import './../styles/user/news_feed_wrapper.css';
+import './../styles/user/friendlist_wrapper.css';
+import './../styles/user/profile_info_wrapper.css';
 
 class User extends React.Component {
   constructor() {
@@ -51,11 +48,8 @@ class User extends React.Component {
   }
 
   componentDidMount() {
-    console.log('from user component did mount.');
     getUserDetails('/user')
       .then(response => {
-        console.log('USER DATA RESPONSE: ', response);
-
         if (response) {
           this.setState({
             userData: {
@@ -71,12 +65,13 @@ class User extends React.Component {
         }
       })
       .catch(err => {
-        console.log('Component mount error: ', err.response);
         if (!err.response) {
-          this.setState({
+          return this.setState({
             isConnectedToServer: false
           });
-        } else if (err.response && err.response.status === 401) {
+        }
+
+        if (err.response.status === 401) {
           tokenService.removeTokens();
           return this.props.history.push('/');
         }
@@ -84,11 +79,8 @@ class User extends React.Component {
   }
 
   getNumberOfNewRequests = () => {
-    getRequestList('/user/requests', {
-      type: 'number'
-    })
+    getRequestList('/user/requests', { type: 'number' })
       .then(response => {
-        console.log('RESPONSE: ', response);
         this.setState({
           numberOfUnansweredRequests: response.data.numberOfUnansweredRequests
         });
@@ -101,27 +93,23 @@ class User extends React.Component {
   getNewsFeed = () => {
     getUserStories('/user/post')
       .then(response => {
-        console.log('FEEDS: ', response);
         this.setState({
           ...this.state,
           userStories: response.data
         });
       })
       .catch(err => {
-        // console.log('Unable to load feeds: ', err);
+        console.log('Unable to load feeds: ', err);
       });
   };
 
   getCommentList = postId => {
     return new Promise((resolve, reject) => {
-      getComments('/user/comment', {
-        postId: postId
-      })
+      getComments('/user/comment', { postId: postId })
         .then(response => {
           resolve(response.data);
         })
         .catch(err => {
-          console.log('comments get error: ', err);
           reject(err);
         });
     });
@@ -129,11 +117,8 @@ class User extends React.Component {
 
   getNumberOfUnreadNotifications = () => {
     // called while loading the user
-    getNotificationsList('/user/notifications', {
-      type: 'number'
-    })
+    getNotificationsList('/user/notifications', { type: 'number' })
       .then(response => {
-        console.log('notifications response: ', response);
         this.setState({
           numberOfUnreadNotifications: response.data.numberOfUnreadNotifications
         });
@@ -144,16 +129,12 @@ class User extends React.Component {
   };
 
   handlePostFieldChange = e => {
-    this.setState({
-      postFieldData: e.target.value
-    });
+    this.setState({ postFieldData: e.target.value });
   };
 
   handlePost = () => {
     if (this.state.postFieldData) {
-      createNewPost('/user/post', {
-        postData: this.state.postFieldData
-      })
+      createNewPost('/user/post', { postData: this.state.postFieldData })
         .then(response => {
           this.setState({
             postFieldData: ''
@@ -165,7 +146,6 @@ class User extends React.Component {
             tokenService.removeTokens();
             this.props.history.push('/');
           }
-          console.log('not posted: ', err);
         });
     }
   };
@@ -180,20 +160,23 @@ class User extends React.Component {
 
   handleEditSubmit = submitInfo => {
     if (submitInfo.type === 'post') {
-      updateContent('/user/post', submitInfo.data)
+      return updateContent('/user/post', submitInfo.data)
         .then(response => {
           this.getNewsFeed();
         })
         .catch(err => {
           console.log('post edit submit error: ', err);
         });
-    } else if (submitInfo.type === 'comment') {
+    }
+
+    if (submitInfo.type === 'comment') {
       return new Promise((resolve, reject) => {
         updateContent('/user/comment', submitInfo.data)
           .then(response => {
             this.setState({
               selectionId: {}
             });
+
             resolve(this.getCommentList(submitInfo.data.postId));
           })
           .catch(err => {
@@ -251,9 +234,7 @@ class User extends React.Component {
   };
 
   handleLogOut = () => {
-    logoutUser('/logout', {
-      refreshToken: tokenService.getRefreshToken()
-    })
+    logoutUser('/logout', { refreshToken: tokenService.getRefreshToken() })
       .then(() => {
         tokenService.removeTokens();
         this.props.history.push('/');
@@ -282,12 +263,10 @@ class User extends React.Component {
 
   handleHomeClick = () => {
     return this.props.history.push('/user');
-    // window.location.reload();
   };
 
   handleProfileNameClick = ownerId => {
     return this.props.history.push(`/user/user_${ownerId}`);
-    // window.location.reload();
   };
 
   render() {
@@ -304,14 +283,13 @@ class User extends React.Component {
             onLogOutClick={this.handleLogOut}
             onProfileClick={this.handleProfileClick}
             onHomeClick={this.handleHomeClick}
-            searchPeople={this.searchPeople}
-          />
+            searchPeople={this.searchPeople} />
+
           <div className="user-wrapper" onClick={this.handleUserWrapperClick}>
             <div className="profile-info-container">
               <img
-                src={`http://${localhost}:3000/userpic.png`}
-                alt="user"
-              ></img>
+                src="userpic.png"
+                alt="user" />
               <span>{this.state.userData.name}</span>
             </div>
             <div className="news-feed-container">
@@ -322,8 +300,7 @@ class User extends React.Component {
                   name="post-field"
                   placeholder="What are you thinking today?"
                   onChange={this.handlePostFieldChange}
-                  value={this.state.postFieldData}
-                ></textarea>
+                  value={this.state.postFieldData} />
                 <button onClick={this.handlePost}>Post</button>
               </div>
               <hr />
@@ -331,7 +308,7 @@ class User extends React.Component {
               <div className="news-feed-wrapper">
                 <h3>Feed</h3>
                 <ul className="user-stroy-list">
-                  {this.state.userStories.map((data, index) => (
+                  {this.state.userStories.map(data => (
                     <li key={data.id}>
                       <UserStoryContainer
                         userId={this.state.userData.id}
@@ -346,8 +323,7 @@ class User extends React.Component {
                         onEditSubmit={this.handleEditSubmit}
                         onCommentDelete={this.handleCommentDelete}
                         onPostDelete={this.handlePostDelete}
-                        onProfileNameClick={this.handleProfileNameClick}
-                      />
+                        onProfileNameClick={this.handleProfileNameClick} />
                     </li>
                   ))}
                 </ul>
@@ -361,9 +337,9 @@ class User extends React.Component {
           </div>
         </Fragment>
       );
-    } else {
-      return <NoServerConnection />;
     }
+
+    return <NoServerConnection />;
   }
 }
 

@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import token from './token';
 import { BASE_URL } from './../constants/config';
 
@@ -43,9 +44,9 @@ function remove(url, params = {}) {
 
 function getRequestHeader() {
   let accessToken = token.getAccessToken();
-  if (accessToken == null) {
-    return;
-  }
+
+  if (!accessToken) return;
+
   return {
     authorization: accessToken
   };
@@ -57,6 +58,7 @@ axios.interceptors.response.use(
   },
   error => {
     const newRequest = error.config;
+
     if (
       error.response &&
       error.response.status === 401 &&
@@ -64,6 +66,7 @@ axios.interceptors.response.use(
     ) {
       if (!token.getRefreshToken()) {
         token.removeTokens();
+
         return Promise.reject(error);
       }
 
@@ -73,6 +76,7 @@ axios.interceptors.response.use(
         })
           .then(newToken => {
             newRequest.headers.authorization = newToken;
+
             return axios(newRequest);
           })
           .catch(err => {
@@ -96,11 +100,13 @@ axios.interceptors.response.use(
           token.setTokens(res.data.accessToken, res.data.refreshToken);
           newRequest.headers.authorization = res.data.accessToken;
           releaseHeldRequests(null, res.data.accessToken);
+
           return axios(newRequest);
         })
         .catch(err => {
           if (err.response.status === 401) {
             token.removeTokens();
+
             return Promise.reject(err);
           }
           releaseHeldRequests(err, null);
@@ -114,10 +120,10 @@ axios.interceptors.response.use(
 function releaseHeldRequests(err, refreshedAccessToken = null) {
   heldRequests.forEach(elementPromise => {
     if (err) {
-      elementPromise.reject(err);
-    } else {
-      elementPromise.resolve(refreshedAccessToken);
+      return elementPromise.reject(err);
     }
+
+    elementPromise.resolve(refreshedAccessToken);
   });
 
   heldRequests = [];

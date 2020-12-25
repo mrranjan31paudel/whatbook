@@ -1,9 +1,7 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import { localhost } from './../constants/config';
-
-import './../styles/common/Header.css';
+import './../styles/common/header.css';
 
 class Header extends React.Component {
   constructor() {
@@ -16,38 +14,27 @@ class Header extends React.Component {
   }
 
   handleSearchBarFocusIn = () => {
-    this.setState({
-      isFocusOnSearchBar: true
-    });
+    this.setState({ isFocusOnSearchBar: true });
   };
 
   handleSearchBarFocusOut = () => {
-    this.setState({
-      isFocusOnSearchBar: false
-    });
+    this.setState({ isFocusOnSearchBar: false });
   };
 
   handleSearchTextChange = e => {
     //send request to get search word list
+    this.setState({ searchText: e.target.value });
+
     if (e.target.value) {
-      this.props
+      return this.props
         .searchPeople(e.target.value)
         .then(response => {
-          console.log('search list: ', response);
-          this.setState({
-            searchResult: response
-          });
+          this.setState({ searchResult: response });
         })
         .catch(err => console.log('ERROR: ', err));
     } else {
-      this.setState({
-        searchResult: []
-      });
+      this.setState({ searchResult: [] });
     }
-
-    this.setState({
-      searchText: e.target.value
-    });
   };
 
   handleSearchSubmit = e => {
@@ -66,15 +53,13 @@ class Header extends React.Component {
                     <span
                       className="header-logo-image"
                       style={{
-                        backgroundImage: `url(http://${localhost}:3000/whatbooklogo.png)`
-                      }}
-                    ></span>
+                        backgroundImage: `url(whatbooklogo.png)`
+                      }} />
                   </Link>
                 </div>
                 <form
                   className="search-bar-container"
-                  onSubmit={this.handleSearchSubmit}
-                >
+                  onSubmit={this.handleSearchSubmit}>
                   <input
                     className="search-bar"
                     type="text"
@@ -82,21 +67,18 @@ class Header extends React.Component {
                     onChange={this.handleSearchTextChange}
                     onFocus={this.handleSearchBarFocusIn}
                     onBlur={this.handleSearchBarFocusOut}
-                    value={this.state.searchText}
-                  ></input>
+                    value={this.state.searchText} />
                   <button
                     className={
                       this.state.isFocusOnSearchBar
                         ? 'search-img-container focus-on-search-bar'
                         : 'search-img-container'
                     }
-                    type="submit"
-                  >
+                    type="submit">
                     <img
                       className="search-img"
-                      src={`http://${localhost}:3000/search-solid.svg`}
-                      alt="searchSVG"
-                    ></img>
+                      src="search-solid.svg"
+                      alt="searchSVG" />
                   </button>
                   {this.state.searchResult.length > 0 ? (
                     <div className="search-result-list-modal">
@@ -106,9 +88,7 @@ class Header extends React.Component {
                         ))}
                       </ul>
                     </div>
-                  ) : (
-                    ''
-                  )}
+                  ) : ''}
                 </form>
               </div>
               <ul className="navigation-links">
@@ -116,14 +96,12 @@ class Header extends React.Component {
                   <div>
                     <Link
                       onClick={this.props.onProfileClick}
-                      to={`/user/user_${this.props.userId}`}
-                    >
-                      <span>{this.props.profileName}</span>{' '}
+                      to={`/user/user_${this.props.userId}`}>
+                      <span>{this.props.profileName}</span>&ensp;
                       <img
                         className="nav-img"
-                        src={`http://${localhost}:3000/user-solid.svg`}
-                        alt="profileSVG"
-                      ></img>
+                        src="user-solid.svg"
+                        alt="profileSVG" />
                     </Link>
                   </div>
                 </li>
@@ -133,9 +111,8 @@ class Header extends React.Component {
                     <Link onClick={this.props.onHomeClick} to="/user">
                       <img
                         className="nav-img"
-                        src={`http://${localhost}:3000/home-solid.svg`}
-                        alt="homeSVG"
-                      ></img>
+                        src="home-solid.svg"
+                        alt="homeSVG" />
                     </Link>
                   </div>
                 </li>
@@ -144,22 +121,18 @@ class Header extends React.Component {
                   <div>
                     <Link
                       onClick={this.props.onNotificationsClick}
-                      to="/notifications"
-                    >
+                      to="/notifications">
                       <img
                         className="nav-img"
-                        src={`http://${localhost}:3000/bell-solid.svg`}
-                        alt="notificationSVG"
-                      ></img>
+                        src="bell-solid.svg"
+                        alt="notificationSVG" />
                     </Link>
                   </div>
                   {this.props.numberOfUnreadNotifications > 0 ? (
                     <span className="red-dot-notification">
                       {this.props.numberOfUnreadNotifications}
                     </span>
-                  ) : (
-                    ''
-                  )}
+                  ) : ''}
                 </li>
 
                 <li>
@@ -167,18 +140,15 @@ class Header extends React.Component {
                     <Link to="/people">
                       <img
                         className="nav-img"
-                        src={`http://${localhost}:3000/user-friends-solid.svg`}
-                        alt="friendsSVG"
-                      ></img>
+                        src="user-friends-solid.svg"
+                        alt="friendsSVG" />
                     </Link>
                   </div>
                   {this.props.numberOfUnansweredRequests > 0 ? (
                     <span className="red-dot-notification">
                       {this.props.numberOfUnansweredRequests}
                     </span>
-                  ) : (
-                    ''
-                  )}
+                  ) : ''}
                 </li>
 
                 <li>
@@ -186,9 +156,8 @@ class Header extends React.Component {
                     <Link onClick={this.props.onLogOutClick} to="/">
                       <img
                         className="nav-img"
-                        src={`http://${localhost}:3000/sign-out-alt-solid.svg`}
-                        alt="logoutSVG"
-                      ></img>
+                        src="sign-out-alt-solid.svg"
+                        alt="logoutSVG" />
                     </Link>
                   </div>
                 </li>
@@ -197,13 +166,13 @@ class Header extends React.Component {
           </header>
         </Fragment>
       );
-    } else {
-      return (
-        <header className="header-seg">
-          <div className="not-in-user"></div>
-        </header>
-      );
     }
+
+    return (
+      <header className="header-seg">
+        <div className="not-in-user"></div>
+      </header>
+    );
   }
 }
 

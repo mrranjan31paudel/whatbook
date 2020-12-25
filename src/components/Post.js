@@ -1,22 +1,21 @@
 import React, { Fragment } from 'react';
 
 import {
+  getComments,
+  postComment,
+  getPeopleList,
+  updateContent,
+  deleteContent,
   getUserDetails,
   getUserStories,
   getRequestList,
-  getNotificationsList,
-  updateContent,
-  postComment,
-  deleteContent,
-  getComments,
-  getPeopleList
+  getNotificationsList
 } from './../services/user';
-import tokenService from './../services/token';
-
 import Header from './Header';
+import tokenService from './../services/token';
 import UserStoryContainer from './UserStoryContainer';
 
-import './../styles/user/singlePost.css';
+import './../styles/user/single_post.css';
 
 class Post extends React.Component {
   constructor() {
@@ -57,7 +56,6 @@ class Post extends React.Component {
         }
       })
       .catch(err => {
-        console.log('Component mount error: ', err);
         if (err.response && err.response.status === 401) {
           tokenService.removeTokens();
           return this.props.history.push('/');
@@ -66,18 +64,15 @@ class Post extends React.Component {
   }
 
   getUserPost = () => {
-    console.log('PARAMS: ', this.props.match.params);
     const ownerId = this.props.match.params.userId.split('_')[1];
     const postId = this.props.match.params.postId.split('_')[1];
+
     getUserStories('/user/post', {
       ownerId: ownerId,
       postId: postId
     })
       .then(response => {
-        console.log('POst response: ', response);
-        this.setState({
-          userPost: response.data
-        });
+        this.setState({ userPost: response.data });
       })
       .catch(err => {
         console.log('Unable to load post: ', err);
@@ -85,12 +80,8 @@ class Post extends React.Component {
   };
 
   getCommentList = postId => {
-    console.log('USER POST: ', this.state.userPost);
-    console.log('post id in getcommentlist: ', postId);
     return new Promise((resolve, reject) => {
-      getComments('/user/comment', {
-        postId: postId
-      })
+      getComments('/user/comment', { postId: postId })
         .then(response => {
           resolve(response.data);
         })
@@ -101,11 +92,8 @@ class Post extends React.Component {
   };
 
   getNumberOfNewRequests = () => {
-    getRequestList('/user/requests', {
-      type: 'number'
-    })
+    getRequestList('/user/requests', { type: 'number' })
       .then(response => {
-        console.log('RESPONSE: ', response);
         this.setState({
           numberOfUnansweredRequests: response.data.numberOfUnansweredRequests
         });
@@ -117,11 +105,8 @@ class Post extends React.Component {
 
   getNumberOfUnreadNotifications = () => {
     // called while loading the user
-    getNotificationsList('/user/notifications', {
-      type: 'number'
-    })
+    getNotificationsList('/user/notifications', { type: 'number' })
       .then(response => {
-        console.log('notifications response: ', response);
         this.setState({
           numberOfUnreadNotifications: response.data.numberOfUnreadNotifications
         });
@@ -141,20 +126,23 @@ class Post extends React.Component {
 
   handleEditSubmit = submitInfo => {
     if (submitInfo.type === 'post') {
-      updateContent('/user/post', submitInfo.data)
+      return updateContent('/user/post', submitInfo.data)
         .then(response => {
           this.getUserPost();
         })
         .catch(err => {
           console.log('post edit submit error: ', err);
         });
-    } else if (submitInfo.type === 'comment') {
+    }
+
+    if (submitInfo.type === 'comment') {
       return new Promise((resolve, reject) => {
         updateContent('/user/comment', submitInfo.data)
           .then(response => {
             this.setState({
               selectionId: {}
             });
+
             resolve(this.getCommentList(submitInfo.data.postId));
           })
           .catch(err => {
@@ -251,12 +239,10 @@ class Post extends React.Component {
           onLogOutClick={this.handleLogOut}
           onProfileClick={this.handleProfileClick}
           onHomeClick={this.handleHomeClick}
-          searchPeople={this.searchPeople}
-        />
+          searchPeople={this.searchPeople} />
         <div
           className="user-post-container"
-          onClick={this.handleUserWrapperClick}
-        >
+          onClick={this.handleUserWrapperClick}>
           <div className="user-post-wrapper">
             {this.state.userPost.length > 0 ? (
               <UserStoryContainer
@@ -272,11 +258,8 @@ class Post extends React.Component {
                 onEditSubmit={this.handleEditSubmit}
                 onCommentDelete={this.handleCommentDelete}
                 onPostDelete={this.handlePostDelete}
-                onProfileNameClick={this.handleProfileNameClick}
-              />
-            ) : (
-              ''
-            )}
+                onProfileNameClick={this.handleProfileNameClick} />
+            ) : ''}
           </div>
         </div>
       </Fragment>

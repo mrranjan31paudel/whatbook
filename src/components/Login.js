@@ -1,17 +1,16 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
+import Label from './Label';
+import Button from './Button';
+import Header from './Header';
+import TextField from './TextField';
 import loginRequest from './../services/login';
 import tokenService from './../services/token';
 import validateLogin from '../validators/login';
-
-import Header from './Header';
-import TextField from './TextField';
-import Label from './Label';
-import Button from './Button';
 import NoServerConnection from './NoServerConnection';
 
-import './../styles/loginsignup/formWrapper.css';
+import './../styles/loginsignup/form_wrapper.css';
 
 class Login extends React.Component {
   constructor() {
@@ -37,54 +36,54 @@ class Login extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
+
     const validFlag = validateLogin(this.state);
+
     if (validFlag) {
+      this.setState({ isWaitingServer: true });
+
       loginRequest(this.state.data)
         .then(response => {
           tokenService.setTokens(
             response.data.accessToken,
             response.data.refreshToken
           );
+
           return this.props.history.push('/user');
         })
         .catch(err => {
           if (!err.response) {
-            this.setState({
-              isConnectedToServer: false
-            });
-          } else if (
-            err.response &&
-            err.response.data.msg === 'USER_NOT_FOUND'
-          ) {
-            this.setState({
-              emailExists: false,
-              validPassword: true
-            });
-          } else if (
-            err.response &&
-            err.response.data.msg === 'INVALID_PASSWORD'
-          ) {
-            this.setState({
-              emailExists: true,
-              validPassword: false
+            return this.setState({
+              isConnectedToServer: false,
+              isWaitingServer: false
             });
           }
-          this.setState({
-            isWaitingServer: false
-          });
+
+          if (err.response.data.msg === 'USER_NOT_FOUND') {
+            return this.setState({
+              emailExists: false,
+              validPassword: true,
+              isWaitingServer: false
+            });
+          }
+
+          if (err.response.data.msg === 'INVALID_PASSWORD') {
+            return this.setState({
+              emailExists: true,
+              validPassword: false,
+              isWaitingServer: false
+            });
+          }
         });
-      this.setState({
-        isWaitingServer: true
-      });
-    } else {
-      this.setState({
-        data: {
-          ...this.state.data,
-          email: this.state.data.email ? this.state.data.email : '',
-          password: this.state.data.password ? this.state.data.password : ''
-        }
-      });
     }
+
+    this.setState({
+      data: {
+        ...this.state.data,
+        email: this.state.data.email ? this.state.data.email : '',
+        password: this.state.data.password ? this.state.data.password : ''
+      }
+    });
   };
 
   handleChange = (targetField, value) => {
@@ -106,8 +105,7 @@ class Login extends React.Component {
             <form
               className="login-form"
               onSubmit={this.handleSubmit}
-              autoComplete="on"
-            >
+              autoComplete="on">
               <div className="field-segment">
                 <TextField
                   className={
@@ -119,26 +117,19 @@ class Login extends React.Component {
                   type="text"
                   placeHolder="E-mail"
                   onChange={this.handleChange}
-                  autoComplete="on"
-                />
+                  autoComplete="on" />
                 {this.state.data.email === '' && this.state.emailExists ? (
                   <Label
                     className="error-label"
                     htmlFor=""
-                    value="E-mail cannot be Empty!"
-                  />
-                ) : (
-                  ''
-                )}
+                    value="E-mail cannot be Empty!" />
+                ) : ''}
                 {!this.state.emailExists ? (
                   <Label
                     className="error-label"
                     htmlFor=""
-                    value="User doesn't exist!"
-                  />
-                ) : (
-                  ''
-                )}
+                    value="User doesn't exist!" />
+                ) : ''}
               </div>
               <div className="field-segment">
                 <TextField
@@ -151,33 +142,25 @@ class Login extends React.Component {
                   type="password"
                   placeHolder="Password"
                   onChange={this.handleChange}
-                  autoComplete="off"
-                />
+                  autoComplete="off" />
                 {this.state.data.password === '' && this.state.validPassword ? (
                   <Label
                     className="error-label"
                     htmlFor=""
-                    value="Password cannot be Empty!"
-                  />
-                ) : (
-                  ''
-                )}
+                    value="Password cannot be Empty!" />
+                ) : ''}
                 {!this.state.validPassword ? (
                   <Label
                     className="error-label"
                     htmlFor=""
-                    value="Password doesn't match with user!"
-                  />
-                ) : (
-                  ''
-                )}
+                    value="Password doesn't match with user!" />
+                ) : ''}
               </div>
               <Button
                 className={this.state.isWaitingServer ? ' busy' : ''}
                 type="submit"
                 value={this.state.isWaitingServer ? 'Logging In...' : 'Log In'}
-                isDisabled={this.state.isWaitingServer ? true : false}
-              />
+                isDisabled={this.state.isWaitingServer ? true : false} />
             </form>
             <p>
               Don't have an account? Sign Up <Link to="/signup">here.</Link>
@@ -185,9 +168,9 @@ class Login extends React.Component {
           </div>
         </Fragment>
       );
-    } else {
-      return <NoServerConnection />;
     }
+
+    return <NoServerConnection />;
   }
 }
 
