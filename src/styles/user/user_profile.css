@@ -31,7 +31,8 @@
   background: rgba(0, 0, 0, 0.452);
 }
 
-.profile-image-container, .profile-image {
+.profile-image-container,
+.profile-image {
   height: 100%;
 }
 
@@ -64,7 +65,7 @@
 .frienship-button-container button:hover {
   cursor: pointer;
   background: rgb(0, 180, 0);
-  border: 2px solid rgb(0, 158, 0); 
+  border: 2px solid rgb(0, 158, 0);
 }
 
 .frienship-button-container span {
@@ -79,7 +80,7 @@
   justify-content: space-between;
 }
 
-.profile-intro-container{
+.profile-intro-container {
   width: calc(30% - 12px);
   border-radius: 5px;
   margin: 5px;
@@ -131,7 +132,7 @@
   background: rgb(0, 180, 0);
 }
 
-.profile-posts-container{
+.profile-posts-container {
   width: calc(70% - 12px);
   border-radius: 5px;
   margin: 5px;
@@ -158,4 +159,3 @@
   font-size: calc(10px + 1vmin);
   color: grey;
 }
-

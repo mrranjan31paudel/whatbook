@@ -3,7 +3,7 @@ function validateSignup(state) {
     name = '',
     email = '',
     password = '',
-    confPassword = ''
+    confPassword = '',
   } = state.data;
   const { day = '0', month = '0', year = '0' } = state.data.dob;
 

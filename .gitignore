@@ -21,7 +21,6 @@
 
 .vscode
 .vscode/*
-.prettierignore
 
 npm-debug.log*
 yarn-debug.log*

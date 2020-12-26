@@ -11,7 +11,7 @@ const MONTH = [
   'Sep',
   'Oct',
   'Nov',
-  'Dec'
+  'Dec',
 ];
 
 const DAY = [
@@ -46,7 +46,7 @@ const DAY = [
   '28',
   '29',
   '30',
-  '31'
+  '31',
 ];
 
 let Year = ['Year'];

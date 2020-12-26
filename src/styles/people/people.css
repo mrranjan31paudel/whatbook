@@ -17,7 +17,7 @@
 .people-container button:hover {
   cursor: pointer;
   background: rgb(0, 180, 0);
-  border: 2px solid rgb(0, 158, 0); 
+  border: 2px solid rgb(0, 158, 0);
 }
 
 .people-container h3 {
@@ -58,7 +58,8 @@
   width: 60%;
 }
 
-.request-list-container, .people-list-container {
+.request-list-container,
+.people-list-container {
   width: calc(100% - 12px);
   margin: 5px;
   border-radius: 5px;

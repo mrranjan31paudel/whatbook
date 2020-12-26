@@ -9,7 +9,7 @@ class Header extends React.Component {
     this.state = {
       searchText: '',
       searchResult: [],
-      isFocusOnSearchBar: false
+      isFocusOnSearchBar: false,
     };
   }
 
@@ -21,23 +21,23 @@ class Header extends React.Component {
     this.setState({ isFocusOnSearchBar: false });
   };
 
-  handleSearchTextChange = e => {
+  handleSearchTextChange = (e) => {
     //send request to get search word list
     this.setState({ searchText: e.target.value });
 
     if (e.target.value) {
       return this.props
         .searchPeople(e.target.value)
-        .then(response => {
+        .then((response) => {
           this.setState({ searchResult: response });
         })
-        .catch(err => console.log('ERROR: ', err));
+        .catch((err) => console.log('ERROR: ', err));
     } else {
       this.setState({ searchResult: [] });
     }
   };
 
-  handleSearchSubmit = e => {
+  handleSearchSubmit = (e) => {
     e.preventDefault();
   };
 
@@ -53,13 +53,15 @@ class Header extends React.Component {
                     <span
                       className="header-logo-image"
                       style={{
-                        backgroundImage: `url(whatbooklogo.png)`
-                      }} />
+                        backgroundImage: 'url(whatbooklogo.png)',
+                      }}
+                    />
                   </Link>
                 </div>
                 <form
                   className="search-bar-container"
-                  onSubmit={this.handleSearchSubmit}>
+                  onSubmit={this.handleSearchSubmit}
+                >
                   <input
                     className="search-bar"
                     type="text"
@@ -67,18 +69,21 @@ class Header extends React.Component {
                     onChange={this.handleSearchTextChange}
                     onFocus={this.handleSearchBarFocusIn}
                     onBlur={this.handleSearchBarFocusOut}
-                    value={this.state.searchText} />
+                    value={this.state.searchText}
+                  />
                   <button
                     className={
                       this.state.isFocusOnSearchBar
                         ? 'search-img-container focus-on-search-bar'
                         : 'search-img-container'
                     }
-                    type="submit">
+                    type="submit"
+                  >
                     <img
                       className="search-img"
                       src="search-solid.svg"
-                      alt="searchSVG" />
+                      alt="searchSVG"
+                    />
                   </button>
                   {this.state.searchResult.length > 0 ? (
                     <div className="search-result-list-modal">
@@ -88,7 +93,9 @@ class Header extends React.Component {
                         ))}
                       </ul>
                     </div>
-                  ) : ''}
+                  ) : (
+                    ''
+                  )}
                 </form>
               </div>
               <ul className="navigation-links">
@@ -96,12 +103,14 @@ class Header extends React.Component {
                   <div>
                     <Link
                       onClick={this.props.onProfileClick}
-                      to={`/user/user_${this.props.userId}`}>
+                      to={`/user/user_${this.props.userId}`}
+                    >
                       <span>{this.props.profileName}</span>&ensp;
                       <img
                         className="nav-img"
                         src="user-solid.svg"
-                        alt="profileSVG" />
+                        alt="profileSVG"
+                      />
                     </Link>
                   </div>
                 </li>
@@ -112,7 +121,8 @@ class Header extends React.Component {
                       <img
                         className="nav-img"
                         src="home-solid.svg"
-                        alt="homeSVG" />
+                        alt="homeSVG"
+                      />
                     </Link>
                   </div>
                 </li>
@@ -121,18 +131,22 @@ class Header extends React.Component {
                   <div>
                     <Link
                       onClick={this.props.onNotificationsClick}
-                      to="/notifications">
+                      to="/notifications"
+                    >
                       <img
                         className="nav-img"
                         src="bell-solid.svg"
-                        alt="notificationSVG" />
+                        alt="notificationSVG"
+                      />
                     </Link>
                   </div>
                   {this.props.numberOfUnreadNotifications > 0 ? (
                     <span className="red-dot-notification">
                       {this.props.numberOfUnreadNotifications}
                     </span>
-                  ) : ''}
+                  ) : (
+                    ''
+                  )}
                 </li>
 
                 <li>
@@ -141,14 +155,17 @@ class Header extends React.Component {
                       <img
                         className="nav-img"
                         src="user-friends-solid.svg"
-                        alt="friendsSVG" />
+                        alt="friendsSVG"
+                      />
                     </Link>
                   </div>
                   {this.props.numberOfUnansweredRequests > 0 ? (
                     <span className="red-dot-notification">
                       {this.props.numberOfUnansweredRequests}
                     </span>
-                  ) : ''}
+                  ) : (
+                    ''
+                  )}
                 </li>
 
                 <li>
@@ -157,7 +174,8 @@ class Header extends React.Component {
                       <img
                         className="nav-img"
                         src="sign-out-alt-solid.svg"
-                        alt="logoutSVG" />
+                        alt="logoutSVG"
+                      />
                     </Link>
                   </div>
                 </li>

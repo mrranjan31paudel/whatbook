@@ -1,4 +1,4 @@
-.signup-success-wrapper{
+.signup-success-wrapper {
   width: 400px;
   padding: 20px;
   margin: auto;
@@ -8,12 +8,12 @@
   background: rgb(230, 230, 230);
 }
 
-.signup-success-wrapper h2{
+.signup-success-wrapper h2 {
   margin: 5px;
   padding: 5px;
 }
 
-.signup-success-wrapper p{
+.signup-success-wrapper p {
   margin: 10px;
   padding: 10px;
   font-size: 14px;
@@ -21,12 +21,12 @@
   color: rgb(53, 53, 53);
 }
 
-.signup-success-wrapper p a{
+.signup-success-wrapper p a {
   text-decoration: none;
   font-weight: 700;
   color: rgb(0, 180, 0);
 }
 
-.signup-success-wrapper p a:hover{
+.signup-success-wrapper p a:hover {
   color: rgb(3, 231, 3);
 }

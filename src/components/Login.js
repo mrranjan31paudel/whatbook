@@ -18,13 +18,13 @@ class Login extends React.Component {
     this.state = {
       data: {
         email: null,
-        password: null
+        password: null,
       },
       isWaitingServer: false,
       isLoggedIn: false,
       emailExists: true,
       validPassword: true,
-      isConnectedToServer: true
+      isConnectedToServer: true,
     };
   }
 
@@ -34,7 +34,7 @@ class Login extends React.Component {
     }
   }
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
 
     const validFlag = validateLogin(this.state);
@@ -43,7 +43,7 @@ class Login extends React.Component {
       this.setState({ isWaitingServer: true });
 
       loginRequest(this.state.data)
-        .then(response => {
+        .then((response) => {
           tokenService.setTokens(
             response.data.accessToken,
             response.data.refreshToken
@@ -51,11 +51,11 @@ class Login extends React.Component {
 
           return this.props.history.push('/user');
         })
-        .catch(err => {
+        .catch((err) => {
           if (!err.response) {
             return this.setState({
               isConnectedToServer: false,
-              isWaitingServer: false
+              isWaitingServer: false,
             });
           }
 
@@ -63,7 +63,7 @@ class Login extends React.Component {
             return this.setState({
               emailExists: false,
               validPassword: true,
-              isWaitingServer: false
+              isWaitingServer: false,
             });
           }
 
@@ -71,7 +71,7 @@ class Login extends React.Component {
             return this.setState({
               emailExists: true,
               validPassword: false,
-              isWaitingServer: false
+              isWaitingServer: false,
             });
           }
         });
@@ -81,8 +81,8 @@ class Login extends React.Component {
       data: {
         ...this.state.data,
         email: this.state.data.email ? this.state.data.email : '',
-        password: this.state.data.password ? this.state.data.password : ''
-      }
+        password: this.state.data.password ? this.state.data.password : '',
+      },
     });
   };
 
@@ -90,8 +90,8 @@ class Login extends React.Component {
     this.setState({
       data: {
         ...this.state.data,
-        [targetField]: value
-      }
+        [targetField]: value,
+      },
     });
   };
 
@@ -105,7 +105,8 @@ class Login extends React.Component {
             <form
               className="login-form"
               onSubmit={this.handleSubmit}
-              autoComplete="on">
+              autoComplete="on"
+            >
               <div className="field-segment">
                 <TextField
                   className={
@@ -117,19 +118,26 @@ class Login extends React.Component {
                   type="text"
                   placeHolder="E-mail"
                   onChange={this.handleChange}
-                  autoComplete="on" />
+                  autoComplete="on"
+                />
                 {this.state.data.email === '' && this.state.emailExists ? (
                   <Label
                     className="error-label"
                     htmlFor=""
-                    value="E-mail cannot be Empty!" />
-                ) : ''}
+                    value="E-mail cannot be Empty!"
+                  />
+                ) : (
+                  ''
+                )}
                 {!this.state.emailExists ? (
                   <Label
                     className="error-label"
                     htmlFor=""
-                    value="User doesn't exist!" />
-                ) : ''}
+                    value="User doesn't exist!"
+                  />
+                ) : (
+                  ''
+                )}
               </div>
               <div className="field-segment">
                 <TextField
@@ -142,25 +150,33 @@ class Login extends React.Component {
                   type="password"
                   placeHolder="Password"
                   onChange={this.handleChange}
-                  autoComplete="off" />
+                  autoComplete="off"
+                />
                 {this.state.data.password === '' && this.state.validPassword ? (
                   <Label
                     className="error-label"
                     htmlFor=""
-                    value="Password cannot be Empty!" />
-                ) : ''}
+                    value="Password cannot be Empty!"
+                  />
+                ) : (
+                  ''
+                )}
                 {!this.state.validPassword ? (
                   <Label
                     className="error-label"
                     htmlFor=""
-                    value="Password doesn't match with user!" />
-                ) : ''}
+                    value="Password doesn't match with user!"
+                  />
+                ) : (
+                  ''
+                )}
               </div>
               <Button
                 className={this.state.isWaitingServer ? ' busy' : ''}
                 type="submit"
                 value={this.state.isWaitingServer ? 'Logging In...' : 'Log In'}
-                isDisabled={this.state.isWaitingServer ? true : false} />
+                isDisabled={this.state.isWaitingServer ? true : false}
+              />
             </form>
             <p>
               Don't have an account? Sign Up <Link to="/signup">here.</Link>

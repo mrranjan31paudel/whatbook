@@ -12,6 +12,16 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
+### `npm run pretty`
+
+Optionally prettify `js`, `css` and `json` files with provided configurations using the prettier library.<br />
+*The prettifying step is carried out automatically in `husky`'s `pre-commit` hook.*
+
+### `npm run lint`
+
+Optionally lint only `js` files.<br />
+*Linting is also done automatically as a `pre-commit` step.*
+
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.<br />

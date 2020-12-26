@@ -90,5 +90,5 @@ export {
   getNotificationsList,
   markNotificationAsRead,
   changeUserData,
-  deleteNotification
+  deleteNotification,
 };

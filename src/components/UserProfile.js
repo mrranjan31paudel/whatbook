@@ -14,7 +14,7 @@ import {
   getUserStories,
   getRequestList,
   changeUserData,
-  getNotificationsList
+  getNotificationsList,
 } from './../services/user';
 import Header from './Header';
 import tokenService from './../services/token';
@@ -32,7 +32,7 @@ class UserProfile extends React.Component {
         id: '',
         name: '',
         dob: '',
-        email: ''
+        email: '',
       },
       profileData: {
         id: '',
@@ -41,7 +41,7 @@ class UserProfile extends React.Component {
         email: '',
         isOwner: '',
         isFriend: '',
-        isRequestSent: ''
+        isRequestSent: '',
       },
 
       userPosts: [],
@@ -53,7 +53,7 @@ class UserProfile extends React.Component {
       isOptionClicked: false,
       isEditProfileClicked: false,
       selectedCommentId: null,
-      selectedPostId: null
+      selectedPostId: null,
     };
   }
 
@@ -63,27 +63,27 @@ class UserProfile extends React.Component {
 
   loadProfilePage = () => {
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
 
     getUserDetails('/user')
-      .then(response => {
+      .then((response) => {
         this.setState({
           userData: {
             id: response.data.id,
             name: response.data.name,
             dob: response.data.dob,
-            email: response.data.email
-          }
+            email: response.data.email,
+          },
         });
         this.getUserProfileDetails();
         this.getNumberOfUnreadNotifications();
         this.getNumberOfNewRequests();
       })
-      .catch(err => {
+      .catch((err) => {
         if (!err.response) {
           return this.setState({
-            isConnectedToServer: false
+            isConnectedToServer: false,
           });
         }
 
@@ -94,10 +94,10 @@ class UserProfile extends React.Component {
       })
       .finally(() => {
         this.setState({
-          isLoading: false
+          isLoading: false,
         });
       });
-  }
+  };
 
   getUserProfileDetails = () => {
     const userId = this.props.match.params.userId.split('_')[1];
@@ -105,35 +105,35 @@ class UserProfile extends React.Component {
     if (userId) {
       if (!this.state.isLoading) {
         this.setState({
-          isLoading: true
+          isLoading: true,
         });
       }
 
       return getUserDetails('/user', { id: userId })
-        .then(response => {
+        .then((response) => {
           this.setState({
-            profileData: { ...response.data }
+            profileData: { ...response.data },
           });
           this.getUserPosts();
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     }
 
     this.setState({
-      isLoading: false
+      isLoading: false,
     });
   };
 
   getNumberOfNewRequests = () => {
     getRequestList('/user/requests', { type: 'number' })
-      .then(response => {
+      .then((response) => {
         this.setState({
-          numberOfUnansweredRequests: response.data.numberOfUnansweredRequests
+          numberOfUnansweredRequests: response.data.numberOfUnansweredRequests,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('Request List Error: ', error);
       });
   };
@@ -141,36 +141,38 @@ class UserProfile extends React.Component {
   getUserPosts = () => {
     const userId = parseInt(this.props.match.params.userId.split('_')[1]);
 
-    if (userId &&
-      (this.state.profileData.isFriend || this.state.profileData.isOwner)) {
+    if (
+      userId &&
+      (this.state.profileData.isFriend || this.state.profileData.isOwner)
+    ) {
       return getUserStories('/user/post', { userId: userId })
-        .then(response => {
+        .then((response) => {
           this.setState({
             userPosts: response.data,
-            isLoading: false
+            isLoading: false,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('Unable to load feeds: ', err);
         });
     }
 
     this.setState({
-      isLoading: false
+      isLoading: false,
     });
   };
 
-  getCommentList = postId => {
+  getCommentList = (postId) => {
     return new Promise((resolve, reject) => {
       getComments('/user/comment', { postId: postId })
-        .then(response => {
+        .then((response) => {
           this.setState({
-            toUpdatePostId: ''
+            toUpdatePostId: '',
           });
 
           resolve(response.data);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('comments get error: ', err);
         });
     });
@@ -179,56 +181,57 @@ class UserProfile extends React.Component {
   getNumberOfUnreadNotifications = () => {
     // called while loading the user
     getNotificationsList('/user/notifications', { type: 'number' })
-      .then(response => {
+      .then((response) => {
         this.setState({
-          numberOfUnreadNotifications: response.data.numberOfUnreadNotifications
+          numberOfUnreadNotifications:
+            response.data.numberOfUnreadNotifications,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Notification number error: ', err);
       });
   };
 
-  handleProfileWrapperClick = e => {
+  handleProfileWrapperClick = (e) => {
     //to hide the popUp menu.
     if (this.state.isOptionClicked) {
       this.setState({
-        isOptionClicked: false
+        isOptionClicked: false,
       });
     }
   };
 
-  handleCommentDelete = commentData => {
+  handleCommentDelete = (commentData) => {
     return new Promise((resolve, reject) => {
       deleteContent('/user/comment', commentData)
-        .then(response => {
+        .then((response) => {
           resolve(this.getCommentList(commentData.postId));
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('comment delete error: ', err);
         });
     });
   };
 
-  handleCommentSubmit = commentData => {
+  handleCommentSubmit = (commentData) => {
     return new Promise((resolve, reject) => {
       postComment('/user/comment', commentData)
-        .then(response => {
+        .then((response) => {
           resolve(this.getCommentList(commentData.parentPostId));
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('error comment post: ', err);
         });
     });
   };
 
-  handleEditSubmit = submitInfo => {
+  handleEditSubmit = (submitInfo) => {
     if (submitInfo.type === 'post') {
       return updateContent('/user/post', submitInfo.data)
-        .then(response => {
+        .then((response) => {
           this.getUserPosts();
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('post edit submit error: ', err);
         });
     }
@@ -236,14 +239,14 @@ class UserProfile extends React.Component {
     if (submitInfo.type === 'comment') {
       return new Promise((resolve, reject) => {
         updateContent('/user/comment', submitInfo.data)
-          .then(response => {
+          .then((response) => {
             this.setState({
-              selectionId: {}
+              selectionId: {},
             });
 
             resolve(this.getCommentList(submitInfo.data.postId));
           })
-          .catch(err => {
+          .catch((err) => {
             console.log('comment edit submit error: ', err);
           });
       });
@@ -254,20 +257,20 @@ class UserProfile extends React.Component {
     this.setState({
       isOptionClicked: !this.state.isOptionClicked,
       selectedCommentId: commentId,
-      selectedPostId: postId
+      selectedPostId: postId,
     });
   };
 
-  handlePostDelete = postData => {
+  handlePostDelete = (postData) => {
     deleteContent('/user/post', postData)
-      .then(response => {
+      .then((response) => {
         this.getUserPosts();
         this.setState({
           isPostDeleteClicked: false,
-          selectionId: {}
+          selectionId: {},
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('delete error: ', err);
       });
   };
@@ -278,17 +281,17 @@ class UserProfile extends React.Component {
         tokenService.removeTokens();
         this.props.history.push('/');
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
 
   handleAddFriendClick = () => {
     sendRequest('/user/friend', { recieverId: this.state.profileData.id })
-      .then(response => {
+      .then((response) => {
         this.getUserProfileDetails();
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
@@ -296,25 +299,25 @@ class UserProfile extends React.Component {
   handleAcceptRequestClick = () => {
     //sends PUT request
     acceptRequest('/user/friend', { senderId: this.state.profileData.id })
-      .then(response => {
+      .then((response) => {
         this.getUserProfileDetails();
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
 
   handleDeleteRequestClick = () => {
     deleteRequest('/user/friend', { friendId: this.state.profileData.id })
-      .then(response => {
+      .then((response) => {
         this.getUserProfileDetails();
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
 
-  handleProfileClick = e => {
+  handleProfileClick = (e) => {
     this.props.history.push(`/user/user_${this.state.userData.id}`);
     this.loadProfilePage();
   };
@@ -323,57 +326,57 @@ class UserProfile extends React.Component {
     return this.props.history.push('/');
   };
 
-  handleProfileNameClick = ownerId => {
+  handleProfileNameClick = (ownerId) => {
     this.props.history.push(`/user/user_${ownerId}`);
     this.loadProfilePage();
   };
 
-  handleProfileEditClick = e => {
+  handleProfileEditClick = (e) => {
     e.preventDefault();
 
     this.setState({
-      isEditProfileClicked: true
+      isEditProfileClicked: true,
     });
   };
 
-  handleCloseEditProfilePopUp = e => {
+  handleCloseEditProfilePopUp = (e) => {
     e.preventDefault();
 
     this.setState({
-      isEditProfileClicked: false
+      isEditProfileClicked: false,
     });
   };
 
-  handleUserNameEditSubmit = newName => {
+  handleUserNameEditSubmit = (newName) => {
     changeUserData('/user', {
       type: 'name',
-      submitData: newName
+      submitData: newName,
     })
-      .then(response => {
+      .then((response) => {
         this.loadProfilePage();
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Name change Error: ', err);
       });
   };
 
-  handleUserDOBEditSubmit = newDate => {
+  handleUserDOBEditSubmit = (newDate) => {
     changeUserData('/user', {
       type: 'dob',
-      submitData: newDate
+      submitData: newDate,
     })
-      .then(response => {
+      .then((response) => {
         this.loadProfilePage();
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Name change Error: ', err);
       });
   };
 
-  handleUserPasswordChange = newPassWordData => {
+  handleUserPasswordChange = (newPassWordData) => {
     return changeUserData('/user', {
       type: 'password',
-      submitData: newPassWordData
+      submitData: newPassWordData,
     });
     // .then(response => {
     //   this.loadProfilePage();
@@ -383,16 +386,16 @@ class UserProfile extends React.Component {
     // });
   };
 
-  searchPeople = searchText => {
+  searchPeople = (searchText) => {
     return new Promise((resolve, reject) => {
       getPeopleList('/user/people', {
         userId: this.state.userData.id,
-        searchText: searchText
+        searchText: searchText,
       })
-        .then(response => {
+        .then((response) => {
           resolve(response.data);
         })
-        .catch(err => console.log('Sear result ERROR: ', err));
+        .catch((err) => console.log('Sear result ERROR: ', err));
     });
   };
 
@@ -407,9 +410,11 @@ class UserProfile extends React.Component {
 
     const profileId = parseInt(this.props.match.params.userId.split('_')[1]);
 
-    if (!this.state.isLoading
-      && this.state.profileData.id
-      && profileId !== this.state.profileData.id) {
+    if (
+      !this.state.isLoading &&
+      this.state.profileData.id &&
+      profileId !== this.state.profileData.id
+    ) {
       return (
         <div className="page-not-available">
           <h1>This Page is Not Available!!!</h1>
@@ -423,79 +428,91 @@ class UserProfile extends React.Component {
           userId={this.state.userData.id}
           profileName={this.state.userData.name}
           numberOfUnansweredRequests={this.state.numberOfUnansweredRequests}
-          numberOfUnreadNotifications={
-            this.state.numberOfUnreadNotifications
-          }
+          numberOfUnreadNotifications={this.state.numberOfUnreadNotifications}
           isInsideUser={true}
           {...this.props}
           onLogOutClick={this.handleLogOut}
           onProfileClick={this.handleProfileClick}
           onHomeClick={this.handleHomeClick}
-          searchPeople={this.searchPeople} />
+          searchPeople={this.searchPeople}
+        />
         <div
           className="user-profile-wrapper"
-          onClick={this.handleProfileWrapperClick}>
+          onClick={this.handleProfileWrapperClick}
+        >
           <div className="profile-header">
             <div
               className="profile-banner"
               style={{
-                backgroundImage: `url(userpic.png)`
-              }} />
+                backgroundImage: 'url(userpic.png)',
+              }}
+            />
             <div className="profile-banner-cover-layer">
               <div className="profile-image-container">
                 <img
                   className="profile-image"
                   src="userpic.png"
-                  alt="userpic" />
+                  alt="userpic"
+                />
               </div>
               <div className="profile-name-container">
                 <h1>{this.state.profileData.name}</h1>
               </div>
               <div className="frienship-button-container">
                 {!this.state.profileData.isOwner &&
-                  !this.state.profileData.isFriend &&
-                  !this.state.profileData.isRequestSent &&
-                  !this.state.profileData.isRequestRecieved ? (
-                    <button onClick={this.handleAddFriendClick}>
-                      Add Friend +
-                    </button>
-                  ) : ''}
+                !this.state.profileData.isFriend &&
+                !this.state.profileData.isRequestSent &&
+                !this.state.profileData.isRequestRecieved ? (
+                  <button onClick={this.handleAddFriendClick}>
+                    Add Friend +
+                  </button>
+                ) : (
+                  ''
+                )}
                 {!this.state.profileData.isOwner &&
-                  !this.state.profileData.isFriend &&
-                  this.state.profileData.isRequestSent &&
-                  !this.state.profileData.isRequestRecieved ? (
-                    <span>
-                      Friend Request Sent
-                      <button onClick={this.handleDeleteRequestClick}>
-                        Cancel
-                      </button>
-                    </span>
-                  ) : ''}
-                {!this.state.profileData.isOwner &&
-                  !this.state.profileData.isFriend &&
-                  !this.state.profileData.isRequestSent &&
-                  this.state.profileData.isRequestRecieved ? (
-                    <button onClick={this.handleAcceptRequestClick}>
-                      Accept Friend Request
-                    </button>
-                  ) : ''}
-                {!this.state.profileData.isOwner &&
-                  !this.state.profileData.isFriend &&
-                  !this.state.profileData.isRequestSent &&
-                  this.state.profileData.isRequestRecieved ? (
+                !this.state.profileData.isFriend &&
+                this.state.profileData.isRequestSent &&
+                !this.state.profileData.isRequestRecieved ? (
+                  <span>
+                    Friend Request Sent
                     <button onClick={this.handleDeleteRequestClick}>
-                      Delete Request
+                      Cancel
                     </button>
-                  ) : ''}
+                  </span>
+                ) : (
+                  ''
+                )}
                 {!this.state.profileData.isOwner &&
-                  this.state.profileData.isFriend ? (
-                    <span>
-                      Friend
-                      <button onClick={this.handleDeleteRequestClick}>
-                        Unfriend
-                      </button>
-                    </span>
-                  ) : ''}
+                !this.state.profileData.isFriend &&
+                !this.state.profileData.isRequestSent &&
+                this.state.profileData.isRequestRecieved ? (
+                  <button onClick={this.handleAcceptRequestClick}>
+                    Accept Friend Request
+                  </button>
+                ) : (
+                  ''
+                )}
+                {!this.state.profileData.isOwner &&
+                !this.state.profileData.isFriend &&
+                !this.state.profileData.isRequestSent &&
+                this.state.profileData.isRequestRecieved ? (
+                  <button onClick={this.handleDeleteRequestClick}>
+                    Delete Request
+                  </button>
+                ) : (
+                  ''
+                )}
+                {!this.state.profileData.isOwner &&
+                this.state.profileData.isFriend ? (
+                  <span>
+                    Friend
+                    <button onClick={this.handleDeleteRequestClick}>
+                      Unfriend
+                    </button>
+                  </span>
+                ) : (
+                  ''
+                )}
               </div>
             </div>
           </div>
@@ -522,38 +539,42 @@ class UserProfile extends React.Component {
                 <button
                   className="profile-edit-button"
                   type="button"
-                  onClick={this.handleProfileEditClick}>
+                  onClick={this.handleProfileEditClick}
+                >
                   Edit profile
                 </button>
-              ) : ''}
+              ) : (
+                ''
+              )}
             </div>
             <div className="profile-posts-container">
               <h3>Posts</h3>
               {this.state.profileData.isFriend ||
-                this.state.profileData.isOwner ? (
-                  <ul className="profile-post-lists">
-                    {this.state.userPosts.map(data => (
-                      <li key={data.id}>
-                        <UserStoryContainer
-                          userId={this.state.userData.id}
-                          userName={this.state.userData.name}
-                          postData={data}
-                          getCommentList={this.getCommentList}
-                          isOptionClicked={this.state.isOptionClicked}
-                          selectedCommentId={this.state.selectedCommentId}
-                          selectedPostId={this.state.selectedPostId}
-                          onCommentSubmit={this.handleCommentSubmit}
-                          onOptionClick={this.handleOptionClick}
-                          onEditSubmit={this.handleEditSubmit}
-                          onCommentDelete={this.handleCommentDelete}
-                          onPostDelete={this.handlePostDelete}
-                          onProfileNameClick={this.handleProfileNameClick} />
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <span className="no-posts-to-show">No Posts to show.</span>
-                )}
+              this.state.profileData.isOwner ? (
+                <ul className="profile-post-lists">
+                  {this.state.userPosts.map((data) => (
+                    <li key={data.id}>
+                      <UserStoryContainer
+                        userId={this.state.userData.id}
+                        userName={this.state.userData.name}
+                        postData={data}
+                        getCommentList={this.getCommentList}
+                        isOptionClicked={this.state.isOptionClicked}
+                        selectedCommentId={this.state.selectedCommentId}
+                        selectedPostId={this.state.selectedPostId}
+                        onCommentSubmit={this.handleCommentSubmit}
+                        onOptionClick={this.handleOptionClick}
+                        onEditSubmit={this.handleEditSubmit}
+                        onCommentDelete={this.handleCommentDelete}
+                        onPostDelete={this.handlePostDelete}
+                        onProfileNameClick={this.handleProfileNameClick}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <span className="no-posts-to-show">No Posts to show.</span>
+              )}
             </div>
           </div>
         </div>
@@ -563,8 +584,11 @@ class UserProfile extends React.Component {
             onNameEditSubmit={this.handleUserNameEditSubmit}
             onDOBEditSubmit={this.handleUserDOBEditSubmit}
             onClosePopUpClick={this.handleCloseEditProfilePopUp}
-            onPasswordChangeSubmit={this.handleUserPasswordChange} />
-        ) : ''}
+            onPasswordChangeSubmit={this.handleUserPasswordChange}
+          />
+        ) : (
+          ''
+        )}
       </Fragment>
     );
   }

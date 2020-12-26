@@ -9,7 +9,7 @@ import {
   getFriendList,
   getRequestList,
   getUserDetails,
-  getNotificationsList
+  getNotificationsList,
 } from './../services/user';
 import Header from './Header';
 import UserHolder from './UserHolder';
@@ -25,30 +25,30 @@ class People extends React.Component {
       peopleList: [],
       requestList: {
         sentList: [],
-        recievedList: []
+        recievedList: [],
       },
       userData: {
         id: '',
         name: '',
         dob: '',
-        email: ''
+        email: '',
       },
       numberOfUnreadNotifications: 0,
-      userNotifications: []
+      userNotifications: [],
     };
   }
 
   componentDidMount() {
     getUserDetails('/user')
-      .then(response => {
+      .then((response) => {
         if (response) {
           this.setState({
             userData: {
               id: response.data.id,
               name: response.data.name,
               dob: response.data.dob,
-              email: response.data.email
-            }
+              email: response.data.email,
+            },
           });
           //this.getPeopleList();
           this.getNumberOfUnreadNotifications();
@@ -57,7 +57,7 @@ class People extends React.Component {
           this.getListOfPeople();
         }
       })
-      .catch(err => {
+      .catch((err) => {
         if (!err.response) {
           return this.setState({ isConnectedToServer: false });
         }
@@ -71,43 +71,43 @@ class People extends React.Component {
 
   getListOfPeople = () => {
     getPeopleList('/user/people', { userId: this.state.userData.id })
-      .then(response => {
+      .then((response) => {
         this.setState({ peopleList: response.data });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('People List: ', error);
       });
   };
 
-  searchPeople = searchText => {
+  searchPeople = (searchText) => {
     return new Promise((resolve, reject) => {
       getPeopleList('/user/people', {
         userId: this.state.userData.id,
-        searchText: searchText
+        searchText: searchText,
       })
-        .then(response => {
+        .then((response) => {
           resolve(response.data);
         })
-        .catch(err => console.log('Sear result ERROR: ', err));
+        .catch((err) => console.log('Sear result ERROR: ', err));
     });
   };
 
   getListOfFriends = () => {
     getFriendList('/user/friend', { userId: this.state.userData.id })
-      .then(response => {
+      .then((response) => {
         this.setState({ friendList: response.data });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('Friend List Error: ', error);
       });
   };
 
   getListOfRequests = () => {
     getRequestList('/user/requests', { type: 'list' })
-      .then(response => {
+      .then((response) => {
         this.setState({ requestList: response.data });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('Request List Error: ', error);
       });
   };
@@ -115,62 +115,63 @@ class People extends React.Component {
   getNumberOfUnreadNotifications = () => {
     // called while loading the user
     getNotificationsList('/user/notifications', { type: 'number' })
-      .then(response => {
+      .then((response) => {
         this.setState({
-          numberOfUnreadNotifications: response.data.numberOfUnreadNotifications
+          numberOfUnreadNotifications:
+            response.data.numberOfUnreadNotifications,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Notification number error: ', err);
       });
   };
 
   handleLogOut = () => {
     logoutUser('/logout', {
-      refreshToken: tokenService.getRefreshToken()
+      refreshToken: tokenService.getRefreshToken(),
     })
       .then(() => {
         tokenService.removeTokens();
         this.props.history.push('/');
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
 
-  handleAddFriendClick = e => {
+  handleAddFriendClick = (e) => {
     sendRequest('/user/friend', { recieverId: e.target.id.split('-')[1] })
-      .then(response => {
+      .then((response) => {
         this.getListOfFriends();
         this.getListOfRequests();
         this.getListOfPeople();
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
 
-  handleAcceptRequestClick = e => {
+  handleAcceptRequestClick = (e) => {
     //sends PUT request
     acceptRequest('/user/friend', { senderId: e.target.id.split('-')[1] })
-      .then(response => {
+      .then((response) => {
         this.getListOfFriends();
         this.getListOfRequests();
         this.getListOfPeople();
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
 
-  handleDeleteRequestClick = e => {
+  handleDeleteRequestClick = (e) => {
     deleteRequest('/user/friend', { friendId: e.target.id.split('-')[1] })
-      .then(response => {
+      .then((response) => {
         this.getListOfFriends();
         this.getListOfRequests();
         this.getListOfPeople();
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
@@ -198,7 +199,8 @@ class People extends React.Component {
           onLogOutClick={this.handleLogOut}
           onProfileClick={this.handleProfileClick}
           onHomeClick={this.handleHomeClick}
-          searchPeople={this.searchPeople} />
+          searchPeople={this.searchPeople}
+        />
 
         <div className="people-container">
           <div className="friend-list-container">
@@ -226,7 +228,8 @@ class People extends React.Component {
                           <UserHolder userData={data} />
                           <button
                             id={`cancel-${data.id}`}
-                            onClick={this.handleDeleteRequestClick}>
+                            onClick={this.handleDeleteRequestClick}
+                          >
                             Cancel Request
                           </button>
                         </Fragment>
@@ -234,13 +237,13 @@ class People extends React.Component {
                     ))}
                   </ul>
                 ) : (
-                    <Fragment>
-                      <br></br>
-                      <span className="empty-request-list-text">
-                        No Requests Sent.
-                      </span>
-                    </Fragment>
-                  )}
+                  <Fragment>
+                    <br></br>
+                    <span className="empty-request-list-text">
+                      No Requests Sent.
+                    </span>
+                  </Fragment>
+                )}
               </div>
               <hr />
               <div className="recieved-list-wrapper">
@@ -253,12 +256,14 @@ class People extends React.Component {
                           <UserHolder userData={data} />
                           <button
                             id={`accept-${data.id}`}
-                            onClick={this.handleAcceptRequestClick}>
+                            onClick={this.handleAcceptRequestClick}
+                          >
                             Accept
                           </button>
                           <button
                             id={`delete-${data.id}`}
-                            onClick={this.handleDeleteRequestClick}>
+                            onClick={this.handleDeleteRequestClick}
+                          >
                             Delete
                           </button>
                         </Fragment>
@@ -266,13 +271,13 @@ class People extends React.Component {
                     ))}
                   </ul>
                 ) : (
-                    <Fragment>
-                      <br></br>
-                      <span className="empty-request-list-text">
-                        No Requests Recieved.
-                      </span>
-                    </Fragment>
-                  )}
+                  <Fragment>
+                    <br></br>
+                    <span className="empty-request-list-text">
+                      No Requests Recieved.
+                    </span>
+                  </Fragment>
+                )}
               </div>
             </div>
 
@@ -284,7 +289,8 @@ class People extends React.Component {
                     <UserHolder userData={data} />
                     <button
                       id={`add-${data.id}`}
-                      onClick={this.handleAddFriendClick}>
+                      onClick={this.handleAddFriendClick}
+                    >
                       Add Friend +
                     </button>
                   </li>

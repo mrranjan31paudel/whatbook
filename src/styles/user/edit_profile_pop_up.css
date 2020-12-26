@@ -68,7 +68,7 @@
   flex-direction: row;
 }
 
-.edit-action-buttons button{
+.edit-action-buttons button {
   background: none;
   border: none;
   padding: 0 10px;
@@ -83,7 +83,7 @@
 
 .edit-action-buttons button:focus {
   outline: none;
-} 
+}
 
 .edit-action-buttons button:hover {
   cursor: pointer;
@@ -104,17 +104,17 @@
   border-radius: 3px;
 }
 
-.edit-profile-close-button:hover{
+.edit-profile-close-button:hover {
   cursor: pointer;
   background: rgb(0, 187, 0);
   color: white;
 }
 
-.password-change-match{
+.password-change-match {
   color: green;
 }
 
-.password-change-not-match{
+.password-change-not-match {
   color: red;
 }
 

@@ -10,7 +10,7 @@ class ProtectedRoute extends React.Component {
     }
 
     return true;
-  }
+  };
 
   render() {
     const Component = this.props.comp;
@@ -20,10 +20,14 @@ class ProtectedRoute extends React.Component {
         exact
         path={this.props.path}
         {...this.props}
-        render={props => this.isLoggedIn()
-          ? (<Component {...this.props} {...props} />)
-          : (<Redirect to="/" />)
-        } />
+        render={(props) =>
+          this.isLoggedIn() ? (
+            <Component {...this.props} {...props} />
+          ) : (
+            <Redirect to="/" />
+          )
+        }
+      />
     );
   }
 }

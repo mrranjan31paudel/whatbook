@@ -3,7 +3,7 @@ import React from 'react';
 import {
   NONE,
   DELETE_ONLY,
-  EDIT_DELETE
+  EDIT_DELETE,
 } from './../constants/permissionOptions';
 
 import './../styles/user/popupmenu.css';
@@ -12,7 +12,7 @@ class PopUpMenu extends React.Component {
   constructor() {
     super();
     this.state = {
-      optionList: NONE
+      optionList: NONE,
     };
   }
 
@@ -39,15 +39,16 @@ class PopUpMenu extends React.Component {
       .getBoundingClientRect();
     const popUpPosition = {
       top: `${buttonRect.top - postRect.top + buttonRect.height}px`,
-      right: '0px'
+      right: '0px',
     };
     return (
       <ul id="pop-up-menu" style={popUpPosition}>
         {this.state.optionList.map((listValue, index) => (
           <li
             key={index}
-            onClick={e => this.handleItemClick(e, listValue)}
-            value={listValue}>
+            onClick={(e) => this.handleItemClick(e, listValue)}
+            value={listValue}
+          >
             {listValue}
           </li>
         ))}

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import './../styles/user/active_friend_container.css';
 
-const UserHolder = props => {
+const UserHolder = (props) => {
   return (
     <div className="active-friend-container">
       <img src="userpic.png" alt="UserHolder" />
@@ -14,6 +14,6 @@ const UserHolder = props => {
       </span>
     </div>
   );
-}
+};
 
 export default UserHolder;

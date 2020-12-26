@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -21,12 +22,12 @@ class Comment extends React.Component {
       popUpConfig: {
         rights: '',
         buttonId: '',
-        postContainerId: ''
-      }
+        postContainerId: '',
+      },
     };
   }
 
-  handleOptionClick = e => {
+  handleOptionClick = () => {
     this.props.onOptionClick(null, this.props.commentData.id);
 
     this.setState({
@@ -37,12 +38,12 @@ class Comment extends React.Component {
           this.props.commentData.userid
         ),
         buttonId: `comment-option-button-${this.props.commentData.id}`,
-        postContainerId: `user-story-container-${this.props.postId}`
-      }
+        postContainerId: `user-story-container-${this.props.postId}`,
+      },
     });
   };
 
-  handleOptionItemClick = clickedItem => {
+  handleOptionItemClick = (clickedItem) => {
     if (clickedItem === 'Edit') {
       return this.setState({ isEditClicked: true });
     }
@@ -52,11 +53,11 @@ class Comment extends React.Component {
     }
   };
 
-  handleEditChange = e => {
+  handleEditChange = (e) => {
     this.setState({ commentText: e.target.value });
   };
 
-  handleEditSubmit = e => {
+  handleEditSubmit = (e) => {
     e.preventDefault();
 
     this.props.onEditSubmit({
@@ -64,14 +65,14 @@ class Comment extends React.Component {
       data: {
         postId: this.props.postId,
         commentId: this.props.commentData.id,
-        newCommentText: this.state.commentText
-      }
+        newCommentText: this.state.commentText,
+      },
     });
 
     this.setState({ isEditClicked: false });
   };
 
-  handleCancelEdit = e => {
+  handleCancelEdit = (e) => {
     e.preventDefault();
 
     this.setState({ isEditClicked: false });
@@ -85,7 +86,7 @@ class Comment extends React.Component {
         commentId: this.props.commentData.id,
         commentOwnerId: this.props.commentData.userid,
         postId: this.props.postId,
-        postOwnerId: this.props.posterId
+        postOwnerId: this.props.posterId,
       };
       this.props.onDeleteOptionClick(commentData);
     }
@@ -93,17 +94,17 @@ class Comment extends React.Component {
     this.setState({ isDeleteClicked: false });
   };
 
-  handleReplyClick = e => {
+  handleReplyClick = (e) => {
     e.preventDefault();
 
     this.setState({ replyMode: true });
   };
 
-  handleReplyChange = e => {
+  handleReplyChange = (e) => {
     this.setState({ replyText: e.target.value });
   };
 
-  handleReplySubmit = e => {
+  handleReplySubmit = (e) => {
     e.preventDefault();
 
     if (this.state.replyText) {
@@ -112,7 +113,7 @@ class Comment extends React.Component {
         parentPostId: this.props.postId,
         parentCommentId: this.props.commentData.id,
         parentCommentOwnerId: this.props.commentData.userid,
-        postOwnerId: this.props.posterId
+        postOwnerId: this.props.posterId,
       };
 
       this.props.onReplySubmit(replyData);
@@ -120,19 +121,19 @@ class Comment extends React.Component {
 
     this.setState({
       replyText: '',
-      replyMode: false
+      replyMode: false,
     });
   };
 
-  handleViewReplyClick = e => {
+  handleViewReplyClick = (e) => {
     e.preventDefault();
 
     this.setState({
-      isViewReplyClicked: !this.state.isViewReplyClicked
+      isViewReplyClicked: !this.state.isViewReplyClicked,
     });
   };
 
-  handleCommentNameClick = e => {
+  handleCommentNameClick = (e) => {
     e.preventDefault();
 
     this.props.onCommentNameClick(this.props.commentData.userid);
@@ -147,38 +148,43 @@ class Comment extends React.Component {
               <span className="commenter-name">
                 <Link
                   onClick={this.handleCommentNameClick}
-                  to={`/user/user_${this.props.commentData.userid}`}>
+                  to={`/user/user_${this.props.commentData.userid}`}
+                >
                   {this.props.commentData.name}
                 </Link>
               </span>
               {this.state.isEditClicked ? (
                 <form
                   className="comment-edit-wrapper"
-                  onSubmit={this.handleEditSubmit}>
+                  onSubmit={this.handleEditSubmit}
+                >
                   <input
                     className="comment-edit-field"
                     type="text"
                     defaultValue={this.props.commentData.comment}
                     onChange={this.handleEditChange}
-                    autoFocus />
+                    autoFocus
+                  />
                   <a
                     className="comment-edit-cancel"
                     href="/#"
-                    onClick={this.handleCancelEdit}>
+                    onClick={this.handleCancelEdit}
+                  >
                     Cancel
                   </a>
                 </form>
               ) : (
-                  <span className="comment-content">
-                    {this.props.commentData.comment}
-                  </span>
-                )}
+                <span className="comment-content">
+                  {this.props.commentData.comment}
+                </span>
+              )}
             </div>
             <div className="comment-option-container">
               <div
                 className="comment-option-button"
                 onClick={this.handleOptionClick}
-                id={`comment-option-button-${this.props.commentData.id}`}>
+                id={`comment-option-button-${this.props.commentData.id}`}
+              >
                 ...
               </div>
             </div>
@@ -188,33 +194,43 @@ class Comment extends React.Component {
               Delete this comment?&ensp;
               <a
                 href="/#"
-                onClick={e => this.handleDeleteOptionClick(e, 'yes')}>
+                onClick={(e) => this.handleDeleteOptionClick(e, 'yes')}
+              >
                 Yes
               </a>
               &ensp;|&ensp;
-              <a href="/#" onClick={e => this.handleDeleteOptionClick(e, 'no')}>
+              <a
+                href="/#"
+                onClick={(e) => this.handleDeleteOptionClick(e, 'no')}
+              >
                 No
               </a>
             </span>
-          ) : ''}
+          ) : (
+            ''
+          )}
           <div>
             <span>
               <a
                 className="comment-reply"
                 href="/#"
-                onClick={this.handleReplyClick}>
+                onClick={this.handleReplyClick}
+              >
                 - Reply
               </a>
               {this.props.commentData.replyList.length > 0 ? (
                 <a
                   className="view-reply"
                   href="/#"
-                  onClick={this.handleViewReplyClick}>
+                  onClick={this.handleViewReplyClick}
+                >
                   {this.state.isViewReplyClicked
                     ? '- Hide Replies'
                     : '- View Replies'}
                 </a>
-              ) : ''}
+              ) : (
+                ''
+              )}
             </span>
             <span className="comment-time">
               {parseDateTime(
@@ -225,11 +241,14 @@ class Comment extends React.Component {
           </div>
         </div>
         {this.props.isOptionClicked &&
-          this.props.commentData.id === this.props.selectedCommentId ? (
-            <PopUpMenu
-              config={this.state.popUpConfig}
-              onItemClick={this.handleOptionItemClick} />
-          ) : ''}
+        this.props.commentData.id === this.props.selectedCommentId ? (
+          <PopUpMenu
+            config={this.state.popUpConfig}
+            onItemClick={this.handleOptionItemClick}
+          />
+        ) : (
+          ''
+        )}
         {this.state.replyMode ? (
           <form className="reply-form" onSubmit={this.handleReplySubmit}>
             <span className="current-user-name">{this.props.userName}</span>
@@ -238,34 +257,55 @@ class Comment extends React.Component {
               type="text"
               placeholder="Write a reply..."
               onChange={this.handleReplyChange}
-              autoFocus />
+              autoFocus
+            />
           </form>
-        ) : ''}
+        ) : (
+          ''
+        )}
         {this.props.commentData.replyList.length > 0 &&
-          this.state.isViewReplyClicked ? (
-            <ul className="replies">
-              {this.props.commentData.replyList.map((reply, index) => (
-                <li key={reply.id}>
-                  <Comment
-                    userId={this.props.userId}
-                    userName={this.props.userName}
-                    postId={this.props.postId}
-                    posterId={this.props.posterId}
-                    commentData={reply}
-                    isOptionClicked={this.props.isOptionClicked}
-                    selectedCommentId={this.props.selectedCommentId}
-                    onOptionClick={this.props.onOptionClick}
-                    onReplySubmit={this.props.onReplySubmit}
-                    onEditSubmit={this.props.onEditSubmit}
-                    onDeleteOptionClick={this.props.onDeleteOptionClick}
-                    onCommentNameClick={this.props.onCommentNameClick} />
-                </li>
-              ))}
-            </ul>
-          ) : ''}
+        this.state.isViewReplyClicked ? (
+          <ul className="replies">
+            {this.props.commentData.replyList.map((reply) => (
+              <li key={reply.id}>
+                <Comment
+                  userId={this.props.userId}
+                  userName={this.props.userName}
+                  postId={this.props.postId}
+                  posterId={this.props.posterId}
+                  commentData={reply}
+                  isOptionClicked={this.props.isOptionClicked}
+                  selectedCommentId={this.props.selectedCommentId}
+                  onOptionClick={this.props.onOptionClick}
+                  onReplySubmit={this.props.onReplySubmit}
+                  onEditSubmit={this.props.onEditSubmit}
+                  onDeleteOptionClick={this.props.onDeleteOptionClick}
+                  onCommentNameClick={this.props.onCommentNameClick}
+                />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          ''
+        )}
       </Fragment>
     );
   }
 }
+
+Comment.propTypes = {
+  onOptionClick: PropTypes.func,
+  commentData: PropTypes.object,
+  userId: PropTypes.string,
+  posterId: PropTypes.string,
+  onEditSubmit: PropTypes.func,
+  onDeleteOptionClick: PropTypes.func,
+  onReplySubmit: PropTypes.func,
+  onCommentNameClick: PropTypes.func,
+  userName: PropTypes.string,
+  selectedCommentId: PropTypes.string,
+  postId: PropTypes.string,
+  isOptionClicked: PropTypes.func,
+};
 
 export default Comment;

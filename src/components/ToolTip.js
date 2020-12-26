@@ -2,10 +2,10 @@ import React from 'react';
 
 import './../styles/user/tooltip.css';
 
-const ToolTip = props => {
+const ToolTip = (props) => {
   const toolTipPosition = {
     top: `${props.positionTop}%`,
-    left: `${props.positionLeft}%`
+    left: `${props.positionLeft}%`,
   };
 
   return (
@@ -13,6 +13,6 @@ const ToolTip = props => {
       <span className="tool-tip-text">{props.toolTipText}</span>
     </div>
   );
-}
+};
 
 export default ToolTip;

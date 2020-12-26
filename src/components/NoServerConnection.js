@@ -8,6 +8,6 @@ const NoServerConnection = () => {
       <h1>Connection to The Server is Lost!!!</h1>
     </div>
   );
-}
+};
 
 export default NoServerConnection;

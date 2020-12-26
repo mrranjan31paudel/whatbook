@@ -1,172 +1,173 @@
 .user-story-container {
-    position: relative;
-    width: calc(100% - 22px);
-    margin: 5px;
-    padding: 5px;
-    border: 1px solid rgb(211, 211, 211);
-    border-radius: 5px;
-    background: white;
+  position: relative;
+  width: calc(100% - 22px);
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid rgb(211, 211, 211);
+  border-radius: 5px;
+  background: white;
 }
 
-.post-head-wrapper, .post-body-wrapper {
-    width: calc(100% - 8px);
-    margin: 2px;
-    padding: 2px;
+.post-head-wrapper,
+.post-body-wrapper {
+  width: calc(100% - 8px);
+  margin: 2px;
+  padding: 2px;
 }
 
-.user-story-container .poster-title{
-    width: calc(100% - 8px);
-    margin: 2px;
-    padding: 2px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+.user-story-container .poster-title {
+  width: calc(100% - 8px);
+  margin: 2px;
+  padding: 2px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.user-story-container .poster-title-wrapper{
-    width: calc(100% - 8px);
-    margin: 2px;
-    padding: 2px;
+.user-story-container .poster-title-wrapper {
+  width: calc(100% - 8px);
+  margin: 2px;
+  padding: 2px;
 }
 
 .post-option-button {
-    padding: 4px;
-    font-size: calc(10px + 1vmin);
-    font-weight: 600;
-    color: grey;
-    border-radius: 5px;
-    background: none;
-  }
-  
-  .post-option-button:hover{
-    cursor: pointer;
-    background: rgb(233, 233, 233);
-    color: rgb(37, 37, 37);
-  }
+  padding: 4px;
+  font-size: calc(10px + 1vmin);
+  font-weight: 600;
+  color: grey;
+  border-radius: 5px;
+  background: none;
+}
 
-.user-story-container .poster-title img{
-    width: 5%;
-    border-radius: 50%;
+.post-option-button:hover {
+  cursor: pointer;
+  background: rgb(233, 233, 233);
+  color: rgb(37, 37, 37);
+}
+
+.user-story-container .poster-title img {
+  width: 5%;
+  border-radius: 50%;
 }
 
 .poster-name {
-    margin: 5px;
+  margin: 5px;
 }
 
 .poster-name a {
-    text-decoration: none;
-    font-size: calc(8px + 1vmin);
-    font-weight: 500;
-    color: rgb(0, 122, 0);
+  text-decoration: none;
+  font-size: calc(8px + 1vmin);
+  font-weight: 500;
+  color: rgb(0, 122, 0);
 }
 
 .poster-name a:hover {
-    text-decoration: underline;
-  }
+  text-decoration: underline;
+}
 
 .user-story-container .post-date-time {
-    font-size: calc(5px + 1vmin);
-    color: rgb(168, 168, 168);
+  font-size: calc(5px + 1vmin);
+  color: rgb(168, 168, 168);
 }
 
 .user-story-container .user-story {
-    width: calc(100% - 10px);
-    margin: 5px;
-    font-size: calc(7px + 1vmin);
+  width: calc(100% - 10px);
+  margin: 5px;
+  font-size: calc(7px + 1vmin);
 }
 
 .post-edit-wrapper {
-    width: calc(100% - 10px);
-    margin: 5px;
-    display: flex;
-    flex-direction: column;
+  width: calc(100% - 10px);
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
 }
 .post-edit-field {
-    width: 85%;
-    resize: none;
-    padding: 5px;
-    border: 1px solid rgb(211, 211, 211);
-    border-radius: 2px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: calc(7px + 1vmin);
+  width: 85%;
+  resize: none;
+  padding: 5px;
+  border: 1px solid rgb(211, 211, 211);
+  border-radius: 2px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: calc(7px + 1vmin);
 }
 .post-edit-submit-button {
-    border: none;
-    border-radius: 4px;
-    color: white;
-    background: rgb(0, 158, 0);
-    margin: 2px;
-    padding: 8px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  background: rgb(0, 158, 0);
+  margin: 2px;
+  padding: 8px;
 }
 .post-edit-submit-button:hover {
-    cursor: pointer;
-    font-weight: 500;
-    background: rgb(0, 180, 0);
+  cursor: pointer;
+  font-weight: 500;
+  background: rgb(0, 180, 0);
 }
 .post-edit-cancel {
-    width: 30%;
-    text-align: center;
-    text-decoration: none;
-    color: green;
-    padding: 5px;
-    font-size: calc(4px + 1vmin);
+  width: 30%;
+  text-align: center;
+  text-decoration: none;
+  color: green;
+  padding: 5px;
+  font-size: calc(4px + 1vmin);
 }
 
 .post-edit-cancel:hover {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .post-delete-prompt {
-    padding: 2px;
-    font-size: calc(6px + 1vmin);
-    box-shadow: 0 0 3px red;
-    border-radius: 5px;
-  }
+  padding: 2px;
+  font-size: calc(6px + 1vmin);
+  box-shadow: 0 0 3px red;
+  border-radius: 5px;
+}
 
 .post-delete-prompt a {
-    text-decoration: none;
-    padding: 2px;
-    border-radius: 2px;
-    color: green;
-    font-weight: 500;
-  }
-  
-  .post-delete-prompt a:first-child:hover{
-    color: white;
-    background: red;
-  }
-  
-  .post-delete-prompt a:last-child:hover {
-    color: white;
-    background: green;
-  }
+  text-decoration: none;
+  padding: 2px;
+  border-radius: 2px;
+  color: green;
+  font-weight: 500;
+}
+
+.post-delete-prompt a:first-child:hover {
+  color: white;
+  background: red;
+}
+
+.post-delete-prompt a:last-child:hover {
+  color: white;
+  background: green;
+}
 
 .user-story-container .comment-form {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
-.current-user-name{
-    margin: 5px;
-    padding: 5px;
-    font-size: calc(6px + 1vmin);
-    font-weight: 500;
-    color: rgb(0, 122, 0);
-  }
-
-.user-story-container .comment-field{
-    margin: 5px;
-    padding: 5px;
-    border: 1px solid rgb(168, 168, 168);
-    border-radius: 2px;
-    background: rgb(236, 236, 236);
+.current-user-name {
+  margin: 5px;
+  padding: 5px;
+  font-size: calc(6px + 1vmin);
+  font-weight: 500;
+  color: rgb(0, 122, 0);
 }
 
-.user-story-container .comment-list{
-    width: calc(100% - 10px);
-    max-height: 400px;
-    list-style-type: none;
-    padding-left: 10px;
-    border: 1px solid rgb(204, 204, 204);
-    overflow-y: scroll;
+.user-story-container .comment-field {
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid rgb(168, 168, 168);
+  border-radius: 2px;
+  background: rgb(236, 236, 236);
+}
+
+.user-story-container .comment-list {
+  width: calc(100% - 10px);
+  max-height: 400px;
+  list-style-type: none;
+  padding-left: 10px;
+  border: 1px solid rgb(204, 204, 204);
+  overflow-y: scroll;
 }

@@ -61,7 +61,7 @@
   font-size: calc(7px + 1vmin);
 }
 
-.notification-button-container{
+.notification-button-container {
   width: calc(5% - 8px);
   margin: 5px 2px;
   padding: 5px 2px;
@@ -93,7 +93,7 @@
   background-position: center;
 }
 
-.notification-action-button:hover .tool-tip{
+.notification-action-button:hover .tool-tip {
   visibility: visible;
 }
 
