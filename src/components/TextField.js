@@ -1,22 +1,18 @@
 import React from 'react';
-import './../styles/loginsignup/TextField.css';
 
-class TextField extends React.Component {
-  changeHandle = e => {
-    this.props.onChange(e.target.name, e.target.value);
-  };
-  render() {
-    return (
-      <input
-        className={'input-field' + this.props.className}
-        name={this.props.name}
-        type={this.props.type}
-        placeholder={this.props.placeHolder}
-        onChange={this.changeHandle}
-        autoComplete={this.props.autoComplete}
-      ></input>
-    );
-  }
-}
+import './../styles/loginsignup/text_field.css';
+
+const TextField = (props) => {
+  return (
+    <input
+      className={'input-field' + props.className}
+      name={props.name}
+      type={props.type}
+      placeholder={props.placeHolder}
+      onChange={(e) => props.onChange(e.target.name, e.target.value)}
+      autoComplete={props.autoComplete}
+    />
+  );
+};
 
 export default TextField;

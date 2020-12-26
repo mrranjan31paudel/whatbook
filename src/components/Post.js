@@ -1,22 +1,21 @@
 import React, { Fragment } from 'react';
 
 import {
+  getComments,
+  postComment,
+  getPeopleList,
+  updateContent,
+  deleteContent,
   getUserDetails,
   getUserStories,
   getRequestList,
   getNotificationsList,
-  updateContent,
-  postComment,
-  deleteContent,
-  getComments,
-  getPeopleList
 } from './../services/user';
-import tokenService from './../services/token';
-
 import Header from './Header';
+import tokenService from './../services/token';
 import UserStoryContainer from './UserStoryContainer';
 
-import './../styles/user/singlePost.css';
+import './../styles/user/single_post.css';
 
 class Post extends React.Component {
   constructor() {
@@ -27,28 +26,28 @@ class Post extends React.Component {
         id: '',
         name: '',
         dob: '',
-        email: ''
+        email: '',
       },
       isOptionClicked: false,
       selectedCommentId: null,
       selectedPostId: null,
       numberOfUnansweredRequests: 0,
       numberOfUnreadNotifications: 0,
-      userPost: []
+      userPost: [],
     };
   }
 
   componentDidMount() {
     getUserDetails('/user')
-      .then(response => {
+      .then((response) => {
         if (response) {
           this.setState({
             userData: {
               id: response.data.id,
               name: response.data.name,
               dob: response.data.dob,
-              email: response.data.email
-            }
+              email: response.data.email,
+            },
           });
 
           this.getUserPost();
@@ -56,8 +55,7 @@ class Post extends React.Component {
           this.getNumberOfUnreadNotifications();
         }
       })
-      .catch(err => {
-        console.log('Component mount error: ', err);
+      .catch((err) => {
         if (err.response && err.response.status === 401) {
           tokenService.removeTokens();
           return this.props.history.push('/');
@@ -66,67 +64,55 @@ class Post extends React.Component {
   }
 
   getUserPost = () => {
-    console.log('PARAMS: ', this.props.match.params);
     const ownerId = this.props.match.params.userId.split('_')[1];
     const postId = this.props.match.params.postId.split('_')[1];
+
     getUserStories('/user/post', {
       ownerId: ownerId,
-      postId: postId
+      postId: postId,
     })
-      .then(response => {
-        console.log('POst response: ', response);
-        this.setState({
-          userPost: response.data
-        });
+      .then((response) => {
+        this.setState({ userPost: response.data });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Unable to load post: ', err);
       });
   };
 
-  getCommentList = postId => {
-    console.log('USER POST: ', this.state.userPost);
-    console.log('post id in getcommentlist: ', postId);
+  getCommentList = (postId) => {
     return new Promise((resolve, reject) => {
-      getComments('/user/comment', {
-        postId: postId
-      })
-        .then(response => {
+      getComments('/user/comment', { postId: postId })
+        .then((response) => {
           resolve(response.data);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('comments get error: ', err);
         });
     });
   };
 
   getNumberOfNewRequests = () => {
-    getRequestList('/user/requests', {
-      type: 'number'
-    })
-      .then(response => {
-        console.log('RESPONSE: ', response);
+    getRequestList('/user/requests', { type: 'number' })
+      .then((response) => {
         this.setState({
-          numberOfUnansweredRequests: response.data.numberOfUnansweredRequests
+          numberOfUnansweredRequests: response.data.numberOfUnansweredRequests,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('Request List Error: ', error);
       });
   };
 
   getNumberOfUnreadNotifications = () => {
     // called while loading the user
-    getNotificationsList('/user/notifications', {
-      type: 'number'
-    })
-      .then(response => {
-        console.log('notifications response: ', response);
+    getNotificationsList('/user/notifications', { type: 'number' })
+      .then((response) => {
         this.setState({
-          numberOfUnreadNotifications: response.data.numberOfUnreadNotifications
+          numberOfUnreadNotifications:
+            response.data.numberOfUnreadNotifications,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Notification number error: ', err);
       });
   };
@@ -135,91 +121,94 @@ class Post extends React.Component {
     this.setState({
       isOptionClicked: !this.state.isOptionClicked,
       selectedCommentId: commentId,
-      selectedPostId: postId
+      selectedPostId: postId,
     });
   };
 
-  handleEditSubmit = submitInfo => {
+  handleEditSubmit = (submitInfo) => {
     if (submitInfo.type === 'post') {
-      updateContent('/user/post', submitInfo.data)
-        .then(response => {
+      return updateContent('/user/post', submitInfo.data)
+        .then((response) => {
           this.getUserPost();
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('post edit submit error: ', err);
         });
-    } else if (submitInfo.type === 'comment') {
+    }
+
+    if (submitInfo.type === 'comment') {
       return new Promise((resolve, reject) => {
         updateContent('/user/comment', submitInfo.data)
-          .then(response => {
+          .then((response) => {
             this.setState({
-              selectionId: {}
+              selectionId: {},
             });
+
             resolve(this.getCommentList(submitInfo.data.postId));
           })
-          .catch(err => {
+          .catch((err) => {
             console.log('comment edit submit error: ', err);
           });
       });
     }
   };
 
-  handleCommentSubmit = commentData => {
+  handleCommentSubmit = (commentData) => {
     return new Promise((resolve, reject) => {
       postComment('/user/comment', commentData)
-        .then(response => {
+        .then((response) => {
           resolve(this.getCommentList(commentData.parentPostId));
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('error comment post: ', err);
         });
     });
   };
 
-  handleCommentDelete = commentData => {
+  handleCommentDelete = (commentData) => {
     return new Promise((resolve, reject) => {
       deleteContent('/user/comment', commentData)
-        .then(response => {
+        .then((response) => {
           resolve(this.getCommentList(commentData.postId));
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('comment delete error: ', err);
         });
     });
   };
 
-  handlePostDelete = postData => {
+  handlePostDelete = (postData) => {
     deleteContent('/user/post', postData)
-      .then(response => {
+      .then((response) => {
         this.getUserPost();
         this.setState({
           isPostDeleteClicked: false,
-          selectionId: {}
+          selectionId: {},
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('delete error: ', err);
       });
   };
 
-  searchPeople = searchText => {
+  searchPeople = (searchText) => {
     return new Promise((resolve, reject) => {
       getPeopleList('/user/people', {
         userId: this.state.userData.id,
-        searchText: searchText
+        searchText: searchText,
       })
-        .then(response => {
+        .then((response) => {
           resolve(response.data);
         })
-        .catch(err => console.log('Sear result ERROR: ', err));
+        .catch((err) => console.log('Sear result ERROR: ', err));
     });
   };
 
-  handleUserWrapperClick = e => {
+  handleUserWrapperClick = (e) => {
     //to hide the popUp menu.
     if (this.state.isOptionClicked) {
       this.setState({
-        isOptionClicked: false
+        isOptionClicked: false,
       });
     }
   };
@@ -233,7 +222,7 @@ class Post extends React.Component {
     // window.location.reload();
   };
 
-  handleProfileNameClick = ownerId => {
+  handleProfileNameClick = (ownerId) => {
     return this.props.history.push(`/user/user_${ownerId}`);
     // window.location.reload();
   };

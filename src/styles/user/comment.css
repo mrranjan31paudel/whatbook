@@ -54,7 +54,7 @@
   font-weight: 500;
 }
 
-.commenter-name a{
+.commenter-name a {
   text-decoration: none;
   font-size: calc(6px + 1vmin);
   font-weight: 500;
@@ -66,7 +66,6 @@
 }
 
 .comment-option-button {
-  
   padding: 4px;
   font-size: calc(10px + 1vmin);
   font-weight: 600;
@@ -75,7 +74,7 @@
   background: none;
 }
 
-.comment-option-button:hover{
+.comment-option-button:hover {
   cursor: pointer;
   background: rgb(226, 226, 226);
   color: rgb(37, 37, 37);
@@ -96,7 +95,7 @@
   font-weight: 500;
 }
 
-.comment-delete-prompt a:first-child:hover{
+.comment-delete-prompt a:first-child:hover {
   color: white;
   background: red;
 }
@@ -106,26 +105,26 @@
   background: green;
 }
 
-.comment-reply{
+.comment-reply {
   margin: 0 5px;
   text-decoration: none;
   font-size: calc(4px + 1vmin);
   color: rgb(0, 122, 0);
 }
 
-.comment-reply:hover{
+.comment-reply:hover {
   cursor: pointer;
   color: rgb(0, 192, 0);
 }
 
-.view-reply{
+.view-reply {
   margin: 0 5px;
   text-decoration: none;
   font-size: calc(4px + 1vmin);
   color: rgb(0, 122, 0);
 }
 
-.view-reply:hover{
+.view-reply:hover {
   cursor: pointer;
   color: rgb(0, 192, 0);
 }

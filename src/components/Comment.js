@@ -1,9 +1,10 @@
+import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import { setCommentPermissions } from '../utils/permissionDefiner';
-import parseDateTime from '../utils/dateParser';
 import PopUpMenu from './PopUpMenu';
+import parseDateTime from '../utils/dateParser';
+import { setCommentPermissions } from '../utils/permissionDefiner';
 
 import './../styles/user/comment.css';
 
@@ -21,13 +22,14 @@ class Comment extends React.Component {
       popUpConfig: {
         rights: '',
         buttonId: '',
-        postContainerId: ''
-      }
+        postContainerId: '',
+      },
     };
   }
 
-  handleOptionClick = e => {
+  handleOptionClick = () => {
     this.props.onOptionClick(null, this.props.commentData.id);
+
     this.setState({
       popUpConfig: {
         rights: setCommentPermissions(
@@ -36,109 +38,104 @@ class Comment extends React.Component {
           this.props.commentData.userid
         ),
         buttonId: `comment-option-button-${this.props.commentData.id}`,
-        postContainerId: `user-story-container-${this.props.postId}`
-      }
+        postContainerId: `user-story-container-${this.props.postId}`,
+      },
     });
   };
 
-  handleOptionItemClick = clickedItem => {
+  handleOptionItemClick = (clickedItem) => {
     if (clickedItem === 'Edit') {
-      this.setState({
-        isEditClicked: true
-      });
-    } else if (clickedItem === 'Delete') {
-      this.setState({
-        isDeleteClicked: true
-      });
+      return this.setState({ isEditClicked: true });
+    }
+
+    if (clickedItem === 'Delete') {
+      this.setState({ isDeleteClicked: true });
     }
   };
 
-  handleEditChange = e => {
-    this.setState({
-      commentText: e.target.value
-    });
+  handleEditChange = (e) => {
+    this.setState({ commentText: e.target.value });
   };
 
-  handleEditSubmit = e => {
+  handleEditSubmit = (e) => {
     e.preventDefault();
+
     this.props.onEditSubmit({
       type: 'comment',
       data: {
         postId: this.props.postId,
         commentId: this.props.commentData.id,
-        newCommentText: this.state.commentText
-      }
+        newCommentText: this.state.commentText,
+      },
     });
-    this.setState({
-      isEditClicked: false
-    });
+
+    this.setState({ isEditClicked: false });
   };
 
-  handleCancelEdit = e => {
+  handleCancelEdit = (e) => {
     e.preventDefault();
-    this.setState({
-      isEditClicked: false
-    });
+
+    this.setState({ isEditClicked: false });
   };
 
   handleDeleteOptionClick = (e, decision) => {
     e.preventDefault();
+
     if (decision === 'yes') {
       const commentData = {
         commentId: this.props.commentData.id,
         commentOwnerId: this.props.commentData.userid,
         postId: this.props.postId,
-        postOwnerId: this.props.posterId
+        postOwnerId: this.props.posterId,
       };
       this.props.onDeleteOptionClick(commentData);
     }
 
-    this.setState({
-      isDeleteClicked: false
-    });
+    this.setState({ isDeleteClicked: false });
   };
 
-  handleReplyClick = e => {
+  handleReplyClick = (e) => {
     e.preventDefault();
-    this.setState({
-      replyMode: true
-    });
+
+    this.setState({ replyMode: true });
   };
 
-  handleReplyChange = e => {
-    this.setState({
-      replyText: e.target.value
-    });
+  handleReplyChange = (e) => {
+    this.setState({ replyText: e.target.value });
   };
 
-  handleReplySubmit = e => {
+  handleReplySubmit = (e) => {
     e.preventDefault();
+
     if (this.state.replyText) {
       const replyData = {
         text: this.state.replyText,
         parentPostId: this.props.postId,
         parentCommentId: this.props.commentData.id,
         parentCommentOwnerId: this.props.commentData.userid,
-        postOwnerId: this.props.posterId
+        postOwnerId: this.props.posterId,
       };
 
       this.props.onReplySubmit(replyData);
     }
+
     this.setState({
       replyText: '',
-      replyMode: false
+      replyMode: false,
     });
   };
 
-  handleViewReplyClick = e => {
+  handleViewReplyClick = (e) => {
     e.preventDefault();
+
     this.setState({
-      isViewReplyClicked: !this.state.isViewReplyClicked
+      isViewReplyClicked: !this.state.isViewReplyClicked,
     });
   };
 
-  handleCommentNameClick = e => {
+  handleCommentNameClick = (e) => {
     e.preventDefault();
+
     this.props.onCommentNameClick(this.props.commentData.userid);
   };
 
@@ -167,7 +164,7 @@ class Comment extends React.Component {
                     defaultValue={this.props.commentData.comment}
                     onChange={this.handleEditChange}
                     autoFocus
-                  ></input>
+                  />
                   <a
                     className="comment-edit-cancel"
                     href="/#"
@@ -194,15 +191,18 @@ class Comment extends React.Component {
           </div>
           {this.state.isDeleteClicked ? (
             <span className="comment-delete-prompt">
-              Delete this comment?
+              Delete this comment?&ensp;
               <a
                 href="/#"
-                onClick={e => this.handleDeleteOptionClick(e, 'yes')}
+                onClick={(e) => this.handleDeleteOptionClick(e, 'yes')}
               >
                 Yes
-              </a>{' '}
-              |
-              <a href="/#" onClick={e => this.handleDeleteOptionClick(e, 'no')}>
+              </a>
+              &ensp;|&ensp;
+              <a
+                href="/#"
+                onClick={(e) => this.handleDeleteOptionClick(e, 'no')}
+              >
                 No
               </a>
             </span>
@@ -258,7 +258,7 @@ class Comment extends React.Component {
               placeholder="Write a reply..."
               onChange={this.handleReplyChange}
               autoFocus
-            ></input>
+            />
           </form>
         ) : (
           ''
@@ -266,7 +266,7 @@ class Comment extends React.Component {
         {this.props.commentData.replyList.length > 0 &&
         this.state.isViewReplyClicked ? (
           <ul className="replies">
-            {this.props.commentData.replyList.map((reply, index) => (
+            {this.props.commentData.replyList.map((reply) => (
               <li key={reply.id}>
                 <Comment
                   userId={this.props.userId}
@@ -292,5 +292,20 @@ class Comment extends React.Component {
     );
   }
 }
+
+Comment.propTypes = {
+  onOptionClick: PropTypes.func,
+  commentData: PropTypes.object,
+  userId: PropTypes.string,
+  posterId: PropTypes.string,
+  onEditSubmit: PropTypes.func,
+  onDeleteOptionClick: PropTypes.func,
+  onReplySubmit: PropTypes.func,
+  onCommentNameClick: PropTypes.func,
+  userName: PropTypes.string,
+  selectedCommentId: PropTypes.string,
+  postId: PropTypes.string,
+  isOptionClicked: PropTypes.func,
+};
 
 export default Comment;

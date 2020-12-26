@@ -1,0 +1,7 @@
+.content-container {
+  width: 100%;
+  position: absolute;
+  top: calc(10vmin + 1px);
+  left: 0;
+  z-index: 15;
+}

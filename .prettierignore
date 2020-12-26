@@ -1,0 +1,5 @@
+#Ignore these while formatting
+coverage
+build
+public
+**.test.js

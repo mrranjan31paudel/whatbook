@@ -1,10 +1,7 @@
 function validateLogin(state) {
-  if (
-    state.data.email &&
-    state.data.password &&
-    state.data.email.length > 0 &&
-    state.data.password.length > 0
-  ) {
+  const { email = '', password = '' } = state.data;
+
+  if (email && password && email.length > 0 && password.length > 0) {
     return true;
   }
 

@@ -1,26 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { localhost } from '../constants/config';
+import './../styles/user/active_friend_container.css';
 
-import './../styles/user/active.friend.container.css';
-
-class UserHolder extends Component {
-  render() {
-    return (
-      <div className="active-friend-container">
-        <img
-          src={`http://${localhost}:3000/userpic.png`}
-          alt="UserHolder"
-        ></img>
-        <span>
-          <Link to={`/user/user_${this.props.userData.id}`}>
-            {this.props.userData.name}
-          </Link>
-        </span>
-      </div>
-    );
-  }
-}
+const UserHolder = (props) => {
+  return (
+    <div className="active-friend-container">
+      <img src="userpic.png" alt="UserHolder" />
+      <span>
+        <Link to={`/user/user_${props.userData.id}`}>
+          {props.userData.name}
+        </Link>
+      </span>
+    </div>
+  );
+};
 
 export default UserHolder;

@@ -1,18 +1,16 @@
 import React, { Fragment } from 'react';
 
 import {
+  getPeopleList,
   getUserDetails,
   getRequestList,
+  deleteNotification,
   getNotificationsList,
   markNotificationAsRead,
-  deleteNotification,
-  getPeopleList
 } from './../services/user';
-import tokenService from './../services/token';
-import { localhost } from './../constants/config';
-
 import Header from './Header';
 import ToolTip from './ToolTip';
+import tokenService from './../services/token';
 
 import './../styles/user/notifications.css';
 
@@ -25,32 +23,33 @@ class Notifications extends React.Component {
         id: '',
         name: '',
         dob: '',
-        email: ''
+        email: '',
       },
       notificationList: [],
-      numberOfUnansweredRequests: 0
+      numberOfUnansweredRequests: 0,
     };
   }
 
   componentDidMount() {
     getUserDetails('/user')
-      .then(response => {
+      .then((response) => {
         if (response) {
           this.setState({
             userData: {
               id: response.data.id,
               name: response.data.name,
               dob: response.data.dob,
-              email: response.data.email
-            }
+              email: response.data.email,
+            },
           });
           this.getNumberOfNewRequests();
           this.getListOfNotifications();
         }
       })
-      .catch(err => {
+      .catch((err) => {
         if (err.response && err.response.status === 401) {
           tokenService.removeTokens();
+
           return this.props.history.push('/');
         }
       });
@@ -58,84 +57,76 @@ class Notifications extends React.Component {
 
   getListOfNotifications = () => {
     //called when user clicks notifications button
-    getNotificationsList('/user/notifications', {
-      type: 'list'
-    })
-      .then(response => {
-        console.log('notifications response: ', response);
+    getNotificationsList('/user/notifications', { type: 'list' })
+      .then((response) => {
         this.setState({
-          notificationList: response.data
+          notificationList: response.data,
         });
       })
-      .catch(err => {
-        console.log('Notification number error: ', err);
+      .catch((err) => {
         if (err.response && err.response.status === 401) {
           tokenService.removeTokens();
+
           return this.props.history.push('/');
         }
       });
   };
 
   getNumberOfNewRequests = () => {
-    getRequestList('/user/requests', {
-      type: 'number'
-    })
-      .then(response => {
-        console.log('RESPONSE: ', response);
+    getRequestList('/user/requests', { type: 'number' })
+      .then((response) => {
         this.setState({
-          numberOfUnansweredRequests: response.data.numberOfUnansweredRequests
+          numberOfUnansweredRequests: response.data.numberOfUnansweredRequests,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('Request List Error: ', error);
       });
   };
 
   handleNotificationClick = (e, id, target, targetid, postOwnerId, status) => {
-    console.log('post ownerid: ', postOwnerId);
     if (status === 0) {
-      markNotificationAsRead('/user/notifications', {
-        notificationId: id
+      return markNotificationAsRead('/user/notifications', {
+        notificationId: id,
       })
-        .then(response => {
+        .then((response) => {
           if (target === 'your post' || target === 'your comment') {
             return this.props.history.push(
               `/user/user_${postOwnerId}/post/post_${targetid}`
             );
-          } else if (
+          }
+
+          if (
             target === 'you friend request' ||
             target === 'your friend request'
           ) {
             return this.props.history.push(`/user/user_${targetid}`);
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('notification read error: ', err);
         });
-    } else {
-      if (target === 'your post' || target === 'your comment') {
-        return this.props.history.push(
-          `/user/user_${postOwnerId}/post/post_${targetid}`
-        );
-      } else if (
-        target === 'you friend request' ||
-        target === 'your friend request'
-      ) {
-        return this.props.history.push(`/user/user_${targetid}`);
-      }
+    }
+
+    if (target === 'your post' || target === 'your comment') {
+      return this.props.history.push(
+        `/user/user_${postOwnerId}/post/post_${targetid}`
+      );
+    }
+
+    if (target === 'you friend request' || target === 'your friend request') {
+      return this.props.history.push(`/user/user_${targetid}`);
     }
   };
 
-  handleMarkAsReadClick = e => {
+  handleMarkAsReadClick = (e) => {
     e.preventDefault();
 
-    markNotificationAsRead('/user/notifications', {
-      notificationId: 'all'
-    })
-      .then(response => {
+    markNotificationAsRead('/user/notifications', { notificationId: 'all' })
+      .then((response) => {
         this.getListOfNotifications();
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('mark notification as read err: ', err);
       });
   };
@@ -145,12 +136,12 @@ class Notifications extends React.Component {
 
     markNotificationAsRead('/user/notifications', {
       notificationId: id,
-      toMakeStatus: status === 0 ? 1 : 0
+      toMakeStatus: status === 0 ? 1 : 0,
     })
-      .then(response => {
+      .then((response) => {
         this.getListOfNotifications();
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('mark notification as read/unread err: ', err);
       });
   };
@@ -158,27 +149,25 @@ class Notifications extends React.Component {
   handleDeleteNotificationClick = (e, id) => {
     e.preventDefault();
 
-    deleteNotification('/user/notifications', {
-      notificationId: id
-    })
-      .then(response => {
+    deleteNotification('/user/notifications', { notificationId: id })
+      .then((response) => {
         this.getListOfNotifications();
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('delete notification err: ', err);
       });
   };
 
-  searchPeople = searchText => {
+  searchPeople = (searchText) => {
     return new Promise((resolve, reject) => {
       getPeopleList('/user/people', {
         userId: this.state.userData.id,
-        searchText: searchText
+        searchText: searchText,
       })
-        .then(response => {
+        .then((response) => {
           resolve(response.data);
         })
-        .catch(err => console.log('Sear result ERROR: ', err));
+        .catch((err) => console.log('Sear result ERROR: ', err));
     });
   };
 
@@ -188,16 +177,16 @@ class Notifications extends React.Component {
 
   handleHomeClick = () => {
     return this.props.history.push('/user');
-    // window.location.reload();
   };
 
-  handleProfileNameClick = ownerId => {
+  handleProfileNameClick = (ownerId) => {
     return this.props.history.push(`/user/user_${ownerId}`);
-    // window.location.reload();
   };
 
   getUnreadNotifications = () => {
-    return this.state.notificationList.filter(element => element.status === 0);
+    return this.state.notificationList.filter(
+      (element) => element.status === 0
+    );
   };
 
   render() {
@@ -240,7 +229,7 @@ class Notifications extends React.Component {
                   >
                     <div
                       className="notification-container"
-                      onClick={e =>
+                      onClick={(e) =>
                         this.handleNotificationClick(
                           e,
                           data.id,
@@ -252,7 +241,7 @@ class Notifications extends React.Component {
                       }
                     >
                       <p>
-                        <span className="issuer-name">{data.name}</span>{' '}
+                        <span className="issuer-name">{data.name}</span>&ensp;
                         {data.action} {data.target}.
                       </p>
                       <span className="notification-date-time">
@@ -265,9 +254,9 @@ class Notifications extends React.Component {
                         id={`notification-delete-button-${data.id}`}
                         className="notification-action-button"
                         style={{
-                          backgroundImage: `url(http://${localhost}:3000/trash-alt-solid.svg)`
+                          backgroundImage: 'url(trash-alt-solid.svg)',
                         }}
-                        onClick={e =>
+                        onClick={(e) =>
                           this.handleDeleteNotificationClick(e, data.id)
                         }
                       >
@@ -282,9 +271,9 @@ class Notifications extends React.Component {
                         id={`notification-read-button-${data.id}`}
                         className="notification-action-button"
                         style={{
-                          backgroundImage: `url(http://${localhost}:3000/dot-circle-regular.svg)`
+                          backgroundImage: 'url(dot-circle-regular.svg)',
                         }}
-                        onClick={e =>
+                        onClick={(e) =>
                           this.handleNotificationReadClick(
                             e,
                             data.id,

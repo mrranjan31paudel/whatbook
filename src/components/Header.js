@@ -1,9 +1,7 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import { localhost } from './../constants/config';
-
-import './../styles/common/Header.css';
+import './../styles/common/header.css';
 
 class Header extends React.Component {
   constructor() {
@@ -11,46 +9,35 @@ class Header extends React.Component {
     this.state = {
       searchText: '',
       searchResult: [],
-      isFocusOnSearchBar: false
+      isFocusOnSearchBar: false,
     };
   }
 
   handleSearchBarFocusIn = () => {
-    this.setState({
-      isFocusOnSearchBar: true
-    });
+    this.setState({ isFocusOnSearchBar: true });
   };
 
   handleSearchBarFocusOut = () => {
-    this.setState({
-      isFocusOnSearchBar: false
-    });
+    this.setState({ isFocusOnSearchBar: false });
   };
 
-  handleSearchTextChange = e => {
+  handleSearchTextChange = (e) => {
     //send request to get search word list
-    if (e.target.value) {
-      this.props
-        .searchPeople(e.target.value)
-        .then(response => {
-          console.log('search list: ', response);
-          this.setState({
-            searchResult: response
-          });
-        })
-        .catch(err => console.log('ERROR: ', err));
-    } else {
-      this.setState({
-        searchResult: []
-      });
-    }
+    this.setState({ searchText: e.target.value });
 
-    this.setState({
-      searchText: e.target.value
-    });
+    if (e.target.value) {
+      return this.props
+        .searchPeople(e.target.value)
+        .then((response) => {
+          this.setState({ searchResult: response });
+        })
+        .catch((err) => console.log('ERROR: ', err));
+    } else {
+      this.setState({ searchResult: [] });
+    }
   };
 
-  handleSearchSubmit = e => {
+  handleSearchSubmit = (e) => {
     e.preventDefault();
   };
 
@@ -66,9 +53,9 @@ class Header extends React.Component {
                     <span
                       className="header-logo-image"
                       style={{
-                        backgroundImage: `url(http://${localhost}:3000/whatbooklogo.png)`
+                        backgroundImage: 'url(whatbooklogo.png)',
                       }}
-                    ></span>
+                    />
                   </Link>
                 </div>
                 <form
@@ -83,7 +70,7 @@ class Header extends React.Component {
                     onFocus={this.handleSearchBarFocusIn}
                     onBlur={this.handleSearchBarFocusOut}
                     value={this.state.searchText}
-                  ></input>
+                  />
                   <button
                     className={
                       this.state.isFocusOnSearchBar
@@ -94,9 +81,9 @@ class Header extends React.Component {
                   >
                     <img
                       className="search-img"
-                      src={`http://${localhost}:3000/search-solid.svg`}
+                      src="search-solid.svg"
                       alt="searchSVG"
-                    ></img>
+                    />
                   </button>
                   {this.state.searchResult.length > 0 ? (
                     <div className="search-result-list-modal">
@@ -118,12 +105,12 @@ class Header extends React.Component {
                       onClick={this.props.onProfileClick}
                       to={`/user/user_${this.props.userId}`}
                     >
-                      <span>{this.props.profileName}</span>{' '}
+                      <span>{this.props.profileName}</span>&ensp;
                       <img
                         className="nav-img"
-                        src={`http://${localhost}:3000/user-solid.svg`}
+                        src="user-solid.svg"
                         alt="profileSVG"
-                      ></img>
+                      />
                     </Link>
                   </div>
                 </li>
@@ -133,9 +120,9 @@ class Header extends React.Component {
                     <Link onClick={this.props.onHomeClick} to="/user">
                       <img
                         className="nav-img"
-                        src={`http://${localhost}:3000/home-solid.svg`}
+                        src="home-solid.svg"
                         alt="homeSVG"
-                      ></img>
+                      />
                     </Link>
                   </div>
                 </li>
@@ -148,9 +135,9 @@ class Header extends React.Component {
                     >
                       <img
                         className="nav-img"
-                        src={`http://${localhost}:3000/bell-solid.svg`}
+                        src="bell-solid.svg"
                         alt="notificationSVG"
-                      ></img>
+                      />
                     </Link>
                   </div>
                   {this.props.numberOfUnreadNotifications > 0 ? (
@@ -167,9 +154,9 @@ class Header extends React.Component {
                     <Link to="/people">
                       <img
                         className="nav-img"
-                        src={`http://${localhost}:3000/user-friends-solid.svg`}
+                        src="user-friends-solid.svg"
                         alt="friendsSVG"
-                      ></img>
+                      />
                     </Link>
                   </div>
                   {this.props.numberOfUnansweredRequests > 0 ? (
@@ -186,9 +173,9 @@ class Header extends React.Component {
                     <Link onClick={this.props.onLogOutClick} to="/">
                       <img
                         className="nav-img"
-                        src={`http://${localhost}:3000/sign-out-alt-solid.svg`}
+                        src="sign-out-alt-solid.svg"
                         alt="logoutSVG"
-                      ></img>
+                      />
                     </Link>
                   </div>
                 </li>
@@ -197,13 +184,13 @@ class Header extends React.Component {
           </header>
         </Fragment>
       );
-    } else {
-      return (
-        <header className="header-seg">
-          <div className="not-in-user"></div>
-        </header>
-      );
     }
+
+    return (
+      <header className="header-seg">
+        <div className="not-in-user"></div>
+      </header>
+    );
   }
 }
 

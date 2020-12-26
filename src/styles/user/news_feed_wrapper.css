@@ -1,0 +1,44 @@
+.news-feed-container {
+  width: calc(60% - 12px);
+  border-radius: 5px;
+  margin: 5px;
+  background: rgb(247, 247, 247);
+  border: 1px solid rgb(233, 233, 233);
+}
+
+.news-feed-container .post-field-wrapper {
+  margin: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.news-feed-container .post-field-wrapper textarea {
+  resize: none;
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 2px;
+  padding: 8px;
+}
+
+.news-feed-container .post-field-wrapper button {
+  border: none;
+  border-radius: 4px;
+  color: white;
+  background: rgb(0, 158, 0);
+  margin: 2px;
+  padding: 8px;
+}
+
+.news-feed-container .post-field-wrapper button:hover {
+  cursor: pointer;
+  background: rgb(0, 180, 0);
+}
+
+.news-feed-container .news-feed-wrapper h3 {
+  margin: 5px;
+}
+
+.news-feed-container .user-stroy-list {
+  list-style-type: none;
+  padding: 0px;
+}

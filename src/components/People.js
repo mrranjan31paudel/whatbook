@@ -1,20 +1,19 @@
 import React, { Fragment } from 'react';
 
 import {
-  getUserDetails,
-  getPeopleList,
-  getFriendList,
-  getRequestList,
   logoutUser,
   sendRequest,
   acceptRequest,
   deleteRequest,
-  getNotificationsList
+  getPeopleList,
+  getFriendList,
+  getRequestList,
+  getUserDetails,
+  getNotificationsList,
 } from './../services/user';
-import tokenService from './../services/token';
-
 import Header from './Header';
 import UserHolder from './UserHolder';
+import tokenService from './../services/token';
 
 import './../styles/people/people.css';
 
@@ -26,30 +25,30 @@ class People extends React.Component {
       peopleList: [],
       requestList: {
         sentList: [],
-        recievedList: []
+        recievedList: [],
       },
       userData: {
         id: '',
         name: '',
         dob: '',
-        email: ''
+        email: '',
       },
       numberOfUnreadNotifications: 0,
-      userNotifications: []
+      userNotifications: [],
     };
   }
 
   componentDidMount() {
     getUserDetails('/user')
-      .then(response => {
+      .then((response) => {
         if (response) {
           this.setState({
             userData: {
               id: response.data.id,
               name: response.data.name,
               dob: response.data.dob,
-              email: response.data.email
-            }
+              email: response.data.email,
+            },
           });
           //this.getPeopleList();
           this.getNumberOfUnreadNotifications();
@@ -58,13 +57,12 @@ class People extends React.Component {
           this.getListOfPeople();
         }
       })
-      .catch(err => {
-        console.log('Component mount error: ', err.response);
+      .catch((err) => {
         if (!err.response) {
-          this.setState({
-            isConnectedToServer: false
-          });
-        } else if (err.response && err.response.status === 401) {
+          return this.setState({ isConnectedToServer: false });
+        }
+
+        if (err.response && err.response.status === 401) {
           tokenService.removeTokens();
           return this.props.history.push('/');
         }
@@ -72,135 +70,108 @@ class People extends React.Component {
   }
 
   getListOfPeople = () => {
-    getPeopleList('/user/people', {
-      userId: this.state.userData.id
-    })
-      .then(response => {
-        console.log('RESPONSE: ', response);
-        console.log(response);
-        this.setState({
-          peopleList: response.data
-        });
+    getPeopleList('/user/people', { userId: this.state.userData.id })
+      .then((response) => {
+        this.setState({ peopleList: response.data });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('People List: ', error);
       });
   };
 
-  searchPeople = searchText => {
+  searchPeople = (searchText) => {
     return new Promise((resolve, reject) => {
       getPeopleList('/user/people', {
         userId: this.state.userData.id,
-        searchText: searchText
+        searchText: searchText,
       })
-        .then(response => {
+        .then((response) => {
           resolve(response.data);
         })
-        .catch(err => console.log('Sear result ERROR: ', err));
+        .catch((err) => console.log('Sear result ERROR: ', err));
     });
   };
 
   getListOfFriends = () => {
-    getFriendList('/user/friend', {
-      userId: this.state.userData.id
-    })
-      .then(response => {
-        console.log('RESPONSE: ', response);
-        this.setState({
-          friendList: response.data
-        });
+    getFriendList('/user/friend', { userId: this.state.userData.id })
+      .then((response) => {
+        this.setState({ friendList: response.data });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('Friend List Error: ', error);
       });
   };
 
   getListOfRequests = () => {
-    getRequestList('/user/requests', {
-      type: 'list'
-    })
-      .then(response => {
-        console.log('RESPONSE: ', response);
-        this.setState({
-          requestList: response.data
-        });
+    getRequestList('/user/requests', { type: 'list' })
+      .then((response) => {
+        this.setState({ requestList: response.data });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('Request List Error: ', error);
       });
   };
 
   getNumberOfUnreadNotifications = () => {
     // called while loading the user
-    getNotificationsList('/user/notifications', {
-      type: 'number'
-    })
-      .then(response => {
-        console.log('notifications response: ', response);
+    getNotificationsList('/user/notifications', { type: 'number' })
+      .then((response) => {
         this.setState({
-          numberOfUnreadNotifications: response.data.numberOfUnreadNotifications
+          numberOfUnreadNotifications:
+            response.data.numberOfUnreadNotifications,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Notification number error: ', err);
       });
   };
 
   handleLogOut = () => {
     logoutUser('/logout', {
-      refreshToken: tokenService.getRefreshToken()
+      refreshToken: tokenService.getRefreshToken(),
     })
       .then(() => {
         tokenService.removeTokens();
         this.props.history.push('/');
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
 
-  handleAddFriendClick = e => {
-    console.log('clicked button ID: ', e.target.id);
-    sendRequest('/user/friend', {
-      recieverId: e.target.id.split('-')[1]
-    })
-      .then(response => {
+  handleAddFriendClick = (e) => {
+    sendRequest('/user/friend', { recieverId: e.target.id.split('-')[1] })
+      .then((response) => {
         this.getListOfFriends();
         this.getListOfRequests();
         this.getListOfPeople();
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
 
-  handleAcceptRequestClick = e => {
+  handleAcceptRequestClick = (e) => {
     //sends PUT request
-    console.log('clicked button ID: ', e.target.id);
-    acceptRequest('/user/friend', {
-      senderId: e.target.id.split('-')[1]
-    })
-      .then(response => {
+    acceptRequest('/user/friend', { senderId: e.target.id.split('-')[1] })
+      .then((response) => {
         this.getListOfFriends();
         this.getListOfRequests();
         this.getListOfPeople();
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
 
-  handleDeleteRequestClick = e => {
-    console.log('clicked button ID: ', e.target.id);
-    deleteRequest('/user/friend', {
-      friendId: e.target.id.split('-')[1]
-    })
-      .then(response => {
+  handleDeleteRequestClick = (e) => {
+    deleteRequest('/user/friend', { friendId: e.target.id.split('-')[1] })
+      .then((response) => {
         this.getListOfFriends();
         this.getListOfRequests();
         this.getListOfPeople();
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
@@ -211,7 +182,6 @@ class People extends React.Component {
 
   handleHomeClick = () => {
     return this.props.history.push('/user');
-    // window.location.reload();
   };
 
   render() {

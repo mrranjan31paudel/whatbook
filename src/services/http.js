@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import token from './token';
 import { BASE_URL } from './../constants/config';
 
@@ -10,7 +11,7 @@ function get(url, params = {}) {
     method: 'GET',
     url: BASE_URL + url,
     params: params,
-    headers: getRequestHeader()
+    headers: getRequestHeader(),
   });
 }
 
@@ -19,7 +20,7 @@ function post(url, data) {
     method: 'POST',
     url: BASE_URL + url,
     data: data,
-    headers: getRequestHeader()
+    headers: getRequestHeader(),
   });
 }
 
@@ -28,7 +29,7 @@ function put(url, data) {
     method: 'PUT',
     url: BASE_URL + url,
     data: data,
-    headers: getRequestHeader()
+    headers: getRequestHeader(),
   });
 }
 
@@ -37,26 +38,27 @@ function remove(url, params = {}) {
     method: 'DELETE',
     url: BASE_URL + url,
     params: params,
-    headers: getRequestHeader()
+    headers: getRequestHeader(),
   });
 }
 
 function getRequestHeader() {
   let accessToken = token.getAccessToken();
-  if (accessToken == null) {
-    return;
-  }
+
+  if (!accessToken) return;
+
   return {
-    authorization: accessToken
+    authorization: accessToken,
   };
 }
 
 axios.interceptors.response.use(
-  response => {
+  (response) => {
     return response;
   },
-  error => {
+  (error) => {
     const newRequest = error.config;
+
     if (
       error.response &&
       error.response.status === 401 &&
@@ -64,6 +66,7 @@ axios.interceptors.response.use(
     ) {
       if (!token.getRefreshToken()) {
         token.removeTokens();
+
         return Promise.reject(error);
       }
 
@@ -71,11 +74,12 @@ axios.interceptors.response.use(
         return new Promise((resolve, reject) => {
           heldRequests.push({ resolve, reject });
         })
-          .then(newToken => {
+          .then((newToken) => {
             newRequest.headers.authorization = newToken;
+
             return axios(newRequest);
           })
-          .catch(err => {
+          .catch((err) => {
             return Promise.reject(err);
           });
       }
@@ -87,20 +91,22 @@ axios.interceptors.response.use(
         url: BASE_URL + '/tokenrenew',
         data: {
           accessToken: token.getAccessToken(),
-          refreshToken: token.getRefreshToken()
+          refreshToken: token.getRefreshToken(),
         },
-        headers: getRequestHeader()
+        headers: getRequestHeader(),
       })
-        .then(res => {
+        .then((res) => {
           isTokenBeingRefreshed = false;
           token.setTokens(res.data.accessToken, res.data.refreshToken);
           newRequest.headers.authorization = res.data.accessToken;
           releaseHeldRequests(null, res.data.accessToken);
+
           return axios(newRequest);
         })
-        .catch(err => {
+        .catch((err) => {
           if (err.response.status === 401) {
             token.removeTokens();
+
             return Promise.reject(err);
           }
           releaseHeldRequests(err, null);
@@ -112,12 +118,12 @@ axios.interceptors.response.use(
 );
 
 function releaseHeldRequests(err, refreshedAccessToken = null) {
-  heldRequests.forEach(elementPromise => {
+  heldRequests.forEach((elementPromise) => {
     if (err) {
-      elementPromise.reject(err);
-    } else {
-      elementPromise.resolve(refreshedAccessToken);
+      return elementPromise.reject(err);
     }
+
+    elementPromise.resolve(refreshedAccessToken);
   });
 
   heldRequests = [];

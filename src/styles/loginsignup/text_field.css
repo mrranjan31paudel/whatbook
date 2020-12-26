@@ -1,0 +1,26 @@
+.input-field {
+  border-radius: 4px;
+  margin: 2px;
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid rgb(177, 177, 177);
+  width: calc(100% - 16px);
+  line-height: 25px;
+}
+
+.empty {
+  border: 1px solid red;
+  box-shadow: 0px 0px 5px red;
+}
+
+.empty:focus {
+  outline: none;
+}
+
+.pass-match {
+  color: green;
+}
+
+.pass-not-match {
+  color: red;
+}

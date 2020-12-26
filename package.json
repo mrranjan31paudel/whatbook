@@ -7,23 +7,30 @@
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.1",
+    "eslint-plugin-react": "^7.21.5",
     "lint-staged": "^10.2.7",
     "os": "^0.1.1",
-    "prettier": "^1.19.1",
+    "prettier": "^2.2.1",
+    "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.1"
   },
   "scripts": {
+    "lint": "eslint src",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prettier": "prettier --single-quote es5 --write \"src/**/*.js\""
+    "pretty": "prettier --single-quote --write src"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "lint-staged": {
+    "*.{js,css,json}": [
+      "prettier --single-quote --write src",
+      "git add",
+      "npm run lint"
+    ]
   },
   "browserslist": {
     "production": [
@@ -41,6 +48,11 @@
   "main": "index.js",
   "devDependencies": {
     "husky": "^4.2.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "author": "",
   "license": "ISC"

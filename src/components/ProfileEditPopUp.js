@@ -1,9 +1,8 @@
 import React, { Fragment } from 'react';
 
-import { localhost } from '../constants/config';
 import formatToYYYYMMDD from './../utils/dateFormatter';
 
-import './../styles/user/editProfilePopUp.css';
+import './../styles/user/edit_profile_pop_up.css';
 
 class ProfileEditPopUp extends React.Component {
   constructor() {
@@ -15,70 +14,71 @@ class ProfileEditPopUp extends React.Component {
         dob: '',
         currentPassword: '',
         newPassword: '',
-        confirmPassword: ''
+        confirmPassword: '',
       },
       clickedEditButton: '',
       passwordChangeSuccess: false,
-      wasPasswordWrong: false
+      wasPasswordWrong: false,
     };
   }
 
-  handleNameChange = e => {
+  handleNameChange = (e) => {
     this.setState({
       profileEditData: {
         ...this.state.profileEditData,
-        name: e.target.value
-      }
+        name: e.target.value,
+      },
     });
   };
 
-  handleDobChange = e => {
+  handleDobChange = (e) => {
     this.setState({
       profileEditData: {
         ...this.state.profileEditData,
-        dob: e.target.value
-      }
+        dob: e.target.value,
+      },
     });
   };
 
-  handleCurrentPasswordChange = e => {
+  handleCurrentPasswordChange = (e) => {
     this.setState({
       profileEditData: {
         ...this.state.profileEditData,
-        currentPassword: e.target.value
-      }
+        currentPassword: e.target.value,
+      },
     });
   };
 
-  handleNewPasswordChange = e => {
+  handleNewPasswordChange = (e) => {
     this.setState({
       profileEditData: {
         ...this.state.profileEditData,
-        newPassword: e.target.value
-      }
+        newPassword: e.target.value,
+      },
     });
   };
 
-  handleConfirmPasswordChange = e => {
+  handleConfirmPasswordChange = (e) => {
     this.setState({
       profileEditData: {
         ...this.state.profileEditData,
-        confirmPassword: e.target.value
-      }
+        confirmPassword: e.target.value,
+      },
     });
   };
 
-  handleFieldEditButtonClick = e => {
+  handleFieldEditButtonClick = (e) => {
     e.preventDefault();
 
     this.setState({
       ...this.state.profileEditData,
-      clickedEditButton: e.target.id
+      clickedEditButton: e.target.id,
     });
   };
 
-  handleEditCancelClick = e => {
+  handleEditCancelClick = (e) => {
     e.preventDefault();
+
     if (this.state.clickedEditButton) {
       this.setState({
         profileEditData: {
@@ -86,69 +86,69 @@ class ProfileEditPopUp extends React.Component {
           dob: '',
           currentPassword: '',
           newPassword: '',
-          confirmPassword: ''
+          confirmPassword: '',
         },
-        clickedEditButton: ''
+        clickedEditButton: '',
       });
     }
   };
 
-  handleEditSubmit = e => {
+  handleEditSubmit = (e) => {
     e.preventDefault();
+
     const editedItem = e.target.id.split('-')[1];
 
-    if (editedItem === 'name') {
-      if (this.state.profileEditData.name) {
-        //send request to change name
-        this.props.onNameEditSubmit(this.state.profileEditData.name);
-        this.setState({
-          clickedEditButton: ''
+    if (editedItem === 'name' && this.state.profileEditData.name) {
+      //send request to change name
+      this.props.onNameEditSubmit(this.state.profileEditData.name);
+
+      return this.setState({ clickedEditButton: '' });
+    }
+
+    if (editedItem === 'dob' && this.state.profileEditData.dob) {
+      //send request to change dob
+      this.props.onDOBEditSubmit(this.state.profileEditData.dob);
+
+      return this.setState({ clickedEditButton: '' });
+    }
+
+    if (
+      editedItem === 'password' &&
+      this.state.profileEditData.currentPassword
+    ) {
+      if (!this.validatePassword()) return;
+
+      return this.props
+        .onPasswordChangeSubmit({
+          currentPassword: this.state.profileEditData.currentPassword,
+          newPassword: this.state.profileEditData.confirmPassword,
+        })
+        .then((response) => {
+          this.setState({
+            passwordChangeSuccess: true,
+            clickedEditButton: '',
+          });
+        })
+        .catch((err) => {
+          this.setState({
+            wasPasswordWrong: true,
+          });
         });
-      }
-    } else if (editedItem === 'dob') {
-      if (this.state.profileEditData.dob) {
-        //send request to change dob
-        this.props.onDOBEditSubmit(this.state.profileEditData.dob);
-        this.setState({
-          clickedEditButton: ''
-        });
-      }
-    } else if (editedItem === 'password') {
-      if (this.state.profileEditData.currentPassword) {
-        if (this.validatePassword()) {
-          this.props
-            .onPasswordChangeSubmit({
-              currentPassword: this.state.profileEditData.currentPassword,
-              newPassword: this.state.profileEditData.confirmPassword
-            })
-            .then(response => {
-              console.log('Password Change SUCCESS', response);
-              this.setState({
-                passwordChangeSuccess: true,
-                clickedEditButton: ''
-              });
-            })
-            .catch(err => {
-              console.log('Password change ERROR: ', err);
-              this.setState({
-                wasPasswordWrong: true
-              });
-            });
-        }
-      }
     }
   };
 
   validatePassword = () => {
+    const { newPassword, confirmPassword } = this.state.profileEditData;
+
     if (
-      this.state.profileEditData.newPassword.length > 5 &&
-      this.state.profileEditData.confirmPassword.length > 5 &&
-      this.state.profileEditData.confirmPassword ===
-        this.state.profileEditData.newPassword
+      newPassword.length < 6 ||
+      confirmPassword.length < 6 ||
+      confirmPassword !== newPassword
     ) {
-      return true;
+      return false;
     }
-    return false;
+
+    return true;
   };
 
   render() {
@@ -159,7 +159,7 @@ class ProfileEditPopUp extends React.Component {
           <div className="profile-edit-wrapper-form">
             <div className="profile-edit-field-container">
               <div className="profile-edit-field-wrapper">
-                <label className="profile-edit-field-label">Name: </label>
+                <label className="profile-edit-field-label">Name:&ensp;</label>
                 {this.state.clickedEditButton === 'edit-name-button' ? (
                   <input
                     className="profile-edit-input-field"
@@ -168,7 +168,7 @@ class ProfileEditPopUp extends React.Component {
                     defaultValue={this.props.userData.name}
                     onChange={this.handleNameChange}
                     autoFocus
-                  ></input>
+                  />
                 ) : (
                   <span>{this.props.userData.name}</span>
                 )}
@@ -195,23 +195,23 @@ class ProfileEditPopUp extends React.Component {
                     id="edit-name-button"
                     onClick={this.handleFieldEditButtonClick}
                     style={{
-                      backgroundImage: `url(http://${localhost}:3000/edit-solid.svg)`
+                      backgroundImage: 'url(edit-solid.svg)',
                     }}
-                  ></button>
+                  />
                 )}
               </div>
             </div>
 
             <div className="profile-edit-field-container">
               <div className="profile-edit-field-wrapper">
-                <label className="profile-edit-field-label">DOB: </label>
+                <label className="profile-edit-field-label">DOB:&ensp;</label>
                 {this.state.clickedEditButton === 'edit-dob-button' ? (
                   <input
                     className="profile-edit-input-field"
                     type="date"
                     defaultValue={formatToYYYYMMDD(this.props.userData.dob)}
                     onChange={this.handleDobChange}
-                  ></input>
+                  />
                 ) : (
                   <span>{this.props.userData.dob}</span>
                 )}
@@ -238,16 +238,18 @@ class ProfileEditPopUp extends React.Component {
                     id="edit-dob-button"
                     onClick={this.handleFieldEditButtonClick}
                     style={{
-                      backgroundImage: `url(http://${localhost}:3000/edit-solid.svg)`
+                      backgroundImage: 'url(edit-solid.svg)',
                     }}
-                  ></button>
+                  />
                 )}
               </div>
             </div>
 
             <div className="profile-edit-field-container">
               <div className="profile-edit-field-wrapper">
-                <label className="profile-edit-field-label">Password: </label>
+                <label className="profile-edit-field-label">
+                  Password:&ensp;
+                </label>
                 {this.state.clickedEditButton === 'edit-password-button' ? (
                   <div className="password-edit-field-container">
                     <input
@@ -260,7 +262,7 @@ class ProfileEditPopUp extends React.Component {
                       defaultValue=""
                       placeholder="Current Password"
                       onChange={this.handleCurrentPasswordChange}
-                    ></input>
+                    />
                     {this.state.wasPasswordWrong ? (
                       <label className="password-wrong-label">
                         Wrong Password!
@@ -274,7 +276,7 @@ class ProfileEditPopUp extends React.Component {
                       defaultValue=""
                       placeholder="New Password"
                       onChange={this.handleNewPasswordChange}
-                    ></input>
+                    />
                     {this.state.profileEditData.newPassword.length > 0 &&
                     this.state.profileEditData.newPassword.length < 6 ? (
                       <label className="password-length-constraint-label">
@@ -293,7 +295,7 @@ class ProfileEditPopUp extends React.Component {
                       defaultValue=""
                       placeholder="Confirm New Password"
                       onChange={this.handleConfirmPasswordChange}
-                    ></input>
+                    />
                   </div>
                 ) : (
                   ''
@@ -337,7 +339,7 @@ class ProfileEditPopUp extends React.Component {
 
           <button
             className="edit-profile-close-button"
-            onClick={e => this.props.onClosePopUpClick(e)}
+            onClick={(e) => this.props.onClosePopUpClick(e)}
           >
             Close
           </button>

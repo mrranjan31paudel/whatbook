@@ -2,12 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import Comment from './Comment';
-import parseDateTime from '../utils/dateParser';
 import PopUpMenu from './PopUpMenu';
+import parseDateTime from '../utils/dateParser';
 import { setPostPermissions } from '../utils/permissionDefiner';
-import { localhost } from '../constants/config';
 
-import './../styles/user/user.story.container.css';
+import './../styles/user/user_story_container.css';
 
 class UserStoryContainer extends React.Component {
   constructor() {
@@ -22,8 +21,8 @@ class UserStoryContainer extends React.Component {
       popUpConfig: {
         rights: '',
         buttonId: '',
-        postContainerId: ''
-      }
+        postContainerId: '',
+      },
     };
   }
 
@@ -34,44 +33,46 @@ class UserStoryContainer extends React.Component {
   getAllComments = () => {
     this.props
       .getCommentList(this.props.postData.id)
-      .then(commentList => {
+      .then((commentList) => {
         this.setState({
-          comments: commentList
+          comments: commentList,
         });
       })
-      .catch(err => console.log('get all comments error: ', err));
+      .catch((err) => console.log('get all comments error: ', err));
   };
 
-  handleCommentChange = e => {
+  handleCommentChange = (e) => {
     this.setState({
-      commentText: e.target.value
+      commentText: e.target.value,
     });
   };
 
-  handleCommentSubmit = e => {
+  handleCommentSubmit = (e) => {
     e.preventDefault();
+
     if (this.state.commentText) {
       const commentData = {
         text: this.state.commentText,
         parentPostId: this.props.postData.id,
         parentCommentId: '',
-        postOwnerId: this.props.postData.userid
+        postOwnerId: this.props.postData.userid,
       };
+
       this.props
         .onCommentSubmit(commentData)
-        .then(commentList => {
+        .then((commentList) => {
           this.setState({
             commentText: '',
-            comments: commentList
+            comments: commentList,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('comment submit error: ', err);
         });
     }
   };
 
-  handleOptionClick = e => {
+  handleOptionClick = (e) => {
     this.props.onOptionClick(this.props.postData.id, null);
     this.setState({
       popUpConfig: {
@@ -80,112 +81,119 @@ class UserStoryContainer extends React.Component {
           this.props.postData.userid
         ),
         buttonId: `post-option-button-${this.props.postData.id}`,
-        postContainerId: `user-story-container-${this.props.postData.id}`
-      }
+        postContainerId: `user-story-container-${this.props.postData.id}`,
+      },
     });
   };
 
-  handleOptionItemClick = clickedItem => {
+  handleOptionItemClick = (clickedItem) => {
     if (clickedItem === 'Edit') {
-      this.setState({
-        isEditClicked: true
+      return this.setState({
+        isEditClicked: true,
       });
-    } else if (clickedItem === 'Delete') {
+    }
+
+    if (clickedItem === 'Delete') {
       this.setState({
-        isDeleteClicked: true
+        isDeleteClicked: true,
       });
     }
   };
 
-  handleEditChange = e => {
+  handleEditChange = (e) => {
     this.setState({
-      postText: e.target.value
+      postText: e.target.value,
     });
   };
 
-  handleEditSubmit = e => {
+  handleEditSubmit = (e) => {
     e.preventDefault();
+
     this.props.onEditSubmit({
       type: 'post',
       data: {
         postId: this.props.postData.id,
         newPostText: this.state.postText
           ? this.state.postText
-          : this.props.postData.content
-      }
+          : this.props.postData.content,
+      },
     });
 
     this.getAllComments();
 
     this.setState({
-      isEditClicked: false
+      isEditClicked: false,
     });
   };
 
-  handleCancelEdit = e => {
+  handleCancelEdit = (e) => {
     e.preventDefault();
+
     this.setState({
-      isEditClicked: false
+      isEditClicked: false,
     });
   };
 
   handleDeleteOptionClick = (e, decision) => {
     e.preventDefault();
+
     if (decision === 'yes') {
       const postData = {
         postId: this.props.postData.id,
-        postOwnerData: this.props.postData.userid
+        postOwnerData: this.props.postData.userid,
       };
+
       this.props.onPostDelete(postData);
-    } else if (decision === 'no') {
     }
+
     this.setState({
-      isDeleteClicked: false
+      isDeleteClicked: false,
     });
   };
 
-  handleCommentEditSubmit = commentData => {
+  handleCommentEditSubmit = (commentData) => {
     this.props
       .onEditSubmit(commentData)
-      .then(commentList => {
+      .then((commentList) => {
         this.setState({
           comments: commentList,
-          isSubmitted: true
+          isSubmitted: true,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('comment edit error: ', err);
       });
   };
 
-  handleCommentDeleteClick = commentData => {
+  handleCommentDeleteClick = (commentData) => {
     this.props
       .onCommentDelete(commentData)
-      .then(commentList => {
+      .then((commentList) => {
         this.setState({
-          comments: commentList
+          comments: commentList,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('comment edit error: ', err);
       });
   };
 
-  handleReplySubmit = replyData => {
+  handleReplySubmit = (replyData) => {
     this.props
       .onCommentSubmit(replyData)
-      .then(commentList => {
+      .then((commentList) => {
         this.setState({
-          comments: commentList
+          comments: commentList,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('comment submit error: ', err);
       });
   };
 
-  handlePostNameClick = e => {
+  handlePostNameClick = (e) => {
     e.preventDefault();
+
     this.props.onProfileNameClick(this.props.postData.userid);
   };
 
@@ -198,10 +206,7 @@ class UserStoryContainer extends React.Component {
         <div className="post-head-wrapper">
           <div className="poster-title">
             <div className="poster-title-wrapper">
-              <img
-                src={`http://${localhost}:3000/userpic.png`}
-                alt="userpic"
-              ></img>
+              <img src="userpic.png" alt="userpic" />
               <span className="poster-name">
                 <Link
                   to={`/user/user_${this.props.postData.userid}`}
@@ -236,13 +241,13 @@ class UserStoryContainer extends React.Component {
                 defaultValue={this.props.postData.content}
                 onChange={this.handleEditChange}
                 autoFocus
-              ></textarea>
+              />
               <div className="post-eidt-decision-wrapper">
                 <input
                   className="post-edit-submit-button"
                   type="submit"
                   value="Save"
-                ></input>
+                />
                 <a
                   className="post-edit-cancel"
                   href="/#"
@@ -257,15 +262,18 @@ class UserStoryContainer extends React.Component {
           )}
           {this.state.isDeleteClicked ? (
             <span className="post-delete-prompt">
-              Delete this post?
+              Delete this post?&ensp;
               <a
                 href="/#"
-                onClick={e => this.handleDeleteOptionClick(e, 'yes')}
+                onClick={(e) => this.handleDeleteOptionClick(e, 'yes')}
               >
                 Yes
-              </a>{' '}
-              |
-              <a href="/#" onClick={e => this.handleDeleteOptionClick(e, 'no')}>
+              </a>
+              &ensp;|&ensp;
+              <a
+                href="/#"
+                onClick={(e) => this.handleDeleteOptionClick(e, 'no')}
+              >
                 No
               </a>
             </span>
@@ -304,7 +312,7 @@ class UserStoryContainer extends React.Component {
                 placeholder="Write a comment..."
                 value={this.state.commentText}
                 onChange={this.handleCommentChange}
-              ></input>
+              />
             </form>
           </div>
         </div>

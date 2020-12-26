@@ -1,31 +1,28 @@
 import React, { Fragment } from 'react';
 
 import {
-  getUserDetails,
-  getUserStories,
-  createNewPost,
+  logoutUser,
   postComment,
   getComments,
+  createNewPost,
   updateContent,
   deleteContent,
-  logoutUser,
+  getPeopleList,
+  getUserDetails,
+  getUserStories,
   getRequestList,
   getNotificationsList,
-  getPeopleList
 } from './../services/user';
-import tokenService from './../services/token';
-
-import UserStoryContainer from './UserStoryContainer';
-// import UserHolder from './UserHolder';
 import Header from './Header';
+// import UserHolder from './UserHolder';
+import tokenService from './../services/token';
 import NoServerConnection from './NoServerConnection';
+import UserStoryContainer from './UserStoryContainer';
 
-import { localhost } from './../constants/config';
-
-import './../styles/user/user.wrapper.css';
-import './../styles/user/profile.info.wrapper.css';
-import './../styles/user/news.feed.wrapper.css';
-import './../styles/user/friendlist.wrapper.css';
+import './../styles/user/user_wrapper.css';
+import './../styles/user/news_feed_wrapper.css';
+import './../styles/user/friendlist_wrapper.css';
+import './../styles/user/profile_info_wrapper.css';
 
 class User extends React.Component {
   constructor() {
@@ -35,7 +32,7 @@ class User extends React.Component {
         id: '',
         name: '',
         dob: '',
-        email: ''
+        email: '',
       },
       postFieldData: '',
       userStories: [],
@@ -46,37 +43,35 @@ class User extends React.Component {
       isOptionClicked: false,
       selectedCommentId: null,
       selectedPostId: null,
-      isConnectedToServer: true
+      isConnectedToServer: true,
     };
   }
 
   componentDidMount() {
-    console.log('from user component did mount.');
     getUserDetails('/user')
-      .then(response => {
-        console.log('USER DATA RESPONSE: ', response);
-
+      .then((response) => {
         if (response) {
           this.setState({
             userData: {
               id: response.data.id,
               name: response.data.name,
               dob: response.data.dob,
-              email: response.data.email
-            }
+              email: response.data.email,
+            },
           });
           this.getNewsFeed();
           this.getNumberOfNewRequests();
           this.getNumberOfUnreadNotifications();
         }
       })
-      .catch(err => {
-        console.log('Component mount error: ', err.response);
+      .catch((err) => {
         if (!err.response) {
-          this.setState({
-            isConnectedToServer: false
+          return this.setState({
+            isConnectedToServer: false,
           });
-        } else if (err.response && err.response.status === 401) {
+        }
+
+        if (err.response.status === 401) {
           tokenService.removeTokens();
           return this.props.history.push('/');
         }
@@ -84,44 +79,37 @@ class User extends React.Component {
   }
 
   getNumberOfNewRequests = () => {
-    getRequestList('/user/requests', {
-      type: 'number'
-    })
-      .then(response => {
-        console.log('RESPONSE: ', response);
+    getRequestList('/user/requests', { type: 'number' })
+      .then((response) => {
         this.setState({
-          numberOfUnansweredRequests: response.data.numberOfUnansweredRequests
+          numberOfUnansweredRequests: response.data.numberOfUnansweredRequests,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('Request List Error: ', error);
       });
   };
 
   getNewsFeed = () => {
     getUserStories('/user/post')
-      .then(response => {
-        console.log('FEEDS: ', response);
+      .then((response) => {
         this.setState({
           ...this.state,
-          userStories: response.data
+          userStories: response.data,
         });
       })
-      .catch(err => {
-        // console.log('Unable to load feeds: ', err);
+      .catch((err) => {
+        console.log('Unable to load feeds: ', err);
       });
   };
 
-  getCommentList = postId => {
+  getCommentList = (postId) => {
     return new Promise((resolve, reject) => {
-      getComments('/user/comment', {
-        postId: postId
-      })
-        .then(response => {
+      getComments('/user/comment', { postId: postId })
+        .then((response) => {
           resolve(response.data);
         })
-        .catch(err => {
-          console.log('comments get error: ', err);
+        .catch((err) => {
           reject(err);
         });
     });
@@ -129,43 +117,36 @@ class User extends React.Component {
 
   getNumberOfUnreadNotifications = () => {
     // called while loading the user
-    getNotificationsList('/user/notifications', {
-      type: 'number'
-    })
-      .then(response => {
-        console.log('notifications response: ', response);
+    getNotificationsList('/user/notifications', { type: 'number' })
+      .then((response) => {
         this.setState({
-          numberOfUnreadNotifications: response.data.numberOfUnreadNotifications
+          numberOfUnreadNotifications:
+            response.data.numberOfUnreadNotifications,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Notification number error: ', err);
       });
   };
 
-  handlePostFieldChange = e => {
-    this.setState({
-      postFieldData: e.target.value
-    });
+  handlePostFieldChange = (e) => {
+    this.setState({ postFieldData: e.target.value });
   };
 
   handlePost = () => {
     if (this.state.postFieldData) {
-      createNewPost('/user/post', {
-        postData: this.state.postFieldData
-      })
-        .then(response => {
+      createNewPost('/user/post', { postData: this.state.postFieldData })
+        .then((response) => {
           this.setState({
-            postFieldData: ''
+            postFieldData: '',
           });
           this.getNewsFeed();
         })
-        .catch(err => {
+        .catch((err) => {
           if (err.response && err.response.status === 401) {
             tokenService.removeTokens();
             this.props.history.push('/');
           }
-          console.log('not posted: ', err);
         });
     }
   };
@@ -174,105 +155,106 @@ class User extends React.Component {
     this.setState({
       isOptionClicked: !this.state.isOptionClicked,
       selectedCommentId: commentId,
-      selectedPostId: postId
+      selectedPostId: postId,
     });
   };
 
-  handleEditSubmit = submitInfo => {
+  handleEditSubmit = (submitInfo) => {
     if (submitInfo.type === 'post') {
-      updateContent('/user/post', submitInfo.data)
-        .then(response => {
+      return updateContent('/user/post', submitInfo.data)
+        .then((response) => {
           this.getNewsFeed();
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('post edit submit error: ', err);
         });
-    } else if (submitInfo.type === 'comment') {
+    }
+
+    if (submitInfo.type === 'comment') {
       return new Promise((resolve, reject) => {
         updateContent('/user/comment', submitInfo.data)
-          .then(response => {
+          .then((response) => {
             this.setState({
-              selectionId: {}
+              selectionId: {},
             });
+
             resolve(this.getCommentList(submitInfo.data.postId));
           })
-          .catch(err => {
+          .catch((err) => {
             console.log('comment edit submit error: ', err);
           });
       });
     }
   };
 
-  handleCommentSubmit = commentData => {
+  handleCommentSubmit = (commentData) => {
     return new Promise((resolve, reject) => {
       postComment('/user/comment', commentData)
-        .then(response => {
+        .then((response) => {
           resolve(this.getCommentList(commentData.parentPostId));
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('error comment post: ', err);
         });
     });
   };
 
-  handleCommentDelete = commentData => {
+  handleCommentDelete = (commentData) => {
     return new Promise((resolve, reject) => {
       deleteContent('/user/comment', commentData)
-        .then(response => {
+        .then((response) => {
           resolve(this.getCommentList(commentData.postId));
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('comment delete error: ', err);
         });
     });
   };
 
-  handlePostDelete = postData => {
+  handlePostDelete = (postData) => {
     deleteContent('/user/post', postData)
-      .then(response => {
+      .then((response) => {
         this.getNewsFeed();
         this.setState({
           isPostDeleteClicked: false,
-          selectionId: {}
+          selectionId: {},
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('delete error: ', err);
       });
   };
 
-  handleUserWrapperClick = e => {
+  handleUserWrapperClick = (e) => {
     //to hide the popUp menu.
     if (this.state.isOptionClicked) {
       this.setState({
-        isOptionClicked: false
+        isOptionClicked: false,
       });
     }
   };
 
   handleLogOut = () => {
-    logoutUser('/logout', {
-      refreshToken: tokenService.getRefreshToken()
-    })
+    logoutUser('/logout', { refreshToken: tokenService.getRefreshToken() })
       .then(() => {
         tokenService.removeTokens();
         this.props.history.push('/');
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
 
-  searchPeople = searchText => {
+  searchPeople = (searchText) => {
     return new Promise((resolve, reject) => {
       getPeopleList('/user/people', {
         userId: this.state.userData.id,
-        searchText: searchText
+        searchText: searchText,
       })
-        .then(response => {
+        .then((response) => {
           resolve(response.data);
         })
-        .catch(err => console.log('Sear result ERROR: ', err));
+        .catch((err) => console.log('Sear result ERROR: ', err));
     });
   };
 
@@ -282,12 +264,10 @@ class User extends React.Component {
 
   handleHomeClick = () => {
     return this.props.history.push('/user');
-    // window.location.reload();
   };
 
-  handleProfileNameClick = ownerId => {
+  handleProfileNameClick = (ownerId) => {
     return this.props.history.push(`/user/user_${ownerId}`);
-    // window.location.reload();
   };
 
   render() {
@@ -306,12 +286,10 @@ class User extends React.Component {
             onHomeClick={this.handleHomeClick}
             searchPeople={this.searchPeople}
           />
+
           <div className="user-wrapper" onClick={this.handleUserWrapperClick}>
             <div className="profile-info-container">
-              <img
-                src={`http://${localhost}:3000/userpic.png`}
-                alt="user"
-              ></img>
+              <img src="userpic.png" alt="user" />
               <span>{this.state.userData.name}</span>
             </div>
             <div className="news-feed-container">
@@ -323,7 +301,7 @@ class User extends React.Component {
                   placeholder="What are you thinking today?"
                   onChange={this.handlePostFieldChange}
                   value={this.state.postFieldData}
-                ></textarea>
+                />
                 <button onClick={this.handlePost}>Post</button>
               </div>
               <hr />
@@ -331,7 +309,7 @@ class User extends React.Component {
               <div className="news-feed-wrapper">
                 <h3>Feed</h3>
                 <ul className="user-stroy-list">
-                  {this.state.userStories.map((data, index) => (
+                  {this.state.userStories.map((data) => (
                     <li key={data.id}>
                       <UserStoryContainer
                         userId={this.state.userData.id}
@@ -361,9 +339,9 @@ class User extends React.Component {
           </div>
         </Fragment>
       );
-    } else {
-      return <NoServerConnection />;
     }
+
+    return <NoServerConnection />;
   }
 }
 

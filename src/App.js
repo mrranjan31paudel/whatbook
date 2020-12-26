@@ -10,7 +10,7 @@ import Notifications from './components/Notifications';
 import Post from './components/Post';
 import ProtectedRoute from './components/ProtectedRoute';
 
-import './styles/common/contentContainer.css';
+import './styles/common/content_container.css';
 
 class App extends React.Component {
   constructor() {

@@ -1,21 +1,20 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import { EMAIL_REGEXP } from './../constants/config';
-import signupRequest from '../services/signup';
-import { MONTH, DAY, Year } from '../constants/dob';
-import validateSignup from '../validators/signup';
-import tokenService from './../services/token';
-
-import Header from './Header';
 import Label from './Label';
-import TextField from './TextField';
+import Header from './Header';
 import Button from './Button';
 import Dropdown from './Dropdown';
+import TextField from './TextField';
+import signupRequest from '../services/signup';
+import tokenService from './../services/token';
+import validateSignup from '../validators/signup';
+import { MONTH, DAY, Year } from '../constants/dob';
+import { EMAIL_REGEXP } from './../constants/config';
 import NoServerConnection from './NoServerConnection';
 
-import './../styles/loginsignup/formWrapper.css';
-import './../styles/loginsignup/signupSuccessWrapper.css';
+import './../styles/loginsignup/form_wrapper.css';
+import './../styles/loginsignup/signup_success_wrapper.css';
 
 class Register extends React.Component {
   constructor() {
@@ -26,16 +25,16 @@ class Register extends React.Component {
         dob: {
           year: null,
           month: null,
-          day: null
+          day: null,
         },
         email: null,
         password: null,
-        confPassword: null
+        confPassword: null,
       },
       isWaitingServer: false,
       isSignUpSuccessful: false,
       userAlreadyExist: false,
-      isConnectedToServer: true
+      isConnectedToServer: true,
     };
   }
 
@@ -49,62 +48,71 @@ class Register extends React.Component {
     this.setState({
       data: {
         ...this.state.data,
-        [targetField]: value
-      }
+        [targetField]: value,
+      },
     });
   };
 
-  handleSubmit = async e => {
+  handleSubmit = async (e) => {
     e.preventDefault();
+
     const toSendData = {
       name: this.state.data.name,
-      dob: `${this.state.data.dob.year}-${this.state.data.dob.month}-${this.state.data.dob.day}`,
+      dob: [
+        this.state.data.dob.year,
+        this.state.data.dob.month,
+        this.state.data.dob.day,
+      ].join('-'),
       email: this.state.data.email,
-      password: this.state.data.password
+      password: this.state.data.password,
     };
     const validFlag = validateSignup(this.state);
 
     if (validFlag && !this.isMailInvalid()) {
-      signupRequest(toSendData)
-        .then(response => {
+      this.setState({
+        isWaitingServer: false,
+      });
+
+      return signupRequest(toSendData)
+        .then((response) => {
           this.setState({
-            isWaitingServer: false,
-            isSignUpSuccessful: true
+            isSignUpSuccessful: true,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           if (!err.response) {
-            this.setState({
-              isConnectedToServer: false
+            return this.setState({
+              isConnectedToServer: false,
             });
-          } else if (err.response && err.response.status === 409) {
+          }
+
+          if (err.response.status === 409) {
             this.setState({ userAlreadyExist: true });
           }
+        })
+        .finally(() => {
           this.setState({
-            isWaitingServer: false
+            isWaitingServer: false,
           });
         });
-      this.setState({
-        isWaitingServer: true
-      });
-    } else {
-      this.setState({
-        data: {
-          ...this.state.data,
-          name: this.state.data.name ? this.state.data.name : '',
-          dob: {
-            year: this.state.data.dob.year ? this.state.data.dob.year : '0',
-            month: this.state.data.dob.month ? this.state.data.dob.month : '0',
-            day: this.state.data.dob.day ? this.state.data.dob.day : '0'
-          },
-          email: this.state.data.email ? this.state.data.email : '',
-          password: this.state.data.password ? this.state.data.password : '',
-          confPassword: this.state.data.confPassword
-            ? this.state.data.confPassword
-            : ''
-        }
-      });
     }
+
+    this.setState({
+      data: {
+        ...this.state.data,
+        name: this.state.data.name ? this.state.data.name : '',
+        dob: {
+          year: this.state.data.dob.year ? this.state.data.dob.year : '0',
+          month: this.state.data.dob.month ? this.state.data.dob.month : '0',
+          day: this.state.data.dob.day ? this.state.data.dob.day : '0',
+        },
+        email: this.state.data.email ? this.state.data.email : '',
+        password: this.state.data.password ? this.state.data.password : '',
+        confPassword: this.state.data.confPassword
+          ? this.state.data.confPassword
+          : '',
+      },
+    });
   };
 
   handleDateChange = (value, name) => {
@@ -113,42 +121,39 @@ class Register extends React.Component {
         ...this.state.data,
         dob: {
           ...this.state.data.dob,
-          [name]: value
-        }
-      }
+          [name]: value,
+        },
+      },
     });
   };
 
   isDateInvalid = () => {
-    if (
-      this.state.data.dob.day === '0' ||
-      this.state.data.dob.month === '0' ||
-      this.state.data.dob.year === '0'
-    ) {
+    const { day, month, year } = this.state.data.dob;
+
+    if (day === '0' || month === '0' || year === '0') {
       return true;
     }
+
     return false;
   };
 
   isMailInvalid = () => {
-    if (
-      this.state.data.email &&
-      this.state.data.email.length > 0 &&
-      !EMAIL_REGEXP.test(this.state.data.email)
-    ) {
+    const { email } = this.state.data;
+
+    if (email && email.length > 0 && !EMAIL_REGEXP.test(email)) {
       return true;
     }
+
     return false;
   };
 
   isPasswordInvalid = () => {
-    if (
-      this.state.data.password &&
-      this.state.data.password.length > 0 &&
-      this.state.data.password.length < 6
-    ) {
+    const { password } = this.state.data;
+
+    if (password && password.length > 0 && password.length < 6) {
       return true;
     }
+
     return false;
   };
 
@@ -156,6 +161,7 @@ class Register extends React.Component {
     if (this.state.data.confPassword === this.state.data.password) {
       return true;
     }
+
     return false;
   };
 
@@ -206,20 +212,20 @@ class Register extends React.Component {
                   <div className="date-wrapper">
                     <Dropdown
                       status={this.state.data.dob.month === '0' ? ' wrong' : ''}
-                      className="month"
-                      items={MONTH}
+                      name="month"
+                      options={MONTH}
                       onChange={this.handleDateChange}
                     />
                     <Dropdown
                       status={this.state.data.dob.day === '0' ? ' wrong' : ''}
-                      className="day"
-                      items={DAY}
+                      name="day"
+                      options={DAY}
                       onChange={this.handleDateChange}
                     />
                     <Dropdown
                       status={this.state.data.dob.year === '0' ? ' wrong' : ''}
-                      className="year"
-                      items={Year}
+                      name="year"
+                      options={Year}
                       onChange={this.handleDateChange}
                     />
                   </div>
@@ -358,22 +364,22 @@ class Register extends React.Component {
             </div>
           </Fragment>
         );
-      } else {
-        return (
-          <Fragment>
-            <Header isInsideUser={false} />
-            <div className="signup-success-wrapper">
-              <h2>Account Registered!</h2>
-              <p>
-                Log In to your account <Link to="/">here.</Link>
-              </p>
-            </div>
-          </Fragment>
-        );
       }
-    } else {
-      return <NoServerConnection />;
+
+      return (
+        <Fragment>
+          <Header isInsideUser={false} />
+          <div className="signup-success-wrapper">
+            <h2>Account Registered!</h2>
+            <p>
+              Log In to your account <Link to="/">here.</Link>
+            </p>
+          </div>
+        </Fragment>
+      );
     }
+
+    return <NoServerConnection />;
   }
 }
 
