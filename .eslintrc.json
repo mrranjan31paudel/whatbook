@@ -9,7 +9,7 @@
   "rules": {
     "quotes": ["error", "single"],
     "arrow-parens": ["error", "always"],
-    "semi": ["error", "always"],
+    "semi": ["warn", "always"],
     "linebreak-style": ["error", "unix"],
     "comma-spacing": [
       "error",
