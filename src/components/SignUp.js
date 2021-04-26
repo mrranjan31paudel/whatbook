@@ -8,7 +8,6 @@ import Dropdown from './Dropdown';
 import TextField from './TextField';
 import signupRequest from '../services/signup';
 import tokenService from './../services/token';
-import validateSignup from '../validators/signup';
 import { EMAIL_REGEXP } from './../constants/config';
 import NoServerConnection from './NoServerConnection';
 import { MONTH_OPTIONS, DAY_OPTIONS, YEAR_OPTIONS } from '../constants/dob';
@@ -137,7 +136,7 @@ class Register extends React.Component {
   };
 
   validateSignup = () => {
-    const { name, dob, email, password, confPassword } = this.state.formData;
+    const { name, dob, email, password } = this.state.formData;
     let isValid = true;
     let errors = { ...this.state.errors };
 

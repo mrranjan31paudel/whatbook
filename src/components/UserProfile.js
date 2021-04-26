@@ -1,23 +1,25 @@
 import React, { Fragment } from 'react';
 
 import {
-  logoutUser,
-  postComment,
-  sendRequest,
-  getComments,
-  updatePost,
-  updateComment,
-  deleteComment,
-  deletePost,
-  acceptRequest,
-  deleteRequest,
   getPeopleList,
   getUserDetails,
-  getUserStories,
-  getRequestList,
   changeUserData,
-  getNotificationsList,
 } from './../services/user';
+import { logoutUser } from './../services/login';
+import { getUserStories, deletePost, updatePost } from './../services/post';
+import {
+  postComment,
+  getComments,
+  updateComment,
+  deleteComment,
+} from './../services/comment';
+import {
+  acceptRequest,
+  sendRequest,
+  deleteRequest,
+  getRequestList,
+} from './../services/friend';
+import { getNotificationsList } from './../services/notification';
 import Header from './Header';
 import tokenService from './../services/token';
 import ProfileEditPopUp from './ProfileEditPopUp';

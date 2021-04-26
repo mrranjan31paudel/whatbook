@@ -1,16 +1,15 @@
 import React, { Fragment } from 'react';
 
+import { getPeopleList, getUserDetails } from './../services/user';
+import { logoutUser } from './../services/login';
 import {
-  logoutUser,
-  sendRequest,
   acceptRequest,
+  sendRequest,
   deleteRequest,
-  getPeopleList,
   getFriendList,
   getRequestList,
-  getUserDetails,
-  getNotificationsList,
-} from './../services/user';
+} from './../services/friend';
+import { getNotificationsList } from './../services/notification';
 import Header from './Header';
 import UserHolder from './UserHolder';
 import tokenService from './../services/token';

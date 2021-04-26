@@ -1,13 +1,12 @@
 import React, { Fragment } from 'react';
 
+import { getPeopleList, getUserDetails } from './../services/user';
+import { getRequestList } from './../services/friend';
 import {
-  getPeopleList,
-  getUserDetails,
-  getRequestList,
-  deleteNotification,
   getNotificationsList,
+  deleteNotification,
   markNotificationAsRead,
-} from './../services/user';
+} from './../services/notification';
 import Header from './Header';
 import ToolTip from './ToolTip';
 import tokenService from './../services/token';

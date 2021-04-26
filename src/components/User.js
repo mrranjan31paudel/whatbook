@@ -1,20 +1,21 @@
 import React, { Fragment } from 'react';
 
+import { getPeopleList, getUserDetails } from './../services/user';
+import { logoutUser } from './../services/login';
 import {
-  logoutUser,
+  getUserStories,
+  deletePost,
+  updatePost,
+  createNewPost,
+} from './../services/post';
+import {
   postComment,
   getComments,
-  createNewPost,
   updateComment,
-  updatePost,
   deleteComment,
-  deletePost,
-  getPeopleList,
-  getUserDetails,
-  getUserStories,
-  getRequestList,
-  getNotificationsList,
-} from './../services/user';
+} from './../services/comment';
+import { getRequestList } from './../services/friend';
+import { getNotificationsList } from './../services/notification';
 import Header from './Header';
 // import UserHolder from './UserHolder';
 import tokenService from './../services/token';
@@ -101,7 +102,7 @@ class User extends React.Component {
         });
       })
       .catch((err) => {
-        console.log('Unable to load feeds: ', err);
+        console.log('Unable to load posts: ', err);
       });
   };
 
