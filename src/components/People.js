@@ -39,7 +39,7 @@ class People extends React.Component {
   }
 
   componentDidMount() {
-    getUserDetails('/user')
+    getUserDetails()
       .then((response) => {
         if (response) {
           this.setState({
@@ -70,7 +70,7 @@ class People extends React.Component {
   }
 
   getListOfPeople = () => {
-    getPeopleList('/user/people', { userId: this.state.userData.id })
+    getPeopleList({ userId: this.state.userData.id })
       .then((response) => {
         this.setState({ peopleList: response.data });
       })
@@ -81,7 +81,7 @@ class People extends React.Component {
 
   searchPeople = (searchText) => {
     return new Promise((resolve, reject) => {
-      getPeopleList('/user/people', {
+      getPeopleList({
         userId: this.state.userData.id,
         searchText: searchText,
       })
@@ -93,7 +93,7 @@ class People extends React.Component {
   };
 
   getListOfFriends = () => {
-    getFriendList('/user/friend', { userId: this.state.userData.id })
+    getFriendList({ userId: this.state.userData.id })
       .then((response) => {
         this.setState({ friendList: response.data });
       })
@@ -103,7 +103,7 @@ class People extends React.Component {
   };
 
   getListOfRequests = () => {
-    getRequestList('/user/requests', { type: 'list' })
+    getRequestList({ type: 'list' })
       .then((response) => {
         this.setState({ requestList: response.data });
       })
@@ -114,7 +114,7 @@ class People extends React.Component {
 
   getNumberOfUnreadNotifications = () => {
     // called while loading the user
-    getNotificationsList('/user/notifications', { type: 'number' })
+    getNotificationsList({ type: 'number' })
       .then((response) => {
         this.setState({
           numberOfUnreadNotifications:
@@ -127,9 +127,7 @@ class People extends React.Component {
   };
 
   handleLogOut = () => {
-    logoutUser('/logout', {
-      refreshToken: tokenService.getRefreshToken(),
-    })
+    logoutUser({ refreshToken: tokenService.getRefreshToken() })
       .then(() => {
         tokenService.removeTokens();
         this.props.history.push('/');
@@ -140,7 +138,7 @@ class People extends React.Component {
   };
 
   handleAddFriendClick = (e) => {
-    sendRequest('/user/friend', { recieverId: e.target.id.split('-')[1] })
+    sendRequest({ recieverId: e.target.id.split('-')[1] })
       .then((response) => {
         this.getListOfFriends();
         this.getListOfRequests();
@@ -153,7 +151,7 @@ class People extends React.Component {
 
   handleAcceptRequestClick = (e) => {
     //sends PUT request
-    acceptRequest('/user/friend', { senderId: e.target.id.split('-')[1] })
+    acceptRequest({ senderId: e.target.id.split('-')[1] })
       .then((response) => {
         this.getListOfFriends();
         this.getListOfRequests();
@@ -165,7 +163,7 @@ class People extends React.Component {
   };
 
   handleDeleteRequestClick = (e) => {
-    deleteRequest('/user/friend', { friendId: e.target.id.split('-')[1] })
+    deleteRequest({ friendId: e.target.id.split('-')[1] })
       .then((response) => {
         this.getListOfFriends();
         this.getListOfRequests();

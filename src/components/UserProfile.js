@@ -5,8 +5,10 @@ import {
   postComment,
   sendRequest,
   getComments,
-  updateContent,
-  deleteContent,
+  updatePost,
+  updateComment,
+  deleteComment,
+  deletePost,
   acceptRequest,
   deleteRequest,
   getPeopleList,
@@ -66,7 +68,7 @@ class UserProfile extends React.Component {
       isLoading: true,
     });
 
-    getUserDetails('/user')
+    getUserDetails()
       .then((response) => {
         this.setState({
           userData: {
@@ -109,7 +111,7 @@ class UserProfile extends React.Component {
         });
       }
 
-      return getUserDetails('/user', { id: userId })
+      return getUserDetails({ id: userId })
         .then((response) => {
           this.setState({
             profileData: { ...response.data },
@@ -127,7 +129,7 @@ class UserProfile extends React.Component {
   };
 
   getNumberOfNewRequests = () => {
-    getRequestList('/user/requests', { type: 'number' })
+    getRequestList({ type: 'number' })
       .then((response) => {
         this.setState({
           numberOfUnansweredRequests: response.data.numberOfUnansweredRequests,
@@ -145,7 +147,7 @@ class UserProfile extends React.Component {
       userId &&
       (this.state.profileData.isFriend || this.state.profileData.isOwner)
     ) {
-      return getUserStories('/user/post', { userId: userId })
+      return getUserStories({ userId: userId })
         .then((response) => {
           this.setState({
             userPosts: response.data,
@@ -164,7 +166,7 @@ class UserProfile extends React.Component {
 
   getCommentList = (postId) => {
     return new Promise((resolve, reject) => {
-      getComments('/user/comment', { postId: postId })
+      getComments({ postId: postId })
         .then((response) => {
           this.setState({
             toUpdatePostId: '',
@@ -180,7 +182,7 @@ class UserProfile extends React.Component {
 
   getNumberOfUnreadNotifications = () => {
     // called while loading the user
-    getNotificationsList('/user/notifications', { type: 'number' })
+    getNotificationsList({ type: 'number' })
       .then((response) => {
         this.setState({
           numberOfUnreadNotifications:
@@ -203,7 +205,7 @@ class UserProfile extends React.Component {
 
   handleCommentDelete = (commentData) => {
     return new Promise((resolve, reject) => {
-      deleteContent('/user/comment', commentData)
+      deleteComment(commentData)
         .then((response) => {
           resolve(this.getCommentList(commentData.postId));
         })
@@ -215,7 +217,7 @@ class UserProfile extends React.Component {
 
   handleCommentSubmit = (commentData) => {
     return new Promise((resolve, reject) => {
-      postComment('/user/comment', commentData)
+      postComment(commentData)
         .then((response) => {
           resolve(this.getCommentList(commentData.parentPostId));
         })
@@ -227,7 +229,7 @@ class UserProfile extends React.Component {
 
   handleEditSubmit = (submitInfo) => {
     if (submitInfo.type === 'post') {
-      return updateContent('/user/post', submitInfo.data)
+      return updatePost(submitInfo.data)
         .then((response) => {
           this.getUserPosts();
         })
@@ -238,7 +240,7 @@ class UserProfile extends React.Component {
 
     if (submitInfo.type === 'comment') {
       return new Promise((resolve, reject) => {
-        updateContent('/user/comment', submitInfo.data)
+        updateComment(submitInfo.data)
           .then((response) => {
             this.setState({
               selectionId: {},
@@ -262,7 +264,7 @@ class UserProfile extends React.Component {
   };
 
   handlePostDelete = (postData) => {
-    deleteContent('/user/post', postData)
+    deletePost(postData)
       .then((response) => {
         this.getUserPosts();
         this.setState({
@@ -276,7 +278,7 @@ class UserProfile extends React.Component {
   };
 
   handleLogOut = () => {
-    logoutUser('/logout', { refreshToken: tokenService.getRefreshToken() })
+    logoutUser({ refreshToken: tokenService.getRefreshToken() })
       .then(() => {
         tokenService.removeTokens();
         this.props.history.push('/');
@@ -287,7 +289,7 @@ class UserProfile extends React.Component {
   };
 
   handleAddFriendClick = () => {
-    sendRequest('/user/friend', { recieverId: this.state.profileData.id })
+    sendRequest({ recieverId: this.state.profileData.id })
       .then((response) => {
         this.getUserProfileDetails();
       })
@@ -298,7 +300,7 @@ class UserProfile extends React.Component {
 
   handleAcceptRequestClick = () => {
     //sends PUT request
-    acceptRequest('/user/friend', { senderId: this.state.profileData.id })
+    acceptRequest({ senderId: this.state.profileData.id })
       .then((response) => {
         this.getUserProfileDetails();
       })
@@ -308,7 +310,7 @@ class UserProfile extends React.Component {
   };
 
   handleDeleteRequestClick = () => {
-    deleteRequest('/user/friend', { friendId: this.state.profileData.id })
+    deleteRequest({ friendId: this.state.profileData.id })
       .then((response) => {
         this.getUserProfileDetails();
       })
@@ -348,7 +350,7 @@ class UserProfile extends React.Component {
   };
 
   handleUserNameEditSubmit = (newName) => {
-    changeUserData('/user', {
+    changeUserData({
       type: 'name',
       submitData: newName,
     })
@@ -361,7 +363,7 @@ class UserProfile extends React.Component {
   };
 
   handleUserDOBEditSubmit = (newDate) => {
-    changeUserData('/user', {
+    changeUserData({
       type: 'dob',
       submitData: newDate,
     })
@@ -374,7 +376,7 @@ class UserProfile extends React.Component {
   };
 
   handleUserPasswordChange = (newPassWordData) => {
-    return changeUserData('/user', {
+    return changeUserData({
       type: 'password',
       submitData: newPassWordData,
     });
@@ -388,7 +390,7 @@ class UserProfile extends React.Component {
 
   searchPeople = (searchText) => {
     return new Promise((resolve, reject) => {
-      getPeopleList('/user/people', {
+      getPeopleList({
         userId: this.state.userData.id,
         searchText: searchText,
       })

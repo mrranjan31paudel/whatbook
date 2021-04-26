@@ -1,76 +1,83 @@
 import { get, post, put, remove } from './http';
 
-function getUserDetails(url, params = {}) {
-  console.log('IN here 2');
-  return get(url, params);
+function getUserDetails(params = {}) {
+  return get('/user', params);
 }
 
-function createNewPost(url, requestBody) {
-  return post(url, requestBody);
+function createNewPost(requestBody) {
+  return post('/user/post', requestBody);
 }
 
-function logoutUser(url, requestBody) {
-  return post(url, requestBody);
+function logoutUser(requestBody) {
+  return post('/logout', requestBody);
 }
 
-function getUserStories(url, params = {}) {
-  return get(url, params);
+function getUserStories(params = {}) {
+  return get('/user/post', params);
 }
 
-function postComment(url, requestBody) {
-  return post(url, requestBody);
+function postComment(requestBody) {
+  return post('/user/comment', requestBody);
 }
 
-function getComments(url, params = {}) {
-  return get(url, params);
+function getComments(params = {}) {
+  return get('/user/comment', params);
 }
 
-function updateContent(url, requestBody) {
-  return put(url, requestBody);
+function updateComment(requestBody) {
+  return put('/user/comment', requestBody);
 }
 
-function deleteContent(url, params = {}) {
-  return remove(url, params);
+function updatePost(requestBody) {
+  return put('/user/post', requestBody);
 }
 
-function sendRequest(url, requestBody) {
-  return post(url, requestBody);
+function deleteComment(params = {}) {
+  return remove('/user/comment', params);
 }
 
-function acceptRequest(url, requestBody) {
-  return put(url, requestBody);
+function deletePost(params = {}) {
+  return remove('/user/post', params);
 }
 
-function deleteRequest(url, params = {}) {
-  return remove(url, params);
+function sendRequest(requestBody) {
+  return post('/user/friend', requestBody);
 }
 
-function getPeopleList(url, params = {}) {
-  return get(url, params);
+function acceptRequest(requestBody) {
+  return put('/user/friend', requestBody);
 }
 
-function getFriendList(url, params = {}) {
-  return get(url, params);
+function deleteRequest(params = {}) {
+  return remove('/user/friend', params);
 }
 
-function getRequestList(url, params = {}) {
-  return get(url, params);
+function getPeopleList(params = {}) {
+  return get('/user/people', params);
 }
 
-function getNotificationsList(url, params = {}) {
-  return get(url, params);
+function getFriendList(params = {}) {
+  return get('/user/friend', params);
 }
 
-function markNotificationAsRead(url, requestBody) {
-  return put(url, requestBody);
+function getRequestList(params = {}) {
+  return get('/user/requests', params);
 }
 
-function changeUserData(url, requestBody) {
-  return put(url, requestBody);
+function getNotificationsList(params = {}) {
+  return get('/user/notifications', params);
 }
 
-function deleteNotification(url, params = {}) {
-  return remove(url, params);
+function markNotificationAsRead(requestBody) {
+  return put('/user/notifications', requestBody);
+}
+
+function changeUserData(requestBody) {
+  return put('/user', requestBody);
+}
+
+function deleteNotification(params = {}) {
+  return remove('/user/notifications', params);
 }
 
 export {
@@ -80,8 +87,10 @@ export {
   logoutUser,
   postComment,
   getComments,
-  updateContent,
-  deleteContent,
+  updateComment,
+  updatePost,
+  deleteComment,
+  deletePost,
   sendRequest,
   acceptRequest,
   deleteRequest,

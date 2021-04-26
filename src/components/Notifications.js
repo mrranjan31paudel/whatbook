@@ -31,7 +31,7 @@ class Notifications extends React.Component {
   }
 
   componentDidMount() {
-    getUserDetails('/user')
+    getUserDetails()
       .then((response) => {
         if (response) {
           this.setState({
@@ -57,7 +57,7 @@ class Notifications extends React.Component {
 
   getListOfNotifications = () => {
     //called when user clicks notifications button
-    getNotificationsList('/user/notifications', { type: 'list' })
+    getNotificationsList({ type: 'list' })
       .then((response) => {
         this.setState({
           notificationList: response.data,
@@ -73,7 +73,7 @@ class Notifications extends React.Component {
   };
 
   getNumberOfNewRequests = () => {
-    getRequestList('/user/requests', { type: 'number' })
+    getRequestList({ type: 'number' })
       .then((response) => {
         this.setState({
           numberOfUnansweredRequests: response.data.numberOfUnansweredRequests,
@@ -86,9 +86,7 @@ class Notifications extends React.Component {
 
   handleNotificationClick = (e, id, target, targetid, postOwnerId, status) => {
     if (status === 0) {
-      return markNotificationAsRead('/user/notifications', {
-        notificationId: id,
-      })
+      return markNotificationAsRead({ notificationId: id })
         .then((response) => {
           if (target === 'your post' || target === 'your comment') {
             return this.props.history.push(
@@ -122,7 +120,7 @@ class Notifications extends React.Component {
   handleMarkAsReadClick = (e) => {
     e.preventDefault();
 
-    markNotificationAsRead('/user/notifications', { notificationId: 'all' })
+    markNotificationAsRead({ notificationId: 'all' })
       .then((response) => {
         this.getListOfNotifications();
       })
@@ -134,7 +132,7 @@ class Notifications extends React.Component {
   handleNotificationReadClick = (e, id, status) => {
     e.preventDefault();
 
-    markNotificationAsRead('/user/notifications', {
+    markNotificationAsRead({
       notificationId: id,
       toMakeStatus: status === 0 ? 1 : 0,
     })
@@ -149,7 +147,7 @@ class Notifications extends React.Component {
   handleDeleteNotificationClick = (e, id) => {
     e.preventDefault();
 
-    deleteNotification('/user/notifications', { notificationId: id })
+    deleteNotification({ notificationId: id })
       .then((response) => {
         this.getListOfNotifications();
       })
@@ -160,7 +158,7 @@ class Notifications extends React.Component {
 
   searchPeople = (searchText) => {
     return new Promise((resolve, reject) => {
-      getPeopleList('/user/people', {
+      getPeopleList({
         userId: this.state.userData.id,
         searchText: searchText,
       })

@@ -4,8 +4,10 @@ import {
   getComments,
   postComment,
   getPeopleList,
-  updateContent,
-  deleteContent,
+  updateComment,
+  updatePost,
+  deleteComment,
+  deletePost,
   getUserDetails,
   getUserStories,
   getRequestList,
@@ -38,7 +40,7 @@ class Post extends React.Component {
   }
 
   componentDidMount() {
-    getUserDetails('/user')
+    getUserDetails()
       .then((response) => {
         if (response) {
           this.setState({
@@ -67,7 +69,7 @@ class Post extends React.Component {
     const ownerId = this.props.match.params.userId.split('_')[1];
     const postId = this.props.match.params.postId.split('_')[1];
 
-    getUserStories('/user/post', {
+    getUserStories({
       ownerId: ownerId,
       postId: postId,
     })
@@ -81,7 +83,7 @@ class Post extends React.Component {
 
   getCommentList = (postId) => {
     return new Promise((resolve, reject) => {
-      getComments('/user/comment', { postId: postId })
+      getComments({ postId: postId })
         .then((response) => {
           resolve(response.data);
         })
@@ -92,7 +94,7 @@ class Post extends React.Component {
   };
 
   getNumberOfNewRequests = () => {
-    getRequestList('/user/requests', { type: 'number' })
+    getRequestList({ type: 'number' })
       .then((response) => {
         this.setState({
           numberOfUnansweredRequests: response.data.numberOfUnansweredRequests,
@@ -105,7 +107,7 @@ class Post extends React.Component {
 
   getNumberOfUnreadNotifications = () => {
     // called while loading the user
-    getNotificationsList('/user/notifications', { type: 'number' })
+    getNotificationsList({ type: 'number' })
       .then((response) => {
         this.setState({
           numberOfUnreadNotifications:
@@ -127,7 +129,7 @@ class Post extends React.Component {
 
   handleEditSubmit = (submitInfo) => {
     if (submitInfo.type === 'post') {
-      return updateContent('/user/post', submitInfo.data)
+      return updatePost(submitInfo.data)
         .then((response) => {
           this.getUserPost();
         })
@@ -138,7 +140,7 @@ class Post extends React.Component {
 
     if (submitInfo.type === 'comment') {
       return new Promise((resolve, reject) => {
-        updateContent('/user/comment', submitInfo.data)
+        updateComment(submitInfo.data)
           .then((response) => {
             this.setState({
               selectionId: {},
@@ -155,7 +157,7 @@ class Post extends React.Component {
 
   handleCommentSubmit = (commentData) => {
     return new Promise((resolve, reject) => {
-      postComment('/user/comment', commentData)
+      postComment(commentData)
         .then((response) => {
           resolve(this.getCommentList(commentData.parentPostId));
         })
@@ -167,7 +169,7 @@ class Post extends React.Component {
 
   handleCommentDelete = (commentData) => {
     return new Promise((resolve, reject) => {
-      deleteContent('/user/comment', commentData)
+      deleteComment(commentData)
         .then((response) => {
           resolve(this.getCommentList(commentData.postId));
         })
@@ -178,7 +180,7 @@ class Post extends React.Component {
   };
 
   handlePostDelete = (postData) => {
-    deleteContent('/user/post', postData)
+    deletePost(postData)
       .then((response) => {
         this.getUserPost();
         this.setState({
@@ -193,7 +195,7 @@ class Post extends React.Component {
 
   searchPeople = (searchText) => {
     return new Promise((resolve, reject) => {
-      getPeopleList('/user/people', {
+      getPeopleList({
         userId: this.state.userData.id,
         searchText: searchText,
       })

@@ -5,8 +5,10 @@ import {
   postComment,
   getComments,
   createNewPost,
-  updateContent,
-  deleteContent,
+  updateComment,
+  updatePost,
+  deleteComment,
+  deletePost,
   getPeopleList,
   getUserDetails,
   getUserStories,
@@ -48,8 +50,7 @@ class User extends React.Component {
   }
 
   componentDidMount() {
-    console.log('IN here');
-    getUserDetails('/user')
+    getUserDetails()
       .then((response) => {
         if (response) {
           this.setState({
@@ -80,7 +81,7 @@ class User extends React.Component {
   }
 
   getNumberOfNewRequests = () => {
-    getRequestList('/user/requests', { type: 'number' })
+    getRequestList({ type: 'number' })
       .then((response) => {
         this.setState({
           numberOfUnansweredRequests: response.data.numberOfUnansweredRequests,
@@ -92,7 +93,7 @@ class User extends React.Component {
   };
 
   getNewsFeed = () => {
-    getUserStories('/user/post')
+    getUserStories()
       .then((response) => {
         this.setState({
           ...this.state,
@@ -106,7 +107,7 @@ class User extends React.Component {
 
   getCommentList = (postId) => {
     return new Promise((resolve, reject) => {
-      getComments('/user/comment', { postId: postId })
+      getComments({ postId: postId })
         .then((response) => {
           resolve(response.data);
         })
@@ -118,7 +119,7 @@ class User extends React.Component {
 
   getNumberOfUnreadNotifications = () => {
     // called while loading the user
-    getNotificationsList('/user/notifications', { type: 'number' })
+    getNotificationsList({ type: 'number' })
       .then((response) => {
         this.setState({
           numberOfUnreadNotifications:
@@ -136,7 +137,7 @@ class User extends React.Component {
 
   handlePost = () => {
     if (this.state.postFieldData) {
-      createNewPost('/user/post', { postData: this.state.postFieldData })
+      createNewPost({ postData: this.state.postFieldData })
         .then((response) => {
           this.setState({
             postFieldData: '',
@@ -162,7 +163,7 @@ class User extends React.Component {
 
   handleEditSubmit = (submitInfo) => {
     if (submitInfo.type === 'post') {
-      return updateContent('/user/post', submitInfo.data)
+      return updatePost(submitInfo.data)
         .then((response) => {
           this.getNewsFeed();
         })
@@ -173,7 +174,7 @@ class User extends React.Component {
 
     if (submitInfo.type === 'comment') {
       return new Promise((resolve, reject) => {
-        updateContent('/user/comment', submitInfo.data)
+        updateComment(submitInfo.data)
           .then((response) => {
             this.setState({
               selectionId: {},
@@ -190,7 +191,7 @@ class User extends React.Component {
 
   handleCommentSubmit = (commentData) => {
     return new Promise((resolve, reject) => {
-      postComment('/user/comment', commentData)
+      postComment(commentData)
         .then((response) => {
           resolve(this.getCommentList(commentData.parentPostId));
         })
@@ -202,7 +203,7 @@ class User extends React.Component {
 
   handleCommentDelete = (commentData) => {
     return new Promise((resolve, reject) => {
-      deleteContent('/user/comment', commentData)
+      deleteComment(commentData)
         .then((response) => {
           resolve(this.getCommentList(commentData.postId));
         })
@@ -213,7 +214,7 @@ class User extends React.Component {
   };
 
   handlePostDelete = (postData) => {
-    deleteContent('/user/post', postData)
+    deletePost(postData)
       .then((response) => {
         this.getNewsFeed();
         this.setState({
@@ -236,7 +237,7 @@ class User extends React.Component {
   };
 
   handleLogOut = () => {
-    logoutUser('/logout', { refreshToken: tokenService.getRefreshToken() })
+    logoutUser({ refreshToken: tokenService.getRefreshToken() })
       .then(() => {
         tokenService.removeTokens();
         this.props.history.push('/');
@@ -248,7 +249,7 @@ class User extends React.Component {
 
   searchPeople = (searchText) => {
     return new Promise((resolve, reject) => {
-      getPeopleList('/user/people', {
+      getPeopleList({
         userId: this.state.userData.id,
         searchText: searchText,
       })
