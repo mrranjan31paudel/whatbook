@@ -48,6 +48,7 @@ class User extends React.Component {
   }
 
   componentDidMount() {
+    console.log('IN here');
     getUserDetails('/user')
       .then((response) => {
         if (response) {
@@ -271,77 +272,77 @@ class User extends React.Component {
   };
 
   render() {
-    if (this.state.isConnectedToServer) {
-      return (
-        <Fragment>
-          <Header
-            userId={this.state.userData.id}
-            profileName={this.state.userData.name}
-            numberOfUnansweredRequests={this.state.numberOfUnansweredRequests}
-            numberOfUnreadNotifications={this.state.numberOfUnreadNotifications}
-            isInsideUser={true}
-            {...this.props}
-            onLogOutClick={this.handleLogOut}
-            onProfileClick={this.handleProfileClick}
-            onHomeClick={this.handleHomeClick}
-            searchPeople={this.searchPeople}
-          />
+    if (!this.state.isConnectedToServer) {
+      return <NoServerConnection />;
+    }
 
-          <div className="user-wrapper" onClick={this.handleUserWrapperClick}>
-            <div className="profile-info-container">
-              <img src="userpic.png" alt="user" />
-              <span>{this.state.userData.name}</span>
-            </div>
-            <div className="news-feed-container">
-              <div className="post-field-wrapper">
-                <textarea
-                  rows="4"
-                  cols="50"
-                  name="post-field"
-                  placeholder="What are you thinking today?"
-                  onChange={this.handlePostFieldChange}
-                  value={this.state.postFieldData}
-                />
-                <button onClick={this.handlePost}>Post</button>
-              </div>
-              <hr />
+    return (
+      <Fragment>
+        <Header
+          userId={this.state.userData.id}
+          profileName={this.state.userData.name}
+          numberOfUnansweredRequests={this.state.numberOfUnansweredRequests}
+          numberOfUnreadNotifications={this.state.numberOfUnreadNotifications}
+          isInsideUser={true}
+          {...this.props}
+          onLogOutClick={this.handleLogOut}
+          onProfileClick={this.handleProfileClick}
+          onHomeClick={this.handleHomeClick}
+          searchPeople={this.searchPeople}
+        />
 
-              <div className="news-feed-wrapper">
-                <h3>Feed</h3>
-                <ul className="user-stroy-list">
-                  {this.state.userStories.map((data) => (
-                    <li key={data.id}>
-                      <UserStoryContainer
-                        userId={this.state.userData.id}
-                        userName={this.state.userData.name}
-                        postData={data}
-                        onCommentSubmit={this.handleCommentSubmit}
-                        getCommentList={this.getCommentList}
-                        isOptionClicked={this.state.isOptionClicked}
-                        selectedCommentId={this.state.selectedCommentId}
-                        selectedPostId={this.state.selectedPostId}
-                        onOptionClick={this.handleOptionClick}
-                        onEditSubmit={this.handleEditSubmit}
-                        onCommentDelete={this.handleCommentDelete}
-                        onPostDelete={this.handlePostDelete}
-                        onProfileNameClick={this.handleProfileNameClick}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </div>
+        <div className="user-wrapper" onClick={this.handleUserWrapperClick}>
+          <div className="profile-info-container">
+            <img src="userpic.png" alt="user" />
+            <span>{this.state.userData.name}</span>
+          </div>
+          <div className="news-feed-container">
+            <div className="post-field-wrapper">
+              <textarea
+                rows="4"
+                cols="50"
+                name="post-field"
+                placeholder="What are you thinking today?"
+                onChange={this.handlePostFieldChange}
+                value={this.state.postFieldData}
+              />
+              <button onClick={this.handlePost}>Post</button>
             </div>
-            {/* <div className="active-friendlist-container">
+            <hr />
+
+            <div className="news-feed-wrapper">
+              <h3>Feed</h3>
+              <ul className="user-stroy-list">
+                {this.state.userStories.map((data) => (
+                  <li key={data.id}>
+                    <UserStoryContainer
+                      userId={this.state.userData.id}
+                      userName={this.state.userData.name}
+                      postData={data}
+                      onCommentSubmit={this.handleCommentSubmit}
+                      getCommentList={this.getCommentList}
+                      isOptionClicked={this.state.isOptionClicked}
+                      selectedCommentId={this.state.selectedCommentId}
+                      selectedPostId={this.state.selectedPostId}
+                      onOptionClick={this.handleOptionClick}
+                      onEditSubmit={this.handleEditSubmit}
+                      onCommentDelete={this.handleCommentDelete}
+                      onPostDelete={this.handlePostDelete}
+                      onProfileNameClick={this.handleProfileNameClick}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          {/* <div className="active-friendlist-container">
               <h4>Active Friends</h4>
               place a list of friends here
               <UserHolder />
             </div> */}
-          </div>
-        </Fragment>
-      );
-    }
-
-    return <NoServerConnection />;
+        </div>
+      </Fragment>
+    );
   }
 }
 

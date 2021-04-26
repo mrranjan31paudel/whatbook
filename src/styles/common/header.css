@@ -4,42 +4,42 @@
   top: 0;
   left: 0;
   z-index: 20;
+  height: 48px;
   background: rgb(0, 158, 0);
 }
 
 .header-seg nav {
-  position: relative;
   width: 80%;
-  margin: 1px auto;
-  padding: 1px;
+  margin: 0px auto;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
 .header-logo-search-bar-container {
-  position: relative;
-  margin: 5px;
-  padding: 5px;
+  margin: 0px 5px;
+  padding: 0px 4px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
 }
 
+.header-logo-container {
+  padding: 4px;
+}
+
 .header-logo-image {
   display: block;
-  width: 4.5vmin;
-  height: 4.5vmin;
-  margin: 5px;
-  border-radius: 0.5vmin;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
 }
 
 .search-bar-container {
-  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -50,9 +50,8 @@
 
 .search-bar {
   display: block;
-  padding: 1vmin;
   border: none;
-  font-size: calc(6px + 1vmin);
+  font-size: 14px;
 }
 
 .search-bar:focus {
@@ -61,7 +60,6 @@
 
 .search-img-container {
   display: block;
-  padding: 1vmin 0;
   border: none;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
@@ -84,7 +82,7 @@
 .search-img {
   display: block;
   margin: auto 10px;
-  height: 2.5vmin;
+  height: 18px;
 }
 
 .search-result-list-modal {
@@ -115,7 +113,6 @@
 }
 
 .navigation-links {
-  position: relative;
   list-style-type: none;
   margin: 5px;
   padding: 5px;
@@ -124,19 +121,18 @@
   justify-content: flex-end;
 }
 .navigation-links li {
-  position: relative;
   margin: 5px;
   padding: 5px;
   border-radius: 2px;
+  position: relative;
 }
 
 .navigation-links li div {
-  position: relative;
   height: 100%;
 }
 
 .nav-img {
-  height: 2.5vmin;
+  height: 24px;
   padding: 2px;
   border-radius: 2px;
 }
@@ -149,15 +145,10 @@
   display: block;
   color: white;
   text-decoration: none;
-  font-size: calc(6px + 1vmin);
 }
 
 .navigation-links li div a:hover .nav-img {
   background: rgba(0, 0, 0, 0.157);
-}
-
-.header-seg .not-in-user {
-  height: 10vmin;
 }
 
 .red-dot-notification {

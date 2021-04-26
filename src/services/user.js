@@ -1,6 +1,7 @@
 import { get, post, put, remove } from './http';
 
 function getUserDetails(url, params = {}) {
+  console.log('IN here 2');
   return get(url, params);
 }
 

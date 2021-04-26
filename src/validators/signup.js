@@ -1,11 +1,11 @@
-function validateSignup(state) {
+function validateSignup(formData) {
   const {
     name = '',
     email = '',
     password = '',
     confPassword = '',
-  } = state.data;
-  const { day = '0', month = '0', year = '0' } = state.data.dob;
+  } = formData.data;
+  const { day = '0', month = '0', year = '0' } = formData.data.dob;
 
   if (
     name.length > 0 &&

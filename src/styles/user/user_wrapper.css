@@ -1,6 +1,6 @@
 .user-wrapper {
   width: 100%;
-  margin: 0 auto;
+  margin-top: 48px;
   display: flex;
   flex-direction: row;
 }

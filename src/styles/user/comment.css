@@ -13,7 +13,6 @@
 
 .comment-container .comment-time {
   margin: 5px;
-  font-size: calc(4px + 1vmin);
   color: rgb(168, 168, 168);
 }
 
@@ -24,8 +23,7 @@
 .comment-container .comment-content {
   width: calc(100% - 10px);
   margin: 5px;
-  font-size: calc(5px + 1vmin);
-  line-height: 2.5vmin;
+  line-height: 2.5;
 }
 
 .comment-edit-wrapper {
@@ -39,7 +37,6 @@
   padding: 5px;
   border: 1px solid rgb(211, 211, 211);
   border-radius: 2px;
-  font-size: calc(7px + 1vmin);
 }
 .comment-edit-cancel {
   width: 30%;
@@ -47,7 +44,6 @@
   text-decoration: none;
   color: green;
   padding: 5px;
-  font-size: calc(4px + 1vmin);
 }
 
 .comment-edit-cancel:hover {
@@ -56,7 +52,6 @@
 
 .commenter-name a {
   text-decoration: none;
-  font-size: calc(6px + 1vmin);
   font-weight: 500;
   color: rgb(0, 122, 0);
 }
@@ -67,7 +62,6 @@
 
 .comment-option-button {
   padding: 4px;
-  font-size: calc(10px + 1vmin);
   font-weight: 600;
   color: grey;
   border-radius: 5px;
@@ -82,7 +76,6 @@
 
 .comment-delete-prompt {
   padding: 2px;
-  font-size: calc(6px + 1vmin);
   box-shadow: 0 0 3px red;
   border-radius: 5px;
 }
@@ -108,7 +101,6 @@
 .comment-reply {
   margin: 0 5px;
   text-decoration: none;
-  font-size: calc(4px + 1vmin);
   color: rgb(0, 122, 0);
 }
 
@@ -120,7 +112,6 @@
 .view-reply {
   margin: 0 5px;
   text-decoration: none;
-  font-size: calc(4px + 1vmin);
   color: rgb(0, 122, 0);
 }
 

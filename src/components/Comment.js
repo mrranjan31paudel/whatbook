@@ -296,16 +296,16 @@ class Comment extends React.Component {
 Comment.propTypes = {
   onOptionClick: PropTypes.func,
   commentData: PropTypes.object,
-  userId: PropTypes.string,
-  posterId: PropTypes.string,
+  userId: PropTypes.number,
+  posterId: PropTypes.number,
   onEditSubmit: PropTypes.func,
   onDeleteOptionClick: PropTypes.func,
   onReplySubmit: PropTypes.func,
   onCommentNameClick: PropTypes.func,
   userName: PropTypes.string,
-  selectedCommentId: PropTypes.string,
-  postId: PropTypes.string,
-  isOptionClicked: PropTypes.func,
+  selectedCommentId: PropTypes.number,
+  postId: PropTypes.number,
+  isOptionClicked: PropTypes.bool,
 };
 
 export default Comment;

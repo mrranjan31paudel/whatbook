@@ -1,3 +1,7 @@
+/* *:not(h2) {
+  font-size: 14px;
+} */
+
 body {
   margin: 0;
   position: relative;

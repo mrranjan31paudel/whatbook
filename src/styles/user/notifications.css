@@ -13,7 +13,6 @@
 .empty-notification-list-msg {
   margin: 10px;
   color: grey;
-  font-size: calc(7px + 1vmin);
 }
 
 .notification-list-wrapper {
@@ -58,7 +57,6 @@
   width: calc(95% - 20px);
   margin: 5px;
   padding: 5px;
-  font-size: calc(7px + 1vmin);
 }
 
 .notification-button-container {
@@ -71,12 +69,11 @@
 }
 
 .notification-action-button {
-  position: relative;
   background: none;
   border: none;
   margin: 10px;
   padding: 5px;
-  height: 4vmin;
+  height: 18px;
   font-weight: 600;
   border-radius: 3px;
   background-repeat: no-repeat;
@@ -106,7 +103,6 @@
 }
 
 .notification-date-time {
-  font-size: calc(5px + 1vmin);
   color: grey;
 }
 
@@ -115,7 +111,6 @@
   margin: 5px;
   padding: 5px;
   color: green;
-  font-size: calc(6px + 1vmin);
 }
 
 .mark-as-read:hover {

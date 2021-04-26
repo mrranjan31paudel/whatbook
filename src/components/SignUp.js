@@ -9,9 +9,9 @@ import TextField from './TextField';
 import signupRequest from '../services/signup';
 import tokenService from './../services/token';
 import validateSignup from '../validators/signup';
-import { MONTH, DAY, Year } from '../constants/dob';
 import { EMAIL_REGEXP } from './../constants/config';
 import NoServerConnection from './NoServerConnection';
+import { MONTH_OPTIONS, DAY_OPTIONS, YEAR_OPTIONS } from '../constants/dob';
 
 import './../styles/loginsignup/form_wrapper.css';
 import './../styles/loginsignup/signup_success_wrapper.css';
@@ -19,17 +19,28 @@ import './../styles/loginsignup/signup_success_wrapper.css';
 class Register extends React.Component {
   constructor() {
     super();
+
+    const today = new Date();
     this.state = {
-      data: {
-        name: null,
+      formData: {
+        name: '',
         dob: {
-          year: null,
-          month: null,
-          day: null,
+          year: `${today.getFullYear()}`,
+          month: `${today.getMonth() + 1}`,
+          day: `${today.getDate()}`,
         },
-        email: null,
-        password: null,
-        confPassword: null,
+        email: '',
+        password: '',
+        confPassword: '',
+      },
+      errors: {
+        name: false,
+        dob: false,
+        email: false,
+        emailFormat: false,
+        password: false,
+        passwordFormat: false,
+        confPassword: false,
       },
       isWaitingServer: false,
       isSignUpSuccessful: false,
@@ -45,32 +56,30 @@ class Register extends React.Component {
   }
 
   handleChange = (targetField, value) => {
-    this.setState({
-      data: {
-        ...this.state.data,
+    this.setState((state) => ({
+      formData: {
+        ...state.formData,
         [targetField]: value,
       },
-    });
+    }));
   };
 
   handleSubmit = async (e) => {
     e.preventDefault();
 
-    const toSendData = {
-      name: this.state.data.name,
-      dob: [
-        this.state.data.dob.year,
-        this.state.data.dob.month,
-        this.state.data.dob.day,
-      ].join('-'),
-      email: this.state.data.email,
-      password: this.state.data.password,
-    };
-    const validFlag = validateSignup(this.state);
+    const { formData } = this.state;
 
-    if (validFlag && !this.isMailInvalid()) {
+    const toSendData = {
+      name: formData.name,
+      dob: [formData.dob.year, formData.dob.month, formData.dob.day].join('-'),
+      email: formData.email,
+      password: formData.password,
+    };
+    const isValid = this.validateSignup(this.state);
+
+    if (isValid) {
       this.setState({
-        isWaitingServer: false,
+        isWaitingServer: true,
       });
 
       return signupRequest(toSendData)
@@ -98,67 +107,88 @@ class Register extends React.Component {
     }
 
     this.setState({
-      data: {
-        ...this.state.data,
-        name: this.state.data.name ? this.state.data.name : '',
+      formData: {
+        ...formData,
+        name: formData.name ? formData.name : '',
         dob: {
-          year: this.state.data.dob.year ? this.state.data.dob.year : '0',
-          month: this.state.data.dob.month ? this.state.data.dob.month : '0',
-          day: this.state.data.dob.day ? this.state.data.dob.day : '0',
+          year: formData.dob.year ? formData.dob.year : '0',
+          month: formData.dob.month ? formData.dob.month : '0',
+          day: formData.dob.day ? formData.dob.day : '0',
         },
-        email: this.state.data.email ? this.state.data.email : '',
-        password: this.state.data.password ? this.state.data.password : '',
-        confPassword: this.state.data.confPassword
-          ? this.state.data.confPassword
-          : '',
+        email: formData.email ? formData.email : '',
+        password: formData.password ? formData.password : '',
+        confPassword: formData.confPassword ? formData.confPassword : '',
       },
     });
   };
 
   handleDateChange = (value, name) => {
+    const { formData } = this.state;
+
     this.setState({
-      data: {
-        ...this.state.data,
+      formData: {
+        ...formData,
         dob: {
-          ...this.state.data.dob,
+          ...formData.dob,
           [name]: value,
         },
       },
     });
   };
 
-  isDateInvalid = () => {
-    const { day, month, year } = this.state.data.dob;
+  validateSignup = () => {
+    const { name, dob, email, password, confPassword } = this.state.formData;
+    let isValid = true;
+    let errors = { ...this.state.errors };
 
-    if (day === '0' || month === '0' || year === '0') {
-      return true;
+    if (!name) {
+      errors.name = true;
+      isValid = false;
     }
 
-    return false;
-  };
-
-  isMailInvalid = () => {
-    const { email } = this.state.data;
-
-    if (email && email.length > 0 && !EMAIL_REGEXP.test(email)) {
-      return true;
+    if (dob.day === '0' || dob.month === '0' || dob.year === '0') {
+      errors.dob = true;
+      isValid = false;
     }
 
-    return false;
-  };
-
-  isPasswordInvalid = () => {
-    const { password } = this.state.data;
-
-    if (password && password.length > 0 && password.length < 6) {
-      return true;
+    if (!email) {
+      errors.email = true;
+      isValid = false;
     }
 
-    return false;
+    if (!EMAIL_REGEXP.test(email)) {
+      errors.emailFormat = true;
+      isValid = false;
+    }
+
+    if (!password) {
+      errors.password = true;
+      isValid = false;
+    }
+
+    if (password.length > 0 && password.length < 6) {
+      errors.passwordFormat = true;
+      isValid = false;
+    }
+
+    if (!this.doPasswordsMatch()) {
+      errors.confPassword = true;
+      isValid = false;
+    }
+
+    this.setState({
+      errors: {
+        ...errors,
+      },
+    });
+
+    return isValid;
   };
 
   doPasswordsMatch = () => {
-    if (this.state.data.confPassword === this.state.data.password) {
+    const { confPassword, password } = this.state.formData;
+
+    if (confPassword === password) {
       return true;
     }
 
@@ -166,8 +196,17 @@ class Register extends React.Component {
   };
 
   render() {
-    if (this.state.isConnectedToServer) {
-      if (!this.state.isSignUpSuccessful) {
+    const {
+      errors,
+      formData,
+      isWaitingServer,
+      userAlreadyExist,
+      isSignUpSuccessful,
+      isConnectedToServer,
+    } = this.state;
+
+    if (isConnectedToServer) {
+      if (!isSignUpSuccessful) {
         return (
           <Fragment>
             <Header isInsideUser={false} />
@@ -179,75 +218,71 @@ class Register extends React.Component {
                 autoComplete="off"
               >
                 <div className="field-segment">
-                  <Label
-                    className="field-title"
-                    htmlFor="name"
-                    value="Name: "
-                  />
+                  <Label className="field-title" htmlFor="name" value="Name" />
                   <TextField
-                    className={this.state.data.name === '' ? ' empty' : ''}
+                    className={errors.name ? ' empty' : ''}
                     name="name"
                     type="text"
                     placeHolder="Enter full name"
                     onChange={this.handleChange}
                     autoComplete="off"
                   />
-                  <Label
-                    className="error-label"
-                    htmlFor=""
-                    value={
-                      this.state.data.name === ''
-                        ? 'Please enter your name!'
-                        : ''
-                    }
-                  />
+                  {errors.name && (
+                    <Label
+                      className="error-label"
+                      htmlFor=""
+                      value="Please enter your name!"
+                    />
+                  )}
                 </div>
 
                 <div className="field-segment">
                   <Label
                     className="field-title"
                     htmlFor="dob"
-                    value="Date of Birth: "
+                    value="Date of Birth"
                   />
                   <div className="date-wrapper">
                     <Dropdown
-                      status={this.state.data.dob.month === '0' ? ' wrong' : ''}
+                      status={formData.dob.month === '0' ? ' wrong' : ''}
                       name="month"
-                      options={MONTH}
+                      options={MONTH_OPTIONS}
+                      value={formData.dob.month}
                       onChange={this.handleDateChange}
                     />
                     <Dropdown
-                      status={this.state.data.dob.day === '0' ? ' wrong' : ''}
+                      status={formData.dob.day === '0' ? ' wrong' : ''}
                       name="day"
-                      options={DAY}
+                      options={DAY_OPTIONS}
+                      value={formData.dob.day}
                       onChange={this.handleDateChange}
                     />
                     <Dropdown
-                      status={this.state.data.dob.year === '0' ? ' wrong' : ''}
+                      status={formData.dob.year === '0' ? ' wrong' : ''}
                       name="year"
-                      options={Year}
+                      options={YEAR_OPTIONS}
+                      value={formData.dob.year}
                       onChange={this.handleDateChange}
                     />
                   </div>
-                  <Label
-                    className="error-label"
-                    htmlFor=""
-                    value={
-                      this.isDateInvalid() ? 'Please enter a valid date!' : ''
-                    }
-                  />
+                  {errors.dob && (
+                    <Label
+                      className="error-label"
+                      htmlFor=""
+                      value="Please enter a valid date!"
+                    />
+                  )}
                 </div>
 
                 <div className="field-segment">
                   <Label
                     className="field-title"
                     htmlFor="email"
-                    value="E-mail: "
+                    value="E-mail"
                   />
                   <TextField
                     className={
-                      this.state.data.email === '' ||
-                      this.state.userAlreadyExist
+                      errors.email || errors.emailFormat || userAlreadyExist
                         ? ' empty'
                         : ''
                     }
@@ -257,8 +292,7 @@ class Register extends React.Component {
                     onChange={this.handleChange}
                     autoComplete="off"
                   />
-                  {this.state.data.email === '' &&
-                  !this.state.userAlreadyExist ? (
+                  {errors.email && !userAlreadyExist ? (
                     <Label
                       className="error-label"
                       htmlFor=""
@@ -267,7 +301,7 @@ class Register extends React.Component {
                   ) : (
                     ''
                   )}
-                  {this.state.userAlreadyExist ? (
+                  {userAlreadyExist ? (
                     <Label
                       className="error-label"
                       htmlFor=""
@@ -276,7 +310,7 @@ class Register extends React.Component {
                   ) : (
                     ''
                   )}
-                  {this.isMailInvalid() ? (
+                  {errors.emailFormat ? (
                     <Label
                       className="warning-label"
                       htmlFor=""
@@ -291,43 +325,43 @@ class Register extends React.Component {
                   <Label
                     className="field-title"
                     htmlFor="password"
-                    value="Password:"
+                    value="Password"
                   />
                   <TextField
-                    className={this.state.data.password === '' ? ' empty' : ''}
+                    className={
+                      errors.password || errors.passwordFormat ? ' empty' : ''
+                    }
                     name="password"
                     type="password"
                     placeHolder="New Password"
                     onChange={this.handleChange}
                     autoComplete="off"
                   />
-                  <Label
-                    className="error-label"
-                    htmlFor=""
-                    value={
-                      this.state.data.password === ''
-                        ? 'Password cannot be empty!'
-                        : ''
-                    }
-                  />
-                  <Label
-                    className="warning-label"
-                    htmlFor=""
-                    value={
-                      this.isPasswordInvalid() ? 'Atleast six characters!' : ''
-                    }
-                  />
+                  {errors.password && !errors.passwordFormat && (
+                    <Label
+                      className="error-label"
+                      htmlFor=""
+                      value="Password cannot be empty!"
+                    />
+                  )}
+                  {errors.passwordFormat && !errors.password && (
+                    <Label
+                      className="warning-label"
+                      htmlFor=""
+                      value="Atleast six characters"
+                    />
+                  )}
                 </div>
 
                 <div className="field-segment">
                   <Label
                     className="field-title"
                     htmlFor="confpassword"
-                    value="Conform Password:"
+                    value="Conform Password"
                   />
                   <TextField
                     className={
-                      (this.state.data.confPassword === '' ? ' empty' : '') ||
+                      (errors.confPassword && ' empty') ||
                       (this.doPasswordsMatch()
                         ? ' pass-match'
                         : ' pass-not-match')
@@ -338,24 +372,20 @@ class Register extends React.Component {
                     onChange={this.handleChange}
                     autoComplete="off"
                   />
-                  <Label
-                    className="error-label"
-                    htmlFor=""
-                    value={
-                      this.state.data.confPassword === ''
-                        ? 'Password cannot be empty!'
-                        : ''
-                    }
-                  />
+                  {errors.confPassword && (
+                    <Label
+                      className="error-label"
+                      htmlFor=""
+                      value="Passwords do not match!"
+                    />
+                  )}
                 </div>
 
                 <Button
-                  className={this.state.isWaitingServer ? ' busy' : ''}
+                  className={isWaitingServer ? ' busy' : ''}
                   type="submit"
-                  value={
-                    this.state.isWaitingServer ? 'Signing Up...' : 'Sign Up'
-                  }
-                  isDisabled={this.state.isWaitingServer ? true : false}
+                  value={isWaitingServer ? 'Signing Up...' : 'Sign Up'}
+                  isDisabled={isWaitingServer ? true : false}
                 />
               </form>
               <p>

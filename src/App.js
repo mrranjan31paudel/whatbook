@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Login from './components/Login';
@@ -10,7 +10,7 @@ import Notifications from './components/Notifications';
 import Post from './components/Post';
 import ProtectedRoute from './components/ProtectedRoute';
 
-import './styles/common/content_container.css';
+import './styles/common/main.css';
 
 class App extends React.Component {
   constructor() {
@@ -20,21 +20,19 @@ class App extends React.Component {
 
   render() {
     return (
-      <Fragment>
-        <div className="content-container">
-          <Router>
-            <Switch>
-              <Route exact path="/" component={Login} />
-              <Route exact path="/signup" component={SignUp} />
-              <ProtectedRoute path="/user/:userId/post/:postId" comp={Post} />
-              <ProtectedRoute path="/user/:userId" comp={UserProfile} />
-              <ProtectedRoute path="/user" comp={User} />
-              <ProtectedRoute path="/people" comp={People} />
-              <ProtectedRoute path="/notifications" comp={Notifications} />
-            </Switch>
-          </Router>
-        </div>
-      </Fragment>
+      <main className="main-container">
+        <Router>
+          <Switch>
+            <Route exact path="/" component={Login} />
+            <Route exact path="/signup" component={SignUp} />
+            <ProtectedRoute path="/user/:userId/post/:postId" comp={Post} />
+            <ProtectedRoute path="/user/:userId" comp={UserProfile} />
+            <ProtectedRoute path="/user" comp={User} />
+            <ProtectedRoute path="/people" comp={People} />
+            <ProtectedRoute path="/notifications" comp={Notifications} />
+          </Switch>
+        </Router>
+      </main>
     );
   }
 }

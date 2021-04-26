@@ -45,14 +45,13 @@
   justify-content: space-between;
 }
 
-.profile-edit-field-label {
+/* .profile-edit-field-label {
   font-size: calc(6px + 1vmin);
-}
+} */
 
 .profile-edit-input-field {
   margin: 5px;
   padding: 5px;
-  font-size: calc(8px + 1vmin);
   border: none;
   border-bottom: 1px solid green;
   text-align: right;
@@ -72,7 +71,7 @@
   background: none;
   border: none;
   padding: 0 10px;
-  height: 4vmin;
+  height: 18px;
   font-weight: 600;
   color: green;
   border-radius: 3px;
@@ -98,7 +97,6 @@
   border: none;
   background: none;
   padding: 5px;
-  font-size: calc(8px + 1vmin);
   font-weight: 600;
   color: green;
   border-radius: 3px;
@@ -120,7 +118,6 @@
 
 .password-successfully-changed-label {
   padding: 5px;
-  font-size: calc(4px + 1vmin);
   text-align: center;
   color: green;
 }
@@ -128,14 +125,12 @@
 .password-length-constraint-label {
   margin: 2px;
   padding: 2px;
-  font-size: calc(4px + 1vmin);
   color: rgb(255, 72, 0);
 }
 
 .password-wrong-label {
   margin: 2px;
   padding: 2px;
-  font-size: calc(4px + 1vmin);
   color: red;
 }
 

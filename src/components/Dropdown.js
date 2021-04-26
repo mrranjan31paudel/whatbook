@@ -7,13 +7,18 @@ const Dropdown = (props) => {
     <select
       className={'drop-list' + props.status}
       name={props.name}
+      value={props.value}
       onChange={(e) => props.onChange(e.target.value, e.target.name)}
     >
-      {Object.keys(props.options).map((key) => (
-        <option key={key} value={`${key}`}>
-          {props.options[key]}
-        </option>
-      ))}
+      {props.options ? (
+        props.options.map(({ label, value }) => (
+          <option key={value} value={`${value}`}>
+            {label}
+          </option>
+        ))
+      ) : (
+        <option>No option</option>
+      )}
     </select>
   );
 };

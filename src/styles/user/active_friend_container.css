@@ -8,12 +8,11 @@
 }
 
 .active-friend-container img {
-  height: 6vmin;
+  height: 40px;
   /* width: 25%; */
 }
 
 .active-friend-container span {
-  font-size: calc(7px + 1vmin);
   font-weight: 500;
 }
 

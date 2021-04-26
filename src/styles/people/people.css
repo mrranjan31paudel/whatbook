@@ -74,11 +74,9 @@
 
 .request-type-text {
   margin: 5px;
-  font-size: calc(6px + 1vmin);
   color: grey;
 }
 
 .empty-request-list-text {
   margin-left: 10px;
-  font-size: calc(4px + 1vmin);
 }
