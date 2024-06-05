@@ -78,7 +78,7 @@ class UserStoryContainer extends React.Component {
       popUpConfig: {
         rights: setPostPermissions(
           this.props.userId,
-          this.props.postData.userid
+          this.props.postData.userid,
         ),
         buttonId: `post-option-button-${this.props.postData.id}`,
         postContainerId: `user-story-container-${this.props.postData.id}`,

@@ -92,7 +92,7 @@ class Notifications extends React.Component {
         .then((response) => {
           if (target === 'your post' || target === 'your comment') {
             return this.props.history.push(
-              `/user/user_${postOwnerId}/post/post_${targetid}`
+              `/user/user_${postOwnerId}/post/post_${targetid}`,
             );
           }
 
@@ -110,7 +110,7 @@ class Notifications extends React.Component {
 
     if (target === 'your post' || target === 'your comment') {
       return this.props.history.push(
-        `/user/user_${postOwnerId}/post/post_${targetid}`
+        `/user/user_${postOwnerId}/post/post_${targetid}`,
       );
     }
 
@@ -185,7 +185,7 @@ class Notifications extends React.Component {
 
   getUnreadNotifications = () => {
     return this.state.notificationList.filter(
-      (element) => element.status === 0
+      (element) => element.status === 0,
     );
   };
 
@@ -236,7 +236,7 @@ class Notifications extends React.Component {
                           data.target,
                           data.targetid,
                           data.post_ownerid,
-                          data.status
+                          data.status,
                         )
                       }
                     >
@@ -277,7 +277,7 @@ class Notifications extends React.Component {
                           this.handleNotificationReadClick(
                             e,
                             data.id,
-                            data.status
+                            data.status,
                           )
                         }
                       >

@@ -114,7 +114,7 @@ axios.interceptors.response.use(
     } else {
       return Promise.reject(error);
     }
-  }
+  },
 );
 
 function releaseHeldRequests(err, refreshedAccessToken = null) {

@@ -46,7 +46,7 @@ class Login extends React.Component {
         .then((response) => {
           tokenService.setTokens(
             response.data.accessToken,
-            response.data.refreshToken
+            response.data.refreshToken,
           );
 
           return this.props.history.push('/user');

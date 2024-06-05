@@ -35,7 +35,7 @@ class Comment extends React.Component {
         rights: setCommentPermissions(
           this.props.userId,
           this.props.posterId,
-          this.props.commentData.userid
+          this.props.commentData.userid,
         ),
         buttonId: `comment-option-button-${this.props.commentData.id}`,
         postContainerId: `user-story-container-${this.props.postId}`,
@@ -235,7 +235,7 @@ class Comment extends React.Component {
             <span className="comment-time">
               {parseDateTime(
                 this.props.commentData.date,
-                this.props.commentData.time
+                this.props.commentData.time,
               )}
             </span>
           </div>

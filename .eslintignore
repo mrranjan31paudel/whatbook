@@ -1,4 +1,0 @@
-**/*.test.js
-**/*.css
-**/*.json
-!src/**/*.js
